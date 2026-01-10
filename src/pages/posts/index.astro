@@ -1,0 +1,106 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base title="Writing" description="Blog posts, articles, and opinions">
+  <h1>Writing</h1>
+  <p class="intro">Blog posts, research articles, and opinions on design, code, and making things.</p>
+
+  {posts.length > 0 ? (
+    <ul class="post-list">
+      {posts.map(post => (
+        <li>
+          <a href={`/posts/${post.id}`}>
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toLocaleDateString('en-IE', { day: 'numeric', month: 'short', year: 'numeric' })}
+            </time>
+            <span class="title">{post.data.title}</span>
+            {post.data.tags.length > 0 && (
+              <span class="tags">
+                {post.data.tags.map(tag => <span class="tag">{tag}</span>)}
+              </span>
+            )}
+          </a>
+          {post.data.description && <p class="description">{post.data.description}</p>}
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="empty">No posts yet. Check back soon.</p>
+  )}
+</Base>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  .post-list {
+    list-style: none;
+  }
+
+  .post-list li {
+    border-bottom: 1px solid var(--color-border);
+    padding: 1rem 0;
+  }
+
+  .post-list a {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+    color: var(--color-text);
+  }
+
+  .post-list a:hover {
+    text-decoration: none;
+  }
+
+  .post-list a:hover .title {
+    color: var(--color-accent);
+  }
+
+  time {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    min-width: 6rem;
+  }
+
+  .title {
+    font-weight: 500;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    background: var(--color-border);
+    padding: 0.125rem 0.5rem;
+    border-radius: 1rem;
+  }
+
+  .description {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin: 0.5rem 0 0 7rem;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 3rem 0;
+  }
+</style>

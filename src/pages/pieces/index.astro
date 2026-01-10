@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const pieces = (await getCollection('pieces'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const categories = ['photography', 'ceramics', 'art', 'code', 'making'];
+---
+
+<Base title="Gallery" description="Finished works and pieces">
+  <h1>Gallery</h1>
+  <p class="intro">Photographs, ceramics, paintings, drawings, and finished works.</p>
+
+  {pieces.length > 0 ? (
+    <div class="gallery">
+      {categories.map(cat => {
+        const catPieces = pieces.filter(p => p.data.category === cat);
+        return catPieces.length > 0 && (
+          <section>
+            <h2>{cat}</h2>
+            <div class="grid">
+              {catPieces.map(piece => (
+                <a href={`/pieces/${piece.id}`} class="card">
+                  {piece.data.image && (
+                    <img src={piece.data.image} alt={piece.data.title} loading="lazy" />
+                  )}
+                  <div class="info">
+                    <h3>{piece.data.title}</h3>
+                    {piece.data.medium && <p class="medium">{piece.data.medium}</p>}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  ) : (
+    <p class="empty">No pieces yet. Check back soon.</p>
+  )}
+</Base>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  section {
+    margin-bottom: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    display: block;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    overflow: hidden;
+    color: var(--color-text);
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .card img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .info {
+    padding: 0.75rem 1rem;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .medium {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin: 0.25rem 0 0;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 3rem 0;
+  }
+</style>

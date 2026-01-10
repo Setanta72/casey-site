@@ -1,0 +1,114 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => {
+    // Active first, then by start date
+    if (a.data.status === 'active' && b.data.status !== 'active') return -1;
+    if (a.data.status !== 'active' && b.data.status === 'active') return 1;
+    return b.data.started.valueOf() - a.data.started.valueOf();
+  });
+
+const categories = ['photography', 'ceramics', 'art', 'code', 'making', 'research'];
+---
+
+<Base title="Projects" description="Ongoing and completed projects">
+  <h1>Projects</h1>
+  <p class="intro">Ongoing work, repairs, series, and explorations.</p>
+
+  {projects.length > 0 ? (
+    <div class="projects">
+      {categories.map(cat => {
+        const catProjects = projects.filter(p => p.data.category === cat);
+        return catProjects.length > 0 && (
+          <section>
+            <h2>{cat}</h2>
+            <div class="grid">
+              {catProjects.map(project => (
+                <a href={`/projects/${project.id}`} class="card" data-status={project.data.status}>
+                  <span class="status">{project.data.status}</span>
+                  <h3>{project.data.title}</h3>
+                  {project.data.description && <p>{project.data.description}</p>}
+                </a>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  ) : (
+    <p class="empty">No projects yet. Check back soon.</p>
+  )}
+</Base>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .intro {
+    color: var(--color-text-muted);
+    margin-bottom: 2rem;
+  }
+
+  section {
+    margin-bottom: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: 1rem;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    display: block;
+    padding: 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    color: var(--color-text);
+    transition: border-color 0.2s;
+  }
+
+  .card:hover {
+    border-color: var(--color-accent);
+    text-decoration: none;
+  }
+
+  .card[data-status="active"] {
+    border-left: 3px solid var(--color-accent);
+  }
+
+  .status {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .card h3 {
+    font-size: 1.125rem;
+    margin: 0.25rem 0;
+  }
+
+  .card p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    text-align: center;
+    padding: 3rem 0;
+  }
+</style>

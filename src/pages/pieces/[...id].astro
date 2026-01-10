@@ -1,0 +1,126 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const pieces = await getCollection('pieces');
+  return pieces.map(piece => ({
+    params: { id: piece.id },
+    props: { piece },
+  }));
+}
+
+const { piece } = Astro.props;
+const { Content } = await render(piece);
+---
+
+<Base title={piece.data.title} description={piece.data.description}>
+  <article>
+    {piece.data.image && (
+      <figure>
+        <img src={piece.data.image} alt={piece.data.title} />
+      </figure>
+    )}
+
+    <header>
+      <span class="category">{piece.data.category}</span>
+      <h1>{piece.data.title}</h1>
+      <div class="meta">
+        <time datetime={piece.data.date.toISOString()}>
+          {piece.data.date.toLocaleDateString('en-IE', { month: 'long', year: 'numeric' })}
+        </time>
+        {piece.data.medium && <span> · {piece.data.medium}</span>}
+        {piece.data.dimensions && <span> · {piece.data.dimensions}</span>}
+      </div>
+      {piece.data.project && (
+        <p class="project">
+          Part of: <a href={`/projects/${piece.data.project}`}>{piece.data.project}</a>
+        </p>
+      )}
+      {piece.data.tags.length > 0 && (
+        <div class="tags">
+          {piece.data.tags.map(tag => <span class="tag">{tag}</span>)}
+        </div>
+      )}
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
+  </article>
+
+  <nav class="back">
+    <a href="/pieces">&larr; Back to gallery</a>
+  </nav>
+</Base>
+
+<style>
+  article {
+    max-width: 50rem;
+    margin: 0 auto;
+  }
+
+  figure {
+    margin: 0 0 2rem;
+  }
+
+  figure img {
+    width: 100%;
+    border-radius: 0.5rem;
+  }
+
+  header {
+    margin-bottom: 2rem;
+  }
+
+  .category {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  h1 {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+    line-height: 1.2;
+  }
+
+  .meta {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+
+  .project {
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    background: var(--color-border);
+    padding: 0.125rem 0.5rem;
+    border-radius: 1rem;
+  }
+
+  .content {
+    line-height: 1.7;
+  }
+
+  .content :global(p) {
+    margin-bottom: 1rem;
+  }
+
+  .back {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+</style>
