@@ -85,14 +85,31 @@ const { title, description = "Creative work and research by Casey" } = Astro.pro
     line-height: 1.25;
   }
 
+  /* Links in body content - visible underline */
   a {
-    color: var(--color-accent);
-    text-decoration: none;
-    transition: color 0.15s ease;
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-dark);
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 0.15s ease;
   }
 
   a:hover {
-    color: var(--color-accent-hover);
+    text-decoration-color: var(--color-text);
+  }
+
+  /* Navigation and UI links - no underline */
+  nav a,
+  .post-card,
+  .card,
+  .piece,
+  .back a {
+    text-decoration: none;
+  }
+
+  nav a:hover,
+  .back a:hover {
+    text-decoration: none;
   }
 
   img {
@@ -103,6 +120,23 @@ const { title, description = "Creative work and research by Casey" } = Astro.pro
   ::selection {
     background: #000000;
     color: #ffffff;
+  }
+
+  /* Content area link styling */
+  article a,
+  .content a,
+  main p a,
+  main li a {
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-dark);
+    text-underline-offset: 0.2em;
+  }
+
+  article a:hover,
+  .content a:hover,
+  main p a:hover,
+  main li a:hover {
+    text-decoration-color: var(--color-text);
   }
 </style>
 
