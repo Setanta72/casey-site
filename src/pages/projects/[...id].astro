@@ -13,9 +13,21 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 
-// Find related pieces
+// Find related pieces - match by project slug (without .md extension)
 const allPieces = await getCollection('pieces');
-const relatedPieces = allPieces.filter(p => p.data.project === project.id);
+const projectSlug = project.id.replace(/\.md$/, '');
+const relatedPieces = allPieces.filter(p => p.data.project === projectSlug);
+
+// Group related pieces by their subcategory tags
+const subcategories = [
+  { tag: 'irish-landscape', label: 'Irish Landscapes' },
+  { tag: 'street-urban', label: 'Street / Urban' },
+  { tag: 'nature-macro', label: 'Nature / Macro' },
+  { tag: 'camera-gear', label: 'Camera Gear' },
+  { tag: 'travel', label: 'Travel' },
+  { tag: 'portrait', label: 'Portraits' },
+  { tag: 'misc', label: 'Miscellaneous' },
+];
 ---
 
 <Base title={project.data.title} description={project.data.description}>
@@ -45,14 +57,25 @@ const relatedPieces = allPieces.filter(p => p.data.project === project.id);
 
     {relatedPieces.length > 0 && (
       <section class="related">
-        <h2>Pieces from this project</h2>
-        <div class="pieces-grid">
-          {relatedPieces.map(piece => (
-            <a href={`/pieces/${piece.id}`} class="piece">
-              <span class="piece-title">{piece.data.title}</span>
-            </a>
-          ))}
-        </div>
+        <h2>Pieces from this project ({relatedPieces.length})</h2>
+        {subcategories.map(({ tag, label }) => {
+          const tagPieces = relatedPieces.filter(p => p.data.tags?.includes(tag));
+          return tagPieces.length > 0 && (
+            <div class="subcategory">
+              <h3>{label}</h3>
+              <div class="pieces-grid">
+                {tagPieces.map(piece => (
+                  <a href={`/pieces/${piece.id}`} class="piece">
+                    {piece.data.image && (
+                      <img src={piece.data.image} alt={piece.data.title} loading="lazy" />
+                    )}
+                    <span class="piece-title">{piece.data.title}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </section>
     )}
   </article>
@@ -141,29 +164,52 @@ const relatedPieces = allPieces.filter(p => p.data.project === project.id);
   }
 
   .related h2 {
-    font-size: 1rem;
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .subcategory {
+    margin-bottom: 2rem;
+  }
+
+  .subcategory h3 {
+    font-size: 0.875rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--color-text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
   }
 
   .pieces-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 0.75rem;
   }
 
   .piece {
-    padding: 1rem;
+    display: block;
     border: 1px solid var(--color-border);
     border-radius: 0.5rem;
+    overflow: hidden;
     color: var(--color-text);
   }
 
   .piece:hover {
     border-color: var(--color-accent);
     text-decoration: none;
+  }
+
+  .piece img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+  }
+
+  .piece-title {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
   }
 
   .back {

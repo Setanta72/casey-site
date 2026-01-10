@@ -5,28 +5,46 @@ import { getCollection } from 'astro:content';
 const pieces = (await getCollection('pieces'))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const categories = ['photography', 'ceramics', 'art', 'code', 'making'];
+// Subcategory groupings for the Flickr selection
+const subcategories = [
+  { tag: 'irish-landscape', label: 'Irish Landscapes' },
+  { tag: 'street-urban', label: 'Street / Urban' },
+  { tag: 'nature-macro', label: 'Nature / Macro' },
+  { tag: 'camera-gear', label: 'Camera Gear' },
+  { tag: 'travel', label: 'Travel' },
+  { tag: 'portrait', label: 'Portraits' },
+  { tag: 'misc', label: 'Miscellaneous' },
+];
+
+// Main categories for non-Flickr pieces
+const mainCategories = ['photography', 'ceramics', 'art', 'code', 'making'];
+
+// Separate Flickr pieces from others
+const flickrPieces = pieces.filter(p => p.data.tags?.includes('flickr'));
+const otherPieces = pieces.filter(p => !p.data.tags?.includes('flickr'));
 ---
 
 <Base title="Gallery" description="Finished works and pieces">
   <h1>Gallery</h1>
   <p class="intro">Photographs, ceramics, paintings, drawings, and finished works.</p>
 
-  {pieces.length > 0 ? (
+  {flickrPieces.length > 0 && (
     <div class="gallery">
-      {categories.map(cat => {
-        const catPieces = pieces.filter(p => p.data.category === cat);
-        return catPieces.length > 0 && (
+      <h2 class="collection-title">Selection from my Flickr Days</h2>
+      <p class="collection-link"><a href="/projects/flickr-selection.md">View project details →</a></p>
+      {subcategories.map(({ tag, label }) => {
+        const tagPieces = flickrPieces.filter(p => p.data.tags?.includes(tag));
+        return tagPieces.length > 0 && (
           <section>
-            <h2>{cat}</h2>
+            <h3>{label}</h3>
             <div class="grid">
-              {catPieces.map(piece => (
+              {tagPieces.map(piece => (
                 <a href={`/pieces/${piece.id}`} class="card">
                   {piece.data.image && (
                     <img src={piece.data.image} alt={piece.data.title} loading="lazy" />
                   )}
                   <div class="info">
-                    <h3>{piece.data.title}</h3>
+                    <h4>{piece.data.title}</h4>
                     {piece.data.medium && <p class="medium">{piece.data.medium}</p>}
                   </div>
                 </a>
@@ -36,7 +54,35 @@ const categories = ['photography', 'ceramics', 'art', 'code', 'making'];
         );
       })}
     </div>
-  ) : (
+  )}
+
+  {otherPieces.length > 0 && (
+    <div class="gallery">
+      {mainCategories.map(cat => {
+        const catPieces = otherPieces.filter(p => p.data.category === cat);
+        return catPieces.length > 0 && (
+          <section>
+            <h3>{cat}</h3>
+            <div class="grid">
+              {catPieces.map(piece => (
+                <a href={`/pieces/${piece.id}`} class="card">
+                  {piece.data.image && (
+                    <img src={piece.data.image} alt={piece.data.title} loading="lazy" />
+                  )}
+                  <div class="info">
+                    <h4>{piece.data.title}</h4>
+                    {piece.data.medium && <p class="medium">{piece.data.medium}</p>}
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  )}
+
+  {pieces.length === 0 && (
     <p class="empty">No pieces yet. Check back soon.</p>
   )}
 </Base>
@@ -51,11 +97,24 @@ const categories = ['photography', 'ceramics', 'art', 'code', 'making'];
     margin-bottom: 2rem;
   }
 
+  .gallery {
+    margin-bottom: 3rem;
+  }
+
+  .collection-title {
+    font-size: 1.5rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .collection-link {
+    margin-bottom: 2rem;
+  }
+
   section {
     margin-bottom: 2.5rem;
   }
 
-  h2 {
+  h3 {
     font-size: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
