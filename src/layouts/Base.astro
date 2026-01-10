@@ -41,24 +41,18 @@ const { title, description = "Creative work and research by Casey" } = Astro.pro
 
 <style is:global>
   :root {
-    --color-bg: #fafafa;
-    --color-text: #1a1a1a;
-    --color-text-muted: #666;
-    --color-accent: #2563eb;
-    --color-border: #e5e5e5;
-    --font-sans: system-ui, -apple-system, sans-serif;
-    --font-mono: 'SF Mono', Consolas, monospace;
-    --max-width: 65rem;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --color-bg: #1a1a1a;
-      --color-text: #e5e5e5;
-      --color-text-muted: #999;
-      --color-accent: #60a5fa;
-      --color-border: #333;
-    }
+    --color-bg: #ffffff;
+    --color-text: #000000;
+    --color-text-muted: #555555;
+    --color-text-light: #888888;
+    --color-accent: #000000;
+    --color-accent-hover: #333333;
+    --color-border: #e0e0e0;
+    --color-border-dark: #cccccc;
+    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', Monaco, Consolas, monospace;
+    --max-width: 68rem;
+    --spacing-unit: 1rem;
   }
 
   * {
@@ -67,35 +61,55 @@ const { title, description = "Creative work and research by Casey" } = Astro.pro
     padding: 0;
   }
 
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
     font-family: var(--font-sans);
     background: var(--color-bg);
     color: var(--color-text);
-    line-height: 1.6;
+    line-height: 1.65;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    font-weight: 300;
+    letter-spacing: 0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
   }
 
   a {
     color: var(--color-accent);
     text-decoration: none;
+    transition: color 0.15s ease;
   }
 
   a:hover {
-    text-decoration: underline;
+    color: var(--color-accent-hover);
   }
 
   img {
     max-width: 100%;
     height: auto;
   }
+
+  ::selection {
+    background: #000000;
+    color: #ffffff;
+  }
 </style>
 
 <style>
   header {
     border-bottom: 1px solid var(--color-border);
-    padding: 1rem;
+    padding: 1.5rem 2rem;
   }
 
   nav {
@@ -105,26 +119,36 @@ const { title, description = "Creative work and research by Casey" } = Astro.pro
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
   .site-title {
-    font-weight: 700;
-    font-size: 1.25rem;
+    font-weight: 500;
+    font-size: 1.125rem;
+    color: var(--color-text);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .site-title:hover {
     color: var(--color-text);
   }
 
   nav ul {
     display: flex;
-    gap: 1.5rem;
+    gap: 2rem;
     list-style: none;
   }
 
-  nav a {
+  nav ul a {
     color: var(--color-text-muted);
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
   }
 
-  nav a:hover {
+  nav ul a:hover {
     color: var(--color-text);
   }
 
@@ -132,15 +156,16 @@ const { title, description = "Creative work and research by Casey" } = Astro.pro
     flex: 1;
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 2rem 1rem;
+    padding: 3rem 2rem;
     width: 100%;
   }
 
   footer {
     border-top: 1px solid var(--color-border);
-    padding: 2rem 1rem;
+    padding: 2.5rem 2rem;
     text-align: center;
-    color: var(--color-text-muted);
-    font-size: 0.875rem;
+    color: var(--color-text-light);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
   }
 </style>
