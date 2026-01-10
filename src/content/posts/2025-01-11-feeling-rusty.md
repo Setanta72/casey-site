@@ -2,6 +2,7 @@
 title: "Feeling Rusty?"
 date: 2025-01-11
 tags: [design]
+image: /images/wordpress/controler_decal3ao.png
 ---
 
 ![](/images/wordpress/controler_decal3ao.png)

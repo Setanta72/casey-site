@@ -2,6 +2,7 @@
 title: "Qualitative Analysis in Obsidian"
 date: 2023-04-16
 tags: [obsidian, research]
+image: /images/wordpress/untitled-2.png
 ---
 
 ## Qualitative analysis in Obsidian: First pass coding

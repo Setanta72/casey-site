@@ -3,6 +3,7 @@ title: "Building a New Home"
 description: "Why I'm moving away from WordPress and building something better"
 date: 2025-01-10
 tags: [meta, making]
+image: /images/placeholder.svg
 ---
 
 After years of scattered content across various platforms, I'm consolidating everything here.

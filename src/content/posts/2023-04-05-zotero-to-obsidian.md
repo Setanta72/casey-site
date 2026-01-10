@@ -2,6 +2,7 @@
 title: "Zotero to Obsidian"
 date: 2023-04-05
 tags: [notes, obsidian, research, zotero]
+image: /images/placeholder.svg
 ---
 
 ## Getting Zotero and Obsidian really working well together

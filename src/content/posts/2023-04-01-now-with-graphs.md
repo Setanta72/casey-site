@@ -2,6 +2,7 @@
 title: "Now with graphs!"
 date: 2023-04-01
 tags: [ai, education]
+image: /images/wordpress/screenshot-2023-04-01-at-22.02.43.png
 ---
 
 ## Project planning with GPT-4

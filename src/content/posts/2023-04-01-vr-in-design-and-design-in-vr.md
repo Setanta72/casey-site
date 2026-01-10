@@ -2,6 +2,7 @@
 title: "VR in design and design in VR"
 date: 2023-04-01
 tags: [ai, MetaQuest, research, vr]
+image: /images/wordpress/screenshot-2023-04-01-at-22.37.21.png
 ---
 
 ### I am speaking to you now from inside the meta-verse

@@ -1,6 +1,7 @@
 ---
 title: "Qualitative analysis with Jupyter"
 date: 2023-05-21
+image: /images/wordpress/challange_cloud.png
 ---
 
 ### Using Jupyter notebooks to perform qualitative analysis  (or at least the data visualisation element)

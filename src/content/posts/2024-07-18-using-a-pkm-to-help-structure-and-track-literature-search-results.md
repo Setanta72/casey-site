@@ -2,6 +2,7 @@
 title: "Using a PKM to help structure and track literature search results."
 date: 2024-07-18
 draft: true
+image: /images/wordpress/screenshot-2024-03-28-at-17.26.46.png
 ---
 
 ##  Background

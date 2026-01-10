@@ -2,6 +2,7 @@
 title: "Building a Feature-Rich Markdown Editor with a Single HTML File"
 date: 2025-02-27
 tags: [ai, javascript, programming, technology, web-development]
+image: /images/wordpress/screenshot-2025-02-27-at-21.26.14.png
 ---
 
 ## I think it’s called Vibe Coding?

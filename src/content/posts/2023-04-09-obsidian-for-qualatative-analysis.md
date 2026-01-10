@@ -2,6 +2,7 @@
 title: "Obsidian for Qualatative Analysis"
 date: 2023-04-09
 tags: [ai, obsidian, qual, research]
+image: /images/wordpress/screenshot-2023-04-08-at-23.51.01.png
 ---
 
 ## Qualitative Analysis

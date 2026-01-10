@@ -2,6 +2,7 @@
 title: "What the thunder said"
 date: 2023-03-26
 tags: [ai, design, education, research]
+image: /images/wordpress/screenshot-2023-03-26-at-20.10.01.png
 ---
 
 ![](/images/wordpress/screenshot-2023-03-26-at-20.10.01.png)*This is a cube built by an AI*

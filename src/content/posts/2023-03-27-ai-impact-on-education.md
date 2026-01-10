@@ -2,6 +2,7 @@
 title: "AI impact on Education"
 date: 2023-03-27
 tags: [design, education, ai, research]
+image: /images/wordpress/brianp_pump_bottle_with_brush_attachment_for_cleaning_dirty_boo_e47feb53-f13a-44bb-b987-d27d46ab8f1f-2.png
 ---
 
 ![](/images/wordpress/brianp_pump_bottle_with_brush_attachment_for_cleaning_dirty_boo_e47feb53-f13a-44bb-b987-d27d46ab8f1f-2.png)

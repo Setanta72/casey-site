@@ -1,6 +1,7 @@
 ---
 title: "Playing Tag! Extending Obsidians capability to analyse tags with python"
 date: 2023-05-21
+image: /images/placeholder.svg
 ---
 
 > Icon or eyesore? 

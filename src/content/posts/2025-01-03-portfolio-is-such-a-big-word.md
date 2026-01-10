@@ -2,6 +2,7 @@
 title: "Portfolio is such a big word"
 date: 2025-01-03
 tags: [design, education]
+image: /images/wordpress/draggedimage.png
 ---
 
 ![](/images/wordpress/draggedimage.png)

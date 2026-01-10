@@ -2,6 +2,7 @@
 title: "ChatGPT Ate My Homework"
 date: 2024-03-06
 tags: [ai]
+image: /images/wordpress/draggedimage.png
 ---
 
 ![](/images/wordpress/draggedimage.png)

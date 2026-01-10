@@ -2,6 +2,7 @@
 title: "Building a Virtual Studio"
 date: 2023-04-06
 tags: [design, education, MetaQuest, research, vr]
+image: /images/wordpress/4db84236-fef1-4247-bf4e-4b789be78620_1_105_c.jpeg
 ---
 
 ## Scan what you have
