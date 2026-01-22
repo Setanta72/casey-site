@@ -24,12 +24,26 @@ const categories = ['photography', 'ceramics', 'art', 'code', 'making', 'researc
         return catProjects.length > 0 && (
           <section>
             <h2>{cat}</h2>
-            <div class="grid">
+            <div class="project-list">
               {catProjects.map(project => (
-                <a href={`/projects/${project.id}`} class="card" data-status={project.data.status}>
-                  <span class="status">{project.data.status}</span>
-                  <h3>{project.data.title}</h3>
-                  {project.data.description && <p>{project.data.description}</p>}
+                <a href={`/projects/${project.id}`} class="project-card" data-status={project.data.status}>
+                  <div class="thumbnail">
+                    <img
+                      src={project.data.image || '/images/placeholder.svg'}
+                      alt=""
+                      loading="lazy"
+                    />
+                  </div>
+                  <div class="content">
+                    <span class="status">{project.data.status}</span>
+                    <h3>{project.data.title}</h3>
+                    {project.data.description && <p>{project.data.description}</p>}
+                    {project.data.tags && project.data.tags.length > 0 && (
+                      <div class="tags">
+                        {project.data.tags.slice(0, 3).map(tag => <span class="tag">{tag}</span>)}
+                      </div>
+                    )}
+                  </div>
                 </a>
               ))}
             </div>
@@ -44,71 +58,122 @@ const categories = ['photography', 'ceramics', 'art', 'code', 'making', 'researc
 
 <style>
   h1 {
-    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
   }
 
   .intro {
     color: var(--color-text-muted);
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    font-weight: 300;
   }
 
   section {
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
   }
 
   h2 {
-    font-size: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.1em;
     color: var(--color-text-muted);
-    margin-bottom: 1rem;
+    margin-bottom: 1.25rem;
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
-  .card {
-    display: block;
-    padding: 1.25rem;
+  .project-card {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
     border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
+    padding: 1.25rem;
     color: var(--color-text);
-    transition: border-color 0.2s;
+    transition: border-color 0.2s ease;
   }
 
-  .card:hover {
-    border-color: var(--color-accent);
+  .project-card:hover {
+    border-color: var(--color-text);
     text-decoration: none;
   }
 
-  .card[data-status="active"] {
-    border-left: 3px solid var(--color-accent);
+  .project-card[data-status="active"] {
+    border-left: 3px solid var(--color-text);
+  }
+
+  .thumbnail {
+    flex-shrink: 0;
+    width: 120px;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+  }
+
+  .project-card:hover .thumbnail img {
+    opacity: 0.9;
+  }
+
+  .content {
+    flex: 1;
+    min-width: 0;
   }
 
   .status {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--color-text-light);
     letter-spacing: 0.05em;
   }
 
-  .card h3 {
-    font-size: 1.125rem;
-    margin: 0.25rem 0;
+  .project-card[data-status="active"] .status {
+    color: var(--color-text);
   }
 
-  .card p {
-    font-size: 0.875rem;
+  h3 {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0.5rem 0;
+    line-height: 1.4;
+  }
+
+  .project-card p {
+    font-size: 0.85rem;
     color: var(--color-text-muted);
     margin: 0;
+    line-height: 1.5;
+  }
+
+  .tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .empty {
     color: var(--color-text-muted);
     text-align: center;
-    padding: 3rem 0;
+    padding: 4rem 0;
   }
 </style>
