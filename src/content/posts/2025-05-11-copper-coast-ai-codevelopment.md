@@ -1,11 +1,8 @@
 ---
-title: "2025 05 11 Copper Coast Ai Codevelopment"
-date: 2025-05-13 09:49:51 +0100+0100 # Generates date, time, and timezone offset (e.g., +01:00)
-categories: null
-tags: null
-author: "Brian P. Casey" # Or your preferred author name
-published: true # Set to false to keep it as a draft
-description: ""
+title: "Copper Coast: AI Co-development Case Study"
+date: 2025-05-11
+tags: [research]
+description: "Documenting the development of a ceramics showcase website through human-AI collaboration"
 ---
 The creation of a compelling online presence for artisans often requires a blend of aesthetic sensibility and technical execution. This post documents the development of the "Copper Coast Ceramics" single-page website, a project that exemplifies an iterative collaboration between human direction and multiple Artificial Intelligence (AI) systems. It underscores how AI tools like GPT-4o for image generation and Gemini for web development can be orchestrated to produce refined digital artifacts, particularly when leveraging previously validated components from prior AI interactions to ensure stability and accelerate progress.
 
