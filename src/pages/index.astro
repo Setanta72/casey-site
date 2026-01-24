@@ -37,21 +37,6 @@ const recentPieces = (await getCollection('pieces'))
     </section>
   )}
 
-  {recentPieces.length > 0 && (
-    <section class="section">
-      <h2>Recent Work</h2>
-      <div class="grid">
-        {recentPieces.map(piece => (
-          <a href={`/pieces/${piece.id}`} class="card">
-            <span class="category">{piece.data.category}</span>
-            <h3>{piece.data.title}</h3>
-          </a>
-        ))}
-      </div>
-      <p class="more"><a href="/pieces">View gallery &rarr;</a></p>
-    </section>
-  )}
-
   {recentPosts.length > 0 && (
     <section class="section">
       <h2>Recent Writing</h2>
@@ -66,6 +51,21 @@ const recentPieces = (await getCollection('pieces'))
         ))}
       </ul>
       <p class="more"><a href="/posts">View all posts &rarr;</a></p>
+    </section>
+  )}
+
+  {recentPieces.length > 0 && (
+    <section class="section">
+      <h2>Recent Work</h2>
+      <div class="grid">
+        {recentPieces.map(piece => (
+          <a href={`/pieces/${piece.id}`} class="card">
+            <span class="category">{piece.data.category}</span>
+            <h3>{piece.data.title}</h3>
+          </a>
+        ))}
+      </div>
+      <p class="more"><a href="/pieces">View gallery &rarr;</a></p>
     </section>
   )}
 
