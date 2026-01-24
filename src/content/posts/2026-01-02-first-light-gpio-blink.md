@@ -1,9 +1,14 @@
 ---
-title: "First Light: How much can you learn from one blinking red light?"
-date: 2026-01-02
-categories: [pi-sandbox, physical-computing]
-tags: [research]
-description: ""
+title: 'First Light: How much can you learn from one blinking red light?'
+date: '2026-01-02T00:00:00.000Z'
+categories:
+  - pi-sandbox
+  - physical-computing
+tags:
+  - research
+description: >-
+  AI generated report on my work recapping on my python and physical computing
+  skills
 ---
 
 There's something about using a computer programme to effect something in the physical world, even if its just a blinking LED. I think its the fundamental attraction of physical computing and the energy behind all those coder-dojo builds.Its the  "Hello World" of physical computing - proof that your code has reached out into the real world and made something happen.
