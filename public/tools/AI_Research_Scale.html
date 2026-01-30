@@ -1,0 +1,2774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Usage in PhD Research: A Framework for Decision-Making</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FAFAF8;
+            --color-paper: #FFFFFF;
+            --color-text: #2D2D2D;
+            --color-text-muted: #6B6B6B;
+            --color-border: #E5E5E0;
+            --color-accent: #1E3A5F;
+            --color-accent-light: #2E5A8F;
+            
+            --level-1: #1B4332;
+            --level-1-bg: #D8F3DC;
+            --level-2: #2D6A4F;
+            --level-2-bg: #B7E4C7;
+            --level-3: #7C5E10;
+            --level-3-bg: #FEF3C7;
+            --level-4: #9A3412;
+            --level-4-bg: #FED7AA;
+            --level-5: #7F1D1D;
+            --level-5-bg: #FECACA;
+            
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+            
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+        
+        /* Header */
+        header {
+            background: var(--color-accent);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.08) 0%, transparent 40%);
+            pointer-events: none;
+        }
+        
+        header h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        /* Navigation tabs */
+        .nav-tabs {
+            background: var(--color-paper);
+            border-bottom: 1px solid var(--color-border);
+            padding: 0 2rem;
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nav-tab {
+            padding: 1rem 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        
+        .nav-tab:hover {
+            color: var(--color-accent);
+            background: rgba(30, 58, 95, 0.05);
+        }
+        
+        .nav-tab.active {
+            color: var(--color-accent);
+            border-bottom-color: var(--color-accent);
+        }
+        
+        /* Main content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Rubric section */
+        .rubric-container {
+            background: var(--color-paper);
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+        
+        .rubric-container h2 {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+        
+        .rubric-intro {
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            max-width: 800px;
+        }
+        
+        .rubric-grid {
+            display: grid;
+            gap: 1rem;
+        }
+        
+        .rubric-level {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .rubric-level:hover {
+            transform: translateX(4px);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .level-badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        
+        .level-1 .level-badge { background: var(--level-1-bg); color: var(--level-1); }
+        .level-2 .level-badge { background: var(--level-2-bg); color: var(--level-2); }
+        .level-3 .level-badge { background: var(--level-3-bg); color: var(--level-3); }
+        .level-4 .level-badge { background: var(--level-4-bg); color: var(--level-4); }
+        .level-5 .level-badge { background: var(--level-5-bg); color: var(--level-5); }
+        
+        .level-content h3 {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .level-1 h3 { color: var(--level-1); }
+        .level-2 h3 { color: var(--level-2); }
+        .level-3 h3 { color: var(--level-3); }
+        .level-4 h3 { color: var(--level-4); }
+        .level-5 h3 { color: var(--level-5); }
+        
+        .level-content p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+        
+        .level-content .keywords {
+            margin-top: 0.75rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .keyword {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .level-1 .keyword { background: var(--level-1-bg); color: var(--level-1); }
+        .level-2 .keyword { background: var(--level-2-bg); color: var(--level-2); }
+        .level-3 .keyword { background: var(--level-3-bg); color: var(--level-3); }
+        .level-4 .keyword { background: var(--level-4-bg); color: var(--level-4); }
+        .level-5 .keyword { background: var(--level-5-bg); color: var(--level-5); }
+        
+        /* Phase sections */
+        .phase-card {
+            background: var(--color-paper);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+        
+        .phase-header {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .phase-header:hover {
+            filter: brightness(1.1);
+        }
+        
+        .phase-header h2 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .phase-header .phase-number {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .phase-toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .phase-card.expanded .phase-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .phase-description {
+            padding: 1rem 2rem;
+            background: rgba(30, 58, 95, 0.03);
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            font-style: italic;
+        }
+        
+        .phase-content {
+            display: none;
+            padding: 1.5rem 2rem;
+        }
+        
+        .phase-card.expanded .phase-content {
+            display: block;
+        }
+        
+        /* Subphase */
+        .subphase {
+            margin-bottom: 2rem;
+        }
+        
+        .subphase:last-child {
+            margin-bottom: 0;
+        }
+        
+        .subphase-title {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--color-border);
+        }
+        
+        /* Task items */
+        .task-item {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            overflow: hidden;
+            transition: box-shadow 0.2s ease;
+        }
+        
+        .task-item:hover {
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .task-header {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg);
+            transition: background 0.2s ease;
+        }
+        
+        .task-header:hover {
+            background: #F0F0EC;
+        }
+        
+        .task-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+            flex: 1;
+            padding-right: 1rem;
+        }
+        
+        .task-toggle {
+            color: var(--color-text-muted);
+            font-size: 1.25rem;
+            transition: transform 0.2s ease;
+        }
+        
+        .task-item.expanded .task-toggle {
+            transform: rotate(45deg);
+        }
+        
+        .task-content {
+            display: none;
+            padding: 1.25rem;
+            background: white;
+            border-top: 1px solid var(--color-border);
+        }
+        
+        .task-item.expanded .task-content {
+            display: block;
+        }
+        
+        /* AI Usage levels in tasks */
+        .usage-level {
+            display: flex;
+            gap: 1rem;
+            padding: 0.875rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            align-items: flex-start;
+        }
+        
+        .usage-level:last-child {
+            margin-bottom: 0;
+        }
+        
+        .usage-level.level-1 { background: var(--level-1-bg); }
+        .usage-level.level-2 { background: var(--level-2-bg); }
+        .usage-level.level-3 { background: var(--level-3-bg); }
+        .usage-level.level-4 { background: var(--level-4-bg); }
+        .usage-level.level-5 { background: var(--level-5-bg); }
+        
+        .usage-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            background: white;
+        }
+        
+        .level-1 .usage-number { color: var(--level-1); }
+        .level-2 .usage-number { color: var(--level-2); }
+        .level-3 .usage-number { color: var(--level-3); }
+        .level-4 .usage-number { color: var(--level-4); }
+        .level-5 .usage-number { color: var(--level-5); }
+        
+        .usage-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            flex: 1;
+        }
+        
+        .level-1 .usage-text { color: var(--level-1); }
+        .level-2 .usage-text { color: var(--level-2); }
+        .level-3 .usage-text { color: var(--level-3); }
+        .level-4 .usage-text { color: var(--level-4); }
+        .level-5 .usage-text { color: var(--level-5); }
+        
+        .na-note {
+            font-style: italic;
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            padding: 0.75rem 1rem;
+            background: var(--color-bg);
+            border-radius: 6px;
+            border-left: 3px solid var(--color-border);
+        }
+        
+        /* Considerations section */
+        .considerations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .consideration-card {
+            background: var(--color-paper);
+            border-radius: 12px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+        
+        .consideration-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+        
+        .consideration-card p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .consideration-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .consideration-card li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+            font-size: 0.9rem;
+            color: var(--color-text);
+        }
+        
+        .consideration-card li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: var(--color-accent);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--color-border);
+            margin-top: 3rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .nav-tabs {
+                padding: 0 1rem;
+            }
+            
+            .nav-tab {
+                padding: 0.875rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+            
+            .rubric-container {
+                padding: 1.5rem;
+            }
+            
+            .rubric-level {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .level-badge {
+                width: 50px;
+                height: 50px;
+                font-size: 1.25rem;
+            }
+            
+            .phase-header {
+                padding: 1.25rem 1.5rem;
+            }
+            
+            .phase-content {
+                padding: 1rem;
+            }
+            
+            .usage-level {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Usage in PhD Research</h1>
+        <p>A framework for research teams to evaluate appropriate levels of AI assistance across the doctoral research lifecycle</p>
+    </header>
+    
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-section="rubric">Usage Rubric</button>
+        <button class="nav-tab" data-section="phase1">Phase 1: Orientation</button>
+        <button class="nav-tab" data-section="phase2">Phase 2: Planning & Design</button>
+        <button class="nav-tab" data-section="phase3">Phase 3: Data Collection</button>
+        <button class="nav-tab" data-section="phase4">Phase 4: Analysis</button>
+        <button class="nav-tab" data-section="phase5">Phase 5: Writing</button>
+        <button class="nav-tab" data-section="phase6">Phase 6: Dissemination</button>
+        <button class="nav-tab" data-section="crosscutting">Cross-cutting</button>
+        <button class="nav-tab" data-section="considerations">Considerations</button>
+    </nav>
+    
+    <main>
+        <!-- Rubric Section -->
+        <section id="rubric" class="section active">
+            <div class="rubric-container">
+                <h2>AI Usage Level Rubric</h2>
+                <p class="rubric-intro">
+                    This rubric defines five levels of AI involvement in research tasks, from no AI usage to complete delegation. 
+                    Research teams should use this framework to discuss and establish appropriate boundaries for their specific context, 
+                    considering factors such as disciplinary norms, methodological requirements, and the nature of the doctoral contribution.
+                </p>
+                
+                <div class="rubric-grid">
+                    <div class="rubric-level level-1">
+                        <div class="level-badge">1</div>
+                        <div class="level-content">
+                            <h3>No AI Usage</h3>
+                            <p>The researcher completes the task entirely independently without any AI assistance. 
+                               This is appropriate for tasks where unassisted human performance is essential to the 
+                               integrity of the research or the development of the researcher, or where AI involvement 
+                               would be inappropriate or impossible.</p>
+                            <div class="keywords">
+                                <span class="keyword">Human-only</span>
+                                <span class="keyword">Unassisted</span>
+                                <span class="keyword">Independent</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rubric-level level-2">
+                        <div class="level-badge">2</div>
+                        <div class="level-content">
+                            <h3>Light Assistance</h3>
+                            <p>AI serves as a reference tool or provides minor support. The researcher maintains 
+                               full intellectual ownership and control, using AI only for explanations, clarifications, 
+                               checking work, or overcoming minor obstacles. The AI's role is comparable to consulting 
+                               a textbook or dictionary.</p>
+                            <div class="keywords">
+                                <span class="keyword">Reference</span>
+                                <span class="keyword">Clarification</span>
+                                <span class="keyword">Checking</span>
+                                <span class="keyword">Explanation</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rubric-level level-3">
+                        <div class="level-badge">3</div>
+                        <div class="level-content">
+                            <h3>Moderate Collaboration</h3>
+                            <p>AI provides substantive suggestions, structures, or content that the researcher 
+                               evaluates, adapts, and integrates. The researcher remains the decision-maker and 
+                               author, but AI contributions meaningfully shape the output. This is comparable to 
+                               receiving detailed feedback from a knowledgeable colleague.</p>
+                            <div class="keywords">
+                                <span class="keyword">Suggestions</span>
+                                <span class="keyword">Structuring</span>
+                                <span class="keyword">Feedback</span>
+                                <span class="keyword">Collaboration</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rubric-level level-4">
+                        <div class="level-badge">4</div>
+                        <div class="level-content">
+                            <h3>Substantial Delegation</h3>
+                            <p>AI produces significant portions of the work product, which the researcher reviews, 
+                               verifies, and takes responsibility for. The researcher's role shifts toward direction, 
+                               curation, and quality assurance rather than primary production. Intellectual ownership 
+                               becomes shared or ambiguous.</p>
+                            <div class="keywords">
+                                <span class="keyword">AI-generated</span>
+                                <span class="keyword">Human-reviewed</span>
+                                <span class="keyword">Curation</span>
+                                <span class="keyword">Verification</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="rubric-level level-5">
+                        <div class="level-badge">5</div>
+                        <div class="level-content">
+                            <h3>Full Offload</h3>
+                            <p>AI completes the task with minimal or no human input, verification, or intellectual 
+                               engagement. The researcher accepts AI outputs without substantive evaluation or 
+                               contribution. This level raises significant questions about authorship, learning, 
+                               and the integrity of the doctoral contribution.</p>
+                            <div class="keywords">
+                                <span class="keyword">Automated</span>
+                                <span class="keyword">Unverified</span>
+                                <span class="keyword">Hands-off</span>
+                                <span class="keyword">Delegated</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rubric-container">
+                <h2>How to Use This Framework</h2>
+                <p class="rubric-intro">
+                    This framework is designed to facilitate discussion within research teams about appropriate AI use. 
+                    It is not prescriptive—what is appropriate will vary by discipline, methodology, institution, and 
+                    the specific nature of the research.
+                </p>
+                <div class="considerations-grid">
+                    <div class="consideration-card">
+                        <h3>For Supervisors</h3>
+                        <p>Use this framework to:</p>
+                        <ul>
+                            <li>Establish clear expectations with students early</li>
+                            <li>Discuss AI use as part of regular supervision</li>
+                            <li>Identify tasks where AI assistance is encouraged vs. discouraged</li>
+                            <li>Consider disciplinary and methodological implications</li>
+                        </ul>
+                    </div>
+                    <div class="consideration-card">
+                        <h3>For Researchers</h3>
+                        <p>Use this framework to:</p>
+                        <ul>
+                            <li>Reflect on your current AI usage patterns</li>
+                            <li>Discuss boundaries proactively with supervisors</li>
+                            <li>Document AI use for transparency</li>
+                            <li>Ensure you are developing necessary skills</li>
+                        </ul>
+                    </div>
+                    <div class="consideration-card">
+                        <h3>For Institutions</h3>
+                        <p>Use this framework to:</p>
+                        <ul>
+                            <li>Develop discipline-specific guidance</li>
+                            <li>Inform policy development</li>
+                            <li>Support training and development programmes</li>
+                            <li>Address assessment and integrity concerns</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Phase 1: Orientation and Scoping -->
+        <section id="phase1" class="section">
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div>
+                        <div class="phase-number">Phase 1</div>
+                        <h2>Orientation and Scoping</h2>
+                    </div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">
+                    This initial phase establishes the intellectual foundations and direction of the project, including understanding 
+                    the research area, identifying gaps, and formulating research questions.
+                </div>
+                <div class="phase-content">
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Reviewing and understanding the inherited or initial research proposal</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Read and analyse the proposal independently without AI assistance</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to explain unfamiliar terminology or concepts in the proposal</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to summarise the proposal's key arguments and identify assumptions</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI critically analyse the proposal's strengths, weaknesses, and unstated implications</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Asking AI to produce a comprehensive critical evaluation with recommendations</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Reframing the research proposal to align with researcher's interests and perspective</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Develop reframing entirely through personal reflection and supervisor discussion</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI as a sounding board to articulate half-formed ideas</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to suggest angles or framings that connect the inherited proposal to the researcher's interests</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI draft alternative framings or revised problem statements</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Asking AI to rewrite the proposal from scratch based on stated interests</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Negotiating modifications to scope or direction with supervisors and funders</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Prepare for and conduct negotiations entirely independently</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to rehearse arguments or anticipate counterarguments</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Having AI draft talking points or a briefing document for meetings</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Asking AI to draft formal communications proposing changes</span>
+                            </div>
+                            <p class="na-note">Level 5 not applicable: negotiation inherently requires human participation and relationship management</p>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Conducting preliminary literature searches to map the field</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Conduct all searches manually using databases and citation tracking</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to suggest search terms or databases to try</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to identify key authors, papers, or debates in an area</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI produce annotated reading lists with summaries of each source</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Asking AI to produce a comprehensive map of the field with no human searching</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Identifying key theorists, debates, and schools of thought</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Identify these through independent reading and discussion with experts</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to explain the positions of specific theorists</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to outline major debates and where scholars are positioned within them</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI produce a detailed intellectual genealogy of the field</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Relying entirely on AI's characterisation of the field without independent reading</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Recognising gaps, contradictions, or underexplored areas in existing knowledge</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Identify gaps through independent critical reading and analysis</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to check whether a perceived gap is genuine or already addressed</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to identify commonly noted gaps in the literature</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI analyse a body of literature to surface contradictions and omissions</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Asking AI to identify the research gap for the project without researcher input</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Formulating or refining research questions or hypotheses</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Develop questions entirely through researcher reflection and supervisor discussion</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to check whether questions are clearly worded and appropriately scoped</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to suggest refinements or sub-questions</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI generate alternative formulations of the research question</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Asking AI to propose the research questions based on identified gaps</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Developing the theoretical or conceptual framework</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Develop framework through independent reading and intellectual work</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to explain theoretical concepts or compare frameworks</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to suggest which theories might be applicable to the research problem</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI draft a conceptual framework showing relationships between concepts</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Asking AI to select and fully articulate the theoretical framework for the study</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Identifying relevant disciplinary and interdisciplinary connections</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Identify connections through broad reading and discussion with scholars</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to explain how a concept is used differently across disciplines</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to identify adjacent fields that address similar questions</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI map interdisciplinary connections and suggest literatures to explore</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Relying on AI to determine which disciplines are relevant without researcher judgment</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Writing or substantially revising the formal research proposal</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Write the proposal entirely independently</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to proofread or improve clarity of prose</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Asking AI to suggest structural improvements or identify weak arguments</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Having AI draft sections of the proposal based on researcher notes</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">Asking AI to write the complete proposal from a brief description</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Presenting and defending the proposal at confirmation or upgrade reviews</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Prepare and deliver entirely independently</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to anticipate likely questions from reviewers</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Having AI help prepare responses to potential challenges</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Asking AI to draft the presentation script or slides</span>
+                            </div>
+                            <p class="na-note">Level 5 not applicable: presentation and defence require human presence and understanding</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Phase 2: Research Planning and Design -->
+        <section id="phase2" class="section">
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div>
+                        <div class="phase-number">Phase 2</div>
+                        <h2>Research Planning and Design</h2>
+                    </div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">
+                    This phase develops the practical and methodological architecture of the project. Note that ethics approval 
+                    often creates a chicken-and-egg situation: approval requires a finalised design, but design decisions 
+                    sometimes need to be tested in ways that would require approval.
+                </div>
+                <div class="phase-content">
+                    <div class="subphase">
+                        <h3 class="subphase-title">Research Planning</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Developing a multi-year project timeline with key milestones</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Develop timeline entirely based on own judgment and supervisor input</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check whether proposed timelines are realistic based on typical PhD patterns</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to suggest milestones commonly used in similar projects</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI draft a complete timeline based on project parameters</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Asking AI to produce the project plan with no researcher input on priorities or constraints</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Breaking the project into discrete work packages or task clusters</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Decompose work entirely through researcher analysis</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check whether task breakdown is logical and complete</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to suggest how similar projects typically decompose work</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI produce a full work breakdown structure from project description</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Relying entirely on AI-generated task structure without researcher validation</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Creating forecasts for each phase (time, resources, access requirements)</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Develop forecasts based on own experience and expert consultation</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to sanity-check time estimates</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI what resources are typically needed for specific methods</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI produce detailed resource forecasts for each phase</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Accepting AI forecasts without adjustment for local context or researcher circumstances</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Identifying dependencies between tasks</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Map dependencies through own analysis of project requirements</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check whether identified dependencies are complete</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to highlight dependencies commonly overlooked</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI map all dependencies and produce a critical path analysis</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Relying on AI to determine project sequencing entirely</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Building in contingency time for setbacks and iteration</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Plan contingencies based on own risk assessment</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to suggest what typically goes wrong in similar projects</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to recommend contingency allowances for different task types</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI produce a risk-adjusted timeline with built-in buffers</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Accepting AI contingency planning without researcher judgment about likely risks</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Planning for skills development and training needs</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Identify training needs through self-assessment and supervisor guidance</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain what skills are needed for specific methods</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to identify skill gaps based on project requirements</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI produce a personalised training plan</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Following AI training recommendations without considering existing competencies</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Research Design</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Selecting and justifying the overarching methodological approach</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Select methodology through independent study and expert guidance</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain different methodological traditions</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to compare approaches and their fit with research questions</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI recommend and justify a methodological approach</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Adopting AI's methodological recommendation without independent evaluation</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Designing data collection instruments</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Design instruments entirely based on methodological expertise</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check instrument wording for clarity or bias</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to suggest questions or items used in validated instruments</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI draft complete instruments based on research questions</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Using AI-generated instruments without researcher refinement or piloting</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Developing sampling or recruitment strategies</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Develop strategy based on methodological principles and local knowledge</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain different sampling approaches</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to suggest appropriate sample sizes or recruitment channels</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI design the complete sampling strategy</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Implementing AI sampling design without consideration of access realities</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Planning data management, storage, and security procedures</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Plan procedures based on institutional guidance and expert consultation</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain data management requirements and best practices</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to identify risks and suggest security measures</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI draft a complete data management plan</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Implementing AI data management plan without institutional consultation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Ethics and Approvals</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Identifying ethical considerations relevant to the research</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Identify considerations through ethical training and reflection</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain ethical principles applicable to research</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to identify ethical issues commonly arising in similar studies</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI produce a comprehensive ethical analysis of the project</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Relying on AI identification of ethical issues without researcher reflection</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Completing institutional ethics application forms</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Complete forms entirely based on own understanding</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to clarify what is being asked in form questions</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to suggest how to articulate ethical safeguards</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI draft responses to ethics application questions</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Submitting AI-drafted ethics application without researcher verification</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Preparing participant information sheets and consent forms</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Draft documents based on templates and ethical principles</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check readability and clarity of documents</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to suggest standard content for these documents</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI draft complete information sheets and consent forms</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Using AI-generated documents without checking accuracy or appropriateness</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Addressing data protection and GDPR requirements</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Address requirements through training and institutional support</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain data protection requirements</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to identify which requirements apply to the project</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI draft data protection documentation</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Implementing AI data protection advice without legal consultation</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Phase 3: Data Collection and Generation -->
+        <section id="phase3" class="section">
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div>
+                        <div class="phase-number">Phase 3</div>
+                        <h2>Data Collection and Generation</h2>
+                    </div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">
+                    The nature of this phase varies enormously by discipline but involves gathering the empirical material 
+                    that will form the basis of the contribution to knowledge.
+                </div>
+                <div class="phase-content">
+                    <div class="subphase">
+                        <h3 class="subphase-title">Preparation</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Procuring equipment, materials, or software</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Research options independently and consult with experts</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to compare options or explain specifications</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to recommend equipment for specific purposes</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI produce procurement specifications and supplier comparisons</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Purchasing based entirely on AI recommendations without verification</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Recruiting participants or securing access to sites and archives</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Conduct all recruitment and access negotiation personally</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to draft recruitment materials</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest recruitment strategies or access approaches</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to produce recruitment campaign content</span>
+                                </div>
+                                <p class="na-note">Level 5 not applicable: recruitment and access negotiation require human interaction and relationship-building</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Training in specific techniques or equipment operation</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Learn entirely through formal training and expert instruction</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain techniques or answer questions during learning</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Asking AI to create practice exercises or knowledge checks</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI serve as primary training resource</span>
+                                </div>
+                                <p class="na-note">Level 5 not applicable for hands-on skills; partial offload possible only for conceptual learning</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Active Data Collection</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Conducting laboratory experiments or computational simulations</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Conduct all experiments manually with full researcher control</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to monitor for anomalies or suggest parameter adjustments</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI automate routine aspects of experimental procedures</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to control experimental variables and make real-time decisions</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI conducting experiments autonomously without human oversight</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Carrying out interviews, focus groups, or ethnographic engagement</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Conduct all qualitative data collection personally</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to refine questions between interviews</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest follow-up probes based on participant responses</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Using AI to conduct structured interviews</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI conducting qualitative interviews without human interviewer</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Gathering archival, textual, or visual materials</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Locate and select all materials through independent research</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to help locate relevant materials in large archives</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI filter and prioritise materials based on relevance criteria</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to systematically extract materials meeting specified criteria</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI assembling the complete corpus without human selection</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Engaging in practice-based or creative research activities</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Conduct all creative work independently</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI as one tool among many in creative process</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Collaborating with AI as creative partner with shared authorship</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Having AI generate creative outputs that researcher curates or refines</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI producing creative work with researcher claiming authorship</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Data Management</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Transcribing audio or video recordings</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Transcribe all recordings manually</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI transcription with human verification of accuracy</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Using AI transcription with spot-checking</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Using AI transcription with minimal review</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">Using AI transcription without any verification</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Anonymising or pseudonymising data as required</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Anonymise all data manually with careful checking</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check anonymisation completeness</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI identify potentially identifying information</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to perform anonymisation automatically</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI anonymising data without human verification of adequacy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Phase 4: Analysis and Interpretation -->
+        <section id="phase4" class="section">
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div>
+                        <div class="phase-number">Phase 4</div>
+                        <h2>Analysis and Interpretation</h2>
+                    </div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">
+                    This phase transforms raw data into meaningful findings and situates them within broader scholarly conversations.
+                </div>
+                <div class="phase-content">
+                    <div class="subphase">
+                        <h3 class="subphase-title">Data Processing</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Cleaning and preparing datasets for analysis</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Clean all data manually with full documentation</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to identify data quality issues</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest cleaning procedures</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to clean data according to specified rules</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI cleaning data autonomously without researcher verification</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Coding qualitative data using predetermined or emergent approaches</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Code all data manually through close reading</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check coding consistency</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest codes for difficult passages</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to code data with researcher reviewing a sample</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI coding all data without systematic human verification</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Analytical Work</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Applying statistical techniques appropriate to the data and questions</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Conduct all statistical analysis independently</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to explain statistical procedures</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI check statistical code or suggest appropriate tests</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to conduct statistical analysis</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI performing all statistical analysis without researcher understanding</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Conducting thematic, discourse, narrative, or other qualitative analyses</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Conduct all qualitative analysis through close engagement with data</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to help articulate emerging themes</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI identify patterns across coded data</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to conduct systematic analysis and produce findings</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI performing qualitative analysis without researcher interpretive engagement</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Iterating between data and emerging interpretations</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Develop all interpretations through researcher reflection</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to test interpretations against evidence</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest alternative interpretations</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to develop interpretations from data</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI generating interpretations without researcher intellectual engagement</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Interpretation and Synthesis</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Interpreting findings in relation to the original research questions</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Develop interpretation entirely through researcher analysis</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to check whether findings address questions</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest interpretive connections</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft interpretive account</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI producing interpretation without researcher intellectual authorship</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Developing explanatory accounts or theoretical contributions</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Develop theoretical contributions through independent intellectual work</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI as sounding board for emerging explanations</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI articulate or refine explanatory accounts</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to develop theoretical contribution</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI producing theoretical contribution without researcher intellectual ownership</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Acknowledging limitations and alternative interpretations</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Identify limitations through critical self-reflection</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to identify potential limitations</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI generate alternative interpretations</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to produce comprehensive limitations discussion</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI identifying limitations without researcher critical reflection</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Phase 5: Writing and Synthesis -->
+        <section id="phase5" class="section">
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div>
+                        <div class="phase-number">Phase 5</div>
+                        <h2>Writing and Synthesis</h2>
+                    </div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">
+                    The researcher transforms analysis into a coherent, scholarly document that makes an original contribution to knowledge.
+                </div>
+                <div class="phase-content">
+                    <div class="subphase">
+                        <h3 class="subphase-title">Drafting</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Writing initial drafts of individual chapters or sections</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Write all drafts independently</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to overcome writer's block or clarify expression</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI expand bullet points into prose</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft sections based on notes and findings</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI writing chapters without researcher drafting</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Drafting the literature review and situating the study in context</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Write literature review entirely based on own reading</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to improve flow and clarity</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI help synthesise across sources</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft literature review from annotated bibliography</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI producing literature review without researcher reading of sources</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Developing discussion chapters that interpret and synthesise</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Write discussion entirely through own intellectual engagement</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to strengthen argumentation</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest interpretive connections</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft discussion chapters</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI producing discussion without researcher intellectual contribution</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Revision and Refinement</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Responding to supervisory feedback on drafts</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Address all feedback through own revision</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to clarify confusing feedback</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest how to address feedback</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to revise text based on feedback</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI implementing feedback without researcher engagement with critique</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Revising arguments for clarity, coherence, and strength</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Revise all arguments through own critical analysis</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to identify unclear passages</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest revisions to strengthen argument</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to revise argumentation throughout</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI revising arguments without researcher authorial control</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Finalisation</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Proofreading and copy-editing the complete document</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Proofread entirely manually</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to catch errors and typos</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI copy-edit for style and grammar</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to proofread and correct entire document</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI finalising text without human review</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Compiling bibliography and checking citation accuracy</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Compile and check bibliography entirely manually</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to identify formatting inconsistencies</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI check citations against sources</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to compile and verify bibliography</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI producing bibliography without human verification of accuracy</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Phase 6: Dissemination and Defence -->
+        <section id="phase6" class="section">
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div>
+                        <div class="phase-number">Phase 6</div>
+                        <h2>Dissemination and Defence</h2>
+                    </div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">
+                    The research is shared with scholarly communities and subjected to formal examination.
+                </div>
+                <div class="phase-content">
+                    <div class="subphase">
+                        <h3 class="subphase-title">Conference and Publication Activity</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Writing and submitting conference abstracts</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Write all abstracts independently</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to sharpen abstract language</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest abstract structure</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft abstract from paper</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI writing and submitting abstracts without researcher authorship</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Writing journal articles or book chapters derived from thesis</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Write all publications independently</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to adapt thesis prose for publication</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI restructure material for journal format</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft article from thesis content</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI producing publications without researcher authorship</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Navigating peer review and responding to reviewer comments</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Respond to all reviews independently</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to understand reviewer concerns</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest response strategies</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft response letter and revisions</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI managing peer review without researcher engagement with critique</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="subphase">
+                        <h3 class="subphase-title">Thesis Examination</h3>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Preparing for the viva voce examination</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Prepare entirely through own review and human mock vivas</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to identify likely areas of questioning</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI generate practice questions</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to conduct mock viva</span>
+                                </div>
+                                <p class="na-note">Level 5 not applicable: preparation must develop researcher's own understanding for the actual examination</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Attending and participating in the formal examination</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <p class="na-note">All levels above 1 not applicable: the viva examination requires unassisted human participation. 
+                                The researcher must be able to discuss and defend their work without AI assistance.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="task-item">
+                            <div class="task-header" onclick="toggleTask(this)">
+                                <span class="task-title">Completing required corrections or revisions post-viva</span>
+                                <span class="task-toggle">+</span>
+                            </div>
+                            <div class="task-content">
+                                <div class="usage-level level-1">
+                                    <span class="usage-number">1</span>
+                                    <span class="usage-text">Complete all corrections independently</span>
+                                </div>
+                                <div class="usage-level level-2">
+                                    <span class="usage-number">2</span>
+                                    <span class="usage-text">Using AI to clarify what corrections require</span>
+                                </div>
+                                <div class="usage-level level-3">
+                                    <span class="usage-number">3</span>
+                                    <span class="usage-text">Having AI suggest approaches to corrections</span>
+                                </div>
+                                <div class="usage-level level-4">
+                                    <span class="usage-number">4</span>
+                                    <span class="usage-text">Asking AI to draft corrections</span>
+                                </div>
+                                <div class="usage-level level-5">
+                                    <span class="usage-number">5</span>
+                                    <span class="usage-text">AI making corrections without researcher engagement</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Cross-cutting Activities -->
+        <section id="crosscutting" class="section">
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div>
+                        <div class="phase-number">Throughout</div>
+                        <h2>Cross-cutting Activities</h2>
+                    </div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">
+                    These activities occur throughout the PhD and support or intersect with all phases.
+                </div>
+                <div class="phase-content">
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Completing progress reports and annual reviews</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Write all reports based on own reflection</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to improve report clarity</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Having AI structure reports</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Asking AI to draft progress reports</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">AI writing reports without researcher reflection</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Undertaking required and elective training and skills development</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Learn entirely through formal courses and human instruction</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to supplement formal training</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Using AI as tutor for specific skills</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Using AI as primary learning resource</span>
+                            </div>
+                            <p class="na-note">Level 5 not applicable: skills require human development and cannot be fully offloaded</p>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Teaching, demonstrating, or other departmental duties</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Prepare and deliver teaching entirely independently</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to prepare teaching materials</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Having AI help design sessions</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Asking AI to produce teaching content</span>
+                            </div>
+                            <p class="na-note">Level 5 not applicable: teaching requires human presence and engagement with students</p>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Attending seminars, workshops, and reading groups</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Prepare and participate based on own reading</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to prepare for discussions</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Having AI summarise readings</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Relying on AI summaries rather than reading</span>
+                            </div>
+                            <p class="na-note">Level 5 not applicable: attendance and participation require human presence</p>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Networking and building scholarly relationships</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Build all relationships through personal engagement</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to draft initial communications</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Having AI research potential contacts</span>
+                            </div>
+                            <p class="na-note">Levels 4-5 not applicable: relationships require human cultivation and cannot be delegated</p>
+                        </div>
+                    </div>
+                    
+                    <div class="task-item">
+                        <div class="task-header" onclick="toggleTask(this)">
+                            <span class="task-title">Managing funding, budgets, and administrative requirements</span>
+                            <span class="task-toggle">+</span>
+                        </div>
+                        <div class="task-content">
+                            <div class="usage-level level-1">
+                                <span class="usage-number">1</span>
+                                <span class="usage-text">Manage all administration independently</span>
+                            </div>
+                            <div class="usage-level level-2">
+                                <span class="usage-number">2</span>
+                                <span class="usage-text">Using AI to track expenses or explain requirements</span>
+                            </div>
+                            <div class="usage-level level-3">
+                                <span class="usage-number">3</span>
+                                <span class="usage-text">Having AI prepare budget reports</span>
+                            </div>
+                            <div class="usage-level level-4">
+                                <span class="usage-number">4</span>
+                                <span class="usage-text">Asking AI to manage administrative tasks</span>
+                            </div>
+                            <div class="usage-level level-5">
+                                <span class="usage-number">5</span>
+                                <span class="usage-text">AI managing administration without researcher oversight</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Considerations Section -->
+        <section id="considerations" class="section">
+            <div class="rubric-container">
+                <h2>Factors Affecting Appropriate AI Usage</h2>
+                <p class="rubric-intro">
+                    What constitutes appropriate AI usage varies significantly based on context. Research teams should consider 
+                    these factors when establishing boundaries for their specific situation.
+                </p>
+                
+                <div class="considerations-grid">
+                    <div class="consideration-card">
+                        <h3>Disciplinary Norms</h3>
+                        <p>Different fields have different expectations about tools, authorship, and intellectual contribution.</p>
+                        <ul>
+                            <li>STEM fields may accept more computational assistance</li>
+                            <li>Humanities may emphasise individual interpretation</li>
+                            <li>Social sciences vary by methodological tradition</li>
+                            <li>Creative disciplines have unique questions about AI co-creation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="consideration-card">
+                        <h3>Methodological Paradigm</h3>
+                        <p>The epistemological foundations of the research affect what AI involvement means.</p>
+                        <ul>
+                            <li>Interpretive research may require human meaning-making</li>
+                            <li>Positivist research may accommodate more automation</li>
+                            <li>Critical approaches may require researcher reflexivity</li>
+                            <li>Mixed methods need consideration at each stage</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="consideration-card">
+                        <h3>Type of Doctoral Programme</h3>
+                        <p>The purpose and structure of the degree affects expectations.</p>
+                        <ul>
+                            <li>Traditional PhDs emphasise independent scholarship</li>
+                            <li>Professional doctorates may allow more practical AI use</li>
+                            <li>Practice-based doctorates raise unique questions</li>
+                            <li>Collaborative programmes may have different norms</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="consideration-card">
+                        <h3>Career Development</h3>
+                        <p>The PhD is a training programme, not just a research project.</p>
+                        <ul>
+                            <li>Which skills must the researcher develop?</li>
+                            <li>What competencies will future employers expect?</li>
+                            <li>How will AI proficiency itself be valued?</li>
+                            <li>What forms of expertise remain distinctly human?</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="consideration-card">
+                        <h3>Ethical Considerations</h3>
+                        <p>AI use raises specific ethical questions in research contexts.</p>
+                        <ul>
+                            <li>Transparency and disclosure requirements</li>
+                            <li>Data privacy when using cloud AI services</li>
+                            <li>Bias and fairness in AI-assisted analysis</li>
+                            <li>Environmental impact of AI computation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="consideration-card">
+                        <h3>Institutional Requirements</h3>
+                        <p>Universities and funders may have specific policies.</p>
+                        <ul>
+                            <li>Existing academic integrity policies</li>
+                            <li>Funder requirements for transparency</li>
+                            <li>Journal and publisher policies</li>
+                            <li>Professional body guidelines</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="rubric-container">
+                <h2>Questions for Research Teams</h2>
+                <p class="rubric-intro">
+                    Use these questions to guide discussions about AI usage in your specific research context.
+                </p>
+                
+                <div class="considerations-grid">
+                    <div class="consideration-card">
+                        <h3>About the Task</h3>
+                        <ul>
+                            <li>Is this task central to the doctoral contribution?</li>
+                            <li>Does it require skills the researcher must develop?</li>
+                            <li>Would AI assistance affect the validity of the research?</li>
+                            <li>Are there accuracy risks if AI makes errors?</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="consideration-card">
+                        <h3>About Transparency</h3>
+                        <ul>
+                            <li>How will AI use be documented and disclosed?</li>
+                            <li>What would examiners, reviewers, or employers expect?</li>
+                            <li>Does the researcher understand what the AI produced?</li>
+                            <li>Can they explain and defend all aspects of the work?</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="consideration-card">
+                        <h3>About Learning</h3>
+                        <ul>
+                            <li>What is the researcher missing by not doing this themselves?</li>
+                            <li>Will they need this skill in future roles?</li>
+                            <li>Is struggling with this task part of intellectual development?</li>
+                            <li>Could AI assistance prevent deeper understanding?</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>AI Usage in PhD Research: A Framework for Decision-Making</p>
+        <p>This document is intended as a discussion tool for research teams, not prescriptive policy.</p>
+    </footer>
+    
+    <script>
+        // Tab navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active class from all tabs and sections
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding section
+                this.classList.add('active');
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+        
+        // Phase accordion toggle
+        function togglePhase(header) {
+            const card = header.closest('.phase-card');
+            card.classList.toggle('expanded');
+        }
+        
+        // Task accordion toggle
+        function toggleTask(header) {
+            const item = header.closest('.task-item');
+            item.classList.toggle('expanded');
+        }
+        
+        // Expand all tasks in a phase when it opens
+        document.querySelectorAll('.phase-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const card = this.closest('.phase-card');
+                if (!card.classList.contains('expanded')) {
+                    // Collapse all tasks when phase closes
+                    card.querySelectorAll('.task-item').forEach(task => {
+                        task.classList.remove('expanded');
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
