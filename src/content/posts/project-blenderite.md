@@ -4,14 +4,14 @@ date: '2026-02-01'
 tags:
   - blender
 description: 'Building Blenderite: An Open-Source Product Visualisation Studio for Blender'
-image: /media/code/blenderite.png
+image: https://res.cloudinary.com/do7oi2ioy/image/upload/v1769967624/casey-site/casey-site/code/blenderite.jpg
 ---
 # Building Blenderite: An Open-Source Product Visualisation Studio for Blender
 
 *From Python script to Blender addon for design students*
 
 ---
-![Image](/media/code/blenderite.png)
+![Image](https://res.cloudinary.com/do7oi2ioy/image/upload/v1769967624/casey-site/casey-site/code/blenderite.jpg)
 
 ## The Problem
 
