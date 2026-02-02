@@ -13,6 +13,8 @@ Testing to see if the migration from browser based application to electron based
 Classic electron error of right click not working and the image preview didn't load.
 
 Markdown rendering does not appear to be working correctly. 
+*update* rendering now working. Right click not working yet. 
+Image loading works locally lets see if it posts.
 
 We've pushed to far and our dreams are china in our hands I fear. 
 
