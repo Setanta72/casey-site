@@ -22,4 +22,10 @@ Next lets see if it can push everything as desired
 
 **Update 2** Test 2a Spellchecker working. Nice!
 
+**Update 3 Mac test with two new images 
+
 ![Image](https://res.cloudinary.com/do7oi2ioy/image/upload/v1770043018/casey-site/casey-site/art/8289694084_428490c6f3_o.jpg)
+
+![Image](/media/uncategorized/8290756073_43fd880f51_o.jpg)
+
+![Image](/images/flickr-selection/last-light-on-a-great-day_11987103474_o.jpg)
