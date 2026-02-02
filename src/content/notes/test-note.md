@@ -5,6 +5,7 @@ category: code
 tags:
   - test
 ---
+![Image](/images/flickr-selection/another-new-old-camera_8414271233_o.jpg)
 # Testing
 
 Testing to see if the migration from browser based application to electron based application can work plus the migtation from Raspberry Pi to Mac. 
