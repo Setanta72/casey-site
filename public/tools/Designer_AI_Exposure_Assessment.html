@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer Functions: AI Exposure Assessment</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FAFAF8;
+            --color-paper: #FFFFFF;
+            --color-text: #2D2D2D;
+            --color-text-muted: #6B6B6B;
+            --color-border: #E5E5E0;
+            --color-accent: #1E3A5F;
+            --color-accent-light: #2E5A8F;
+
+            --level-5: #7F1D1D; --level-5-bg: #FECACA;
+            --level-4: #9A3412; --level-4-bg: #FED7AA;
+            --level-3: #7C5E10; --level-3-bg: #FEF3C7;
+            --level-2: #1D4ED8; --level-2-bg: #DBEAFE;
+            --level-1: #059669; --level-1-bg: #D1FAE5;
+            --level-0: #6B7280; --level-0-bg: #F3F4F6;
+
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Source Sans 3', -apple-system, sans-serif;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+            color: white;
+            padding: 2.5rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .nav-tabs {
+            background: var(--color-paper);
+            border-bottom: 1px solid var(--color-border);
+            padding: 0 1rem;
+            display: flex;
+            gap: 0;
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-tab {
+            padding: 1rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .nav-tab:hover { color: var(--color-accent); background: rgba(30, 58, 95, 0.05); }
+        .nav-tab.active { color: var(--color-accent); border-bottom-color: var(--color-accent); }
+
+        main { max-width: 1100px; margin: 0 auto; padding: 2rem; }
+
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .intro-container {
+            background: var(--color-paper);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .intro-container h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+
+        .intro-container h3 {
+            font-family: var(--font-serif);
+            font-size: 1.15rem;
+            margin: 1.5rem 0 0.75rem 0;
+            color: var(--color-accent);
+        }
+
+        .intro-container p {
+            color: var(--color-text);
+            margin-bottom: 0.75rem;
+            line-height: 1.7;
+        }
+
+        .intro-container .highlight-box {
+            background: var(--level-4-bg);
+            border-left: 4px solid var(--level-4);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .intro-container .highlight-box p {
+            margin-bottom: 0;
+            color: var(--color-text);
+            font-weight: 500;
+        }
+
+        .intro-container .uncertainty-box {
+            background: var(--level-2-bg);
+            border-left: 4px solid var(--level-2);
+            padding: 1rem 1.25rem;
+            margin: 1.25rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .intro-container .uncertainty-box p {
+            margin-bottom: 0;
+            color: var(--color-text);
+        }
+
+        .theory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .theory-card {
+            background: var(--color-bg);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .theory-card strong {
+            color: var(--color-accent);
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .theory-card span {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .rubric-container {
+            background: var(--color-paper);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 2rem;
+        }
+
+        .rubric-container h2 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+
+        .rubric-intro { color: var(--color-text-muted); margin-bottom: 1.5rem; }
+
+        .rubric-grid { display: grid; gap: 0.75rem; }
+
+        .rubric-level {
+            display: grid;
+            grid-template-columns: 70px 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--color-border);
+        }
+
+        .level-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .rubric-level.level-5 .level-badge { background: var(--level-5-bg); color: var(--level-5); }
+        .rubric-level.level-4 .level-badge { background: var(--level-4-bg); color: var(--level-4); }
+        .rubric-level.level-3 .level-badge { background: var(--level-3-bg); color: var(--level-3); }
+        .rubric-level.level-2 .level-badge { background: var(--level-2-bg); color: var(--level-2); }
+        .rubric-level.level-1 .level-badge { background: var(--level-1-bg); color: var(--level-1); }
+        .rubric-level.level-0 .level-badge { background: var(--level-0-bg); color: var(--level-0); }
+
+        .level-content h3 { font-family: var(--font-serif); font-size: 1.1rem; margin-bottom: 0.25rem; }
+        .rubric-level.level-5 h3 { color: var(--level-5); }
+        .rubric-level.level-4 h3 { color: var(--level-4); }
+        .rubric-level.level-3 h3 { color: var(--level-3); }
+        .rubric-level.level-2 h3 { color: var(--level-2); }
+        .rubric-level.level-1 h3 { color: var(--level-1); }
+        .rubric-level.level-0 h3 { color: var(--level-0); }
+
+        .level-content p { color: var(--color-text-muted); font-size: 0.9rem; }
+
+        .phase-card {
+            background: var(--color-paper);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+            overflow: hidden;
+        }
+
+        .phase-header {
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, var(--color-accent) 0%, var(--color-accent-light) 100%);
+            color: white;
+        }
+
+        .phase-header h2 { font-family: var(--font-serif); font-size: 1.3rem; }
+        .phase-number { font-size: 0.8rem; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.05em; }
+        .phase-toggle { font-size: 1.3rem; transition: transform 0.3s ease; }
+        .phase-card.expanded .phase-toggle { transform: rotate(180deg); }
+
+        .phase-description {
+            padding: 0.75rem 1.5rem;
+            background: rgba(30, 58, 95, 0.03);
+            border-bottom: 1px solid var(--color-border);
+            color: var(--color-text-muted);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .phase-content { display: none; padding: 1.25rem; }
+        .phase-card.expanded .phase-content { display: block; }
+
+        /* Rating Legend */
+        .rating-legend {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .legend-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-right: 0.5rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-dot {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: white;
+        }
+
+        .legend-dot.l5 { background: var(--level-5); }
+        .legend-dot.l4 { background: var(--level-4); }
+        .legend-dot.l3 { background: var(--level-3); }
+        .legend-dot.l2 { background: var(--level-2); }
+        .legend-dot.l1 { background: var(--level-1); }
+        .legend-dot.l0 { background: var(--level-0); }
+
+        .function-card {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .function-header {
+            padding: 0.875rem 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-bg);
+        }
+
+        .function-header:hover { background: #EEEEEA; }
+        .function-title { font-weight: 600; font-size: 0.95rem; color: var(--color-accent); }
+        .function-subtitle { font-size: 0.8rem; color: var(--color-text-muted); font-style: italic; }
+        .function-toggle { color: var(--color-text-muted); transition: transform 0.2s ease; }
+        .function-card.expanded .function-toggle { transform: rotate(45deg); }
+
+        .function-content { display: none; padding: 1rem; background: white; border-top: 1px solid var(--color-border); }
+        .function-card.expanded .function-content { display: block; }
+
+        /* Task header row */
+        .task-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0 0.75rem 0;
+            border-bottom: 2px solid var(--color-border);
+            margin-bottom: 0.5rem;
+        }
+
+        .task-header-label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+        }
+
+        .rating-header {
+            display: flex;
+            gap: 4px;
+        }
+
+        .rating-header-item {
+            width: 32px;
+            height: 24px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: white;
+        }
+
+        .rating-header-item.h5 { background: var(--level-5); }
+        .rating-header-item.h4 { background: var(--level-4); }
+        .rating-header-item.h3 { background: var(--level-3); }
+        .rating-header-item.h2 { background: var(--level-2); }
+        .rating-header-item.h1 { background: var(--level-1); }
+        .rating-header-item.h0 { background: var(--level-0); }
+
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.625rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            gap: 1rem;
+        }
+
+        .task-item:last-child { border-bottom: none; }
+        .task-text { flex: 1; font-size: 0.9rem; }
+
+        .rating-selector {
+            display: flex;
+            gap: 4px;
+        }
+
+        .rating-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .rating-btn:hover { transform: scale(1.1); }
+        .rating-btn.selected { transform: scale(1.1); color: white; }
+        .rating-btn[data-value="5"].selected { background: var(--level-5); border-color: var(--level-5); }
+        .rating-btn[data-value="4"].selected { background: var(--level-4); border-color: var(--level-4); }
+        .rating-btn[data-value="3"].selected { background: var(--level-3); border-color: var(--level-3); }
+        .rating-btn[data-value="2"].selected { background: var(--level-2); border-color: var(--level-2); }
+        .rating-btn[data-value="1"].selected { background: var(--level-1); border-color: var(--level-1); }
+        .rating-btn[data-value="0"].selected { background: var(--level-0); border-color: var(--level-0); }
+
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+        .summary-card {
+            background: var(--color-paper);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--color-border);
+        }
+
+        .summary-card h3 { font-family: var(--font-serif); color: var(--color-accent); margin-bottom: 1rem; }
+
+        .stat-row { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f0f0f0; }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-label { font-size: 0.9rem; }
+        .stat-value { font-weight: 600; }
+
+        .progress-bar { height: 8px; background: var(--color-border); border-radius: 4px; margin-top: 0.5rem; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
+
+        .export-btn {
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .export-btn:hover { background: var(--color-accent-light); }
+
+        .export-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .export-section h3 {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+        }
+
+        .export-form {
+            display: grid;
+            gap: 1rem;
+            max-width: 500px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            padding: 0.625rem 0.875rem;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-family: var(--font-sans);
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .export-btn.secondary {
+            background: white;
+            color: var(--color-accent);
+            border: 2px solid var(--color-accent);
+        }
+
+        .export-btn.secondary:hover {
+            background: rgba(30, 58, 95, 0.05);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--color-border);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.6rem; }
+            main { padding: 1rem; }
+            .task-item { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .rating-selector { align-self: flex-end; }
+            .rating-legend { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Designer Functions: AI Exposure Assessment</h1>
+        <p>Assessing the timeline for AI-driven skill offload across the design profession</p>
+    </header>
+
+    <nav class="nav-tabs">
+        <button class="nav-tab active" data-section="intro">Introduction</button>
+        <button class="nav-tab" data-section="rubric">Rating Scale</button>
+        <button class="nav-tab" data-section="discover">1. Discover</button>
+        <button class="nav-tab" data-section="define">2. Define</button>
+        <button class="nav-tab" data-section="develop">3. Develop</button>
+        <button class="nav-tab" data-section="deliver">4. Deliver</button>
+        <button class="nav-tab" data-section="meta">Meta-Function</button>
+        <button class="nav-tab" data-section="summary">Summary</button>
+    </nav>
+
+    <main>
+        <!-- Introduction Section -->
+        <section id="intro" class="section active">
+            <div class="intro-container">
+                <h2>Background and Purpose</h2>
+                <p>This assessment tool helps designers, educators, and organisations evaluate how AI is likely to transform specific design tasks over the coming years. It draws on established design theory to provide a comprehensive inventory of designer functions and tasks across the Double Diamond framework.</p>
+
+                <div class="highlight-box">
+                    <p><strong>The key question is not whether AI will fully replace designers, but whether AI enables significant cognitive or skill offload.</strong> Can a highly skilled expert be replaced by a less experienced person augmented with AI tools? Even partial automation can fundamentally reshape professional practice, career pathways, and educational requirements.</p>
+                </div>
+
+                <p>The tool recognises that impact doesn't require complete AI handoff. A task may be substantially transformed when AI handles the cognitively demanding portions, reduces the expertise threshold, or accelerates execution—even if human oversight remains necessary.</p>
+
+                <h3>Theoretical Foundations</h3>
+                <p>The framework integrates multiple perspectives on design practice:</p>
+
+                <div class="theory-grid">
+                    <div class="theory-card">
+                        <strong>Problem Solving</strong>
+                        <span>Newell & Simon; Ulm School — Design as systematic decomposition and rational analysis</span>
+                    </div>
+                    <div class="theory-card">
+                        <strong>Meaning Making</strong>
+                        <span>Krippendorff — Design creates semantic artifacts that must be interpretable by users</span>
+                    </div>
+                    <div class="theory-card">
+                        <strong>Reflective Practice</strong>
+                        <span>Schön — Design as conversation with the situation; reflection-in-action</span>
+                    </div>
+                    <div class="theory-card">
+                        <strong>Frame Innovation</strong>
+                        <span>Dorst — Abductive reasoning; creating new frames to see problems differently</span>
+                    </div>
+                    <div class="theory-card">
+                        <strong>Wicked Problems</strong>
+                        <span>Rittel & Buchanan — Problems that resist definition; formulation and solution intertwined</span>
+                    </div>
+                    <div class="theory-card">
+                        <strong>Co-Design</strong>
+                        <span>Sanders & Stappers — Users as partners, not just subjects; participatory methods</span>
+                    </div>
+                    <div class="theory-card">
+                        <strong>Design Synthesis</strong>
+                        <span>Kolko — Abductive sensemaking; creating normalcy out of chaos</span>
+                    </div>
+                    <div class="theory-card">
+                        <strong>Human-Centered Design</strong>
+                        <span>Norman — Placing human needs and capabilities at the centre of process</span>
+                    </div>
+                </div>
+
+                <h3>Practical Application</h3>
+                <p>The Double Diamond (Design Council) provides the organising structure: <strong>Discover</strong> and <strong>Define</strong> phases address problem understanding, while <strong>Develop</strong> and <strong>Deliver</strong> phases address solution creation. Within each phase, designer functions group related tasks.</p>
+                <p>The framework applies across physical product design, service design, and interaction design, recognising that methods flex to context while core cognitive processes remain consistent.</p>
+
+                <div class="uncertainty-box">
+                    <p><strong>A note on prediction horizons:</strong> Forecasting technological change beyond 5 years is highly speculative. The timescales in this tool should be understood as rough indicators rather than precise predictions. The "Long-term" and "Distant/Never" categories acknowledge fundamental uncertainty about whether and when certain capabilities might emerge. Use these assessments to prompt discussion rather than as definitive forecasts.</p>
+                </div>
+
+                <h3>How to Use This Tool</h3>
+                <p>Navigate to each phase tab and rate individual tasks according to when you believe AI will significantly impact how that task is performed. Consider not just full automation but meaningful skill offload—the point at which the expertise required to perform the task competently is substantially reduced by AI assistance.</p>
+                <p>The Summary tab aggregates your ratings to highlight which functions and phases face the most imminent transformation.</p>
+            </div>
+        </section>
+
+        <!-- Rating Scale Section -->
+        <section id="rubric" class="section">
+            <div class="rubric-container">
+                <h2>AI Exposure Timeline Scale</h2>
+                <p class="rubric-intro">Rate each task by when AI is likely to enable significant skill offload—the point at which the expertise threshold for competent performance is meaningfully reduced. This may occur through automation, augmentation, or AI-assisted workflows that reduce the need for deep specialist knowledge.</p>
+
+                <div class="rubric-grid">
+                    <div class="rubric-level level-5">
+                        <div class="level-badge">5</div>
+                        <div class="level-content">
+                            <h3>Now</h3>
+                            <p>AI is already substantially transforming this task. Tools exist and are in active use by practitioners. A less experienced person with AI can approach the output quality of an unaided expert.</p>
+                        </div>
+                    </div>
+                    <div class="rubric-level level-4">
+                        <div class="level-badge">4</div>
+                        <div class="level-content">
+                            <h3>Imminent — within 12 months</h3>
+                            <p>AI capabilities are emerging rapidly. Significant skill offload expected within the next year based on current trajectories and announced developments.</p>
+                        </div>
+                    </div>
+                    <div class="rubric-level level-3">
+                        <div class="level-badge">3</div>
+                        <div class="level-content">
+                            <h3>Near-term — 1 to 3 years</h3>
+                            <p>AI will likely impact this task as technology matures and integrates into professional workflows. Clear research directions suggest feasibility.</p>
+                        </div>
+                    </div>
+                    <div class="rubric-level level-2">
+                        <div class="level-badge">2</div>
+                        <div class="level-content">
+                            <h3>Mid-term — 3 to 5 years</h3>
+                            <p>AI may impact this task, but significant technical or practical barriers remain. Transformation possible but not certain within this window.</p>
+                        </div>
+                    </div>
+                    <div class="rubric-level level-1">
+                        <div class="level-badge">1</div>
+                        <div class="level-content">
+                            <h3>Long-term — 5 to 10 years</h3>
+                            <p>Fundamental challenges make near-term transformation unlikely. May require breakthroughs in AI capabilities not yet demonstrated. High uncertainty.</p>
+                        </div>
+                    </div>
+                    <div class="rubric-level level-0">
+                        <div class="level-badge">0</div>
+                        <div class="level-content">
+                            <h3>Distant / Never</h3>
+                            <p>This task may inherently require human presence, judgment, or relational qualities that cannot be replicated by AI—or transformation is beyond any reasonable prediction horizon. Use for tasks where expert human involvement seems irreducibly essential.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Discover Phase -->
+        <section id="discover" class="section">
+            <div class="rating-legend">
+                <span class="legend-title">Rating Key:</span>
+                <div class="legend-item"><span class="legend-dot l5">5</span> Now</div>
+                <div class="legend-item"><span class="legend-dot l4">4</span> Imminent (12mo)</div>
+                <div class="legend-item"><span class="legend-dot l3">3</span> Near (1-3yr)</div>
+                <div class="legend-item"><span class="legend-dot l2">2</span> Mid (3-5yr)</div>
+                <div class="legend-item"><span class="legend-dot l1">1</span> Long (5-10yr)</div>
+                <div class="legend-item"><span class="legend-dot l0">0</span> Distant/Never</div>
+            </div>
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div><div class="phase-number">Phase 1 — Divergent</div><h2>Discover</h2></div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">Understanding the problem space through research and exploration. Opening up to complexity; gathering evidence; building empathy.</div>
+                <div class="phase-content" id="discover-content"></div>
+            </div>
+        </section>
+
+        <!-- Define Phase -->
+        <section id="define" class="section">
+            <div class="rating-legend">
+                <span class="legend-title">Rating Key:</span>
+                <div class="legend-item"><span class="legend-dot l5">5</span> Now</div>
+                <div class="legend-item"><span class="legend-dot l4">4</span> Imminent (12mo)</div>
+                <div class="legend-item"><span class="legend-dot l3">3</span> Near (1-3yr)</div>
+                <div class="legend-item"><span class="legend-dot l2">2</span> Mid (3-5yr)</div>
+                <div class="legend-item"><span class="legend-dot l1">1</span> Long (5-10yr)</div>
+                <div class="legend-item"><span class="legend-dot l0">0</span> Distant/Never</div>
+            </div>
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div><div class="phase-number">Phase 2 — Convergent</div><h2>Define</h2></div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">Synthesizing insights to frame the core design challenge. Making sense of complexity; creating focus through generative framing.</div>
+                <div class="phase-content" id="define-content"></div>
+            </div>
+        </section>
+
+        <!-- Develop Phase -->
+        <section id="develop" class="section">
+            <div class="rating-legend">
+                <span class="legend-title">Rating Key:</span>
+                <div class="legend-item"><span class="legend-dot l5">5</span> Now</div>
+                <div class="legend-item"><span class="legend-dot l4">4</span> Imminent (12mo)</div>
+                <div class="legend-item"><span class="legend-dot l3">3</span> Near (1-3yr)</div>
+                <div class="legend-item"><span class="legend-dot l2">2</span> Mid (3-5yr)</div>
+                <div class="legend-item"><span class="legend-dot l1">1</span> Long (5-10yr)</div>
+                <div class="legend-item"><span class="legend-dot l0">0</span> Distant/Never</div>
+            </div>
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div><div class="phase-number">Phase 3 — Divergent</div><h2>Develop</h2></div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">Generating and exploring potential solutions. Making ideas tangible; co-evolving problem understanding through exploration.</div>
+                <div class="phase-content" id="develop-content"></div>
+            </div>
+        </section>
+
+        <!-- Deliver Phase -->
+        <section id="deliver" class="section">
+            <div class="rating-legend">
+                <span class="legend-title">Rating Key:</span>
+                <div class="legend-item"><span class="legend-dot l5">5</span> Now</div>
+                <div class="legend-item"><span class="legend-dot l4">4</span> Imminent (12mo)</div>
+                <div class="legend-item"><span class="legend-dot l3">3</span> Near (1-3yr)</div>
+                <div class="legend-item"><span class="legend-dot l2">2</span> Mid (3-5yr)</div>
+                <div class="legend-item"><span class="legend-dot l1">1</span> Long (5-10yr)</div>
+                <div class="legend-item"><span class="legend-dot l0">0</span> Distant/Never</div>
+            </div>
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div><div class="phase-number">Phase 4 — Convergent</div><h2>Deliver</h2></div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">Refining and implementing the final solution. Optimizing for implementation; maintaining design intent through production.</div>
+                <div class="phase-content" id="deliver-content"></div>
+            </div>
+        </section>
+
+        <!-- Meta-Function -->
+        <section id="meta" class="section">
+            <div class="rating-legend">
+                <span class="legend-title">Rating Key:</span>
+                <div class="legend-item"><span class="legend-dot l5">5</span> Now</div>
+                <div class="legend-item"><span class="legend-dot l4">4</span> Imminent (12mo)</div>
+                <div class="legend-item"><span class="legend-dot l3">3</span> Near (1-3yr)</div>
+                <div class="legend-item"><span class="legend-dot l2">2</span> Mid (3-5yr)</div>
+                <div class="legend-item"><span class="legend-dot l1">1</span> Long (5-10yr)</div>
+                <div class="legend-item"><span class="legend-dot l0">0</span> Distant/Never</div>
+            </div>
+            <div class="phase-card expanded">
+                <div class="phase-header" onclick="togglePhase(this)">
+                    <div><div class="phase-number">Cross-Cutting</div><h2>Reflective Practitioner</h2></div>
+                    <span class="phase-toggle">▼</span>
+                </div>
+                <div class="phase-description">Operating throughout all phases: continuous reflection-in-action, problem-solution co-evolution, and frame management.</div>
+                <div class="phase-content" id="meta-content"></div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section id="summary" class="section">
+            <div class="rubric-container">
+                <h2>Assessment Summary</h2>
+                <p class="rubric-intro">Overview of AI exposure ratings across all designer functions and tasks. Higher averages indicate tasks likely to face earlier AI-driven skill offload.</p>
+                <div class="summary-grid" id="summary-grid"></div>
+
+                <div class="export-section">
+                    <h3>Export Your Results</h3>
+                    <div class="export-form">
+                        <div class="form-group">
+                            <label for="respondent-name">Your Name (optional)</label>
+                            <input type="text" id="respondent-name" placeholder="e.g., Jane Smith">
+                        </div>
+                        <div class="form-group">
+                            <label for="respondent-comment">Comments (optional)</label>
+                            <textarea id="respondent-comment" placeholder="Any notes about your assessment, your background, or assumptions you made..."></textarea>
+                        </div>
+                        <div class="export-buttons">
+                            <button class="export-btn" onclick="exportCSV()">Export as CSV</button>
+                            <button class="export-btn secondary" onclick="exportJSON()">Export as JSON</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Based on the Double Diamond Framework (Design Council, 2019) with theoretical perspectives from Schön, Dorst, Cross, Kolko, Norman, Krippendorff, Rittel, and Sanders & Stappers.</p>
+    </footer>
+
+    <script>
+    // Framework Data
+    const frameworkData = {
+        discover: {
+            name: "Discover",
+            functions: [
+                {
+                    name: "Researcher",
+                    subtitle: "Gathering evidence about users, contexts, and existing solutions",
+                    tasks: [
+                        "Conduct ethnographic field studies",
+                        "Perform contextual inquiry and observation",
+                        "Execute structured and semi-structured interviews",
+                        "Administer surveys and questionnaires",
+                        "Analyze existing data and analytics",
+                        "Review literature and prior art",
+                        "Document competitor and analogous solutions",
+                        "Map stakeholder ecosystems",
+                        "Identify and question assumptions in the brief"
+                    ]
+                },
+                {
+                    name: "Empathizer",
+                    subtitle: "Developing deep understanding of human experience and meaning",
+                    tasks: [
+                        "Build empathy maps for key user groups",
+                        "Identify emotional journeys and pain points",
+                        "Uncover latent needs beyond stated requirements",
+                        "Explore cultural and social contexts of use",
+                        "Investigate symbolic meanings users attach to artifacts",
+                        "Understand user mental models and expectations",
+                        "Recognize diverse abilities and perspectives",
+                        "Document stories and narratives from users",
+                        "Practice extreme user exploration for edge cases"
+                    ]
+                },
+                {
+                    name: "Systems Analyst",
+                    subtitle: "Understanding the broader problem structure and constraints",
+                    tasks: [
+                        "Map existing systems and touchpoints",
+                        "Identify technical, business, and regulatory constraints",
+                        "Analyze failure modes and edge cases",
+                        "Document resource limitations and dependencies",
+                        "Examine organizational and operational contexts",
+                        "Assess technological feasibility boundaries",
+                        "Identify key variables and their relationships",
+                        "Model information flows and decision points",
+                        "Recognize interconnections that make the problem wicked"
+                    ]
+                },
+                {
+                    name: "Pattern Finder",
+                    subtitle: "Recognizing emergent themes and opportunities",
+                    tasks: [
+                        "Cluster and categorize research findings",
+                        "Identify recurring behaviors and workarounds",
+                        "Spot gaps between current and desired states",
+                        "Recognize unmet needs across user segments",
+                        "Surface contradictions in current solutions",
+                        "Document surprising or unexpected findings",
+                        "Track emerging trends and signals of change",
+                        "Note semantic inconsistencies in existing artifacts",
+                        "Distinguish genuine patterns from confirmation bias"
+                    ]
+                },
+                {
+                    name: "Facilitator",
+                    subtitle: "Enabling participation and collective intelligence",
+                    tasks: [
+                        "Design and conduct co-design workshops",
+                        "Create generative tools for user participation",
+                        "Facilitate stakeholder engagement sessions",
+                        "Enable diverse voices to contribute insights",
+                        "Manage group dynamics and power imbalances",
+                        "Synthesize collective input while honoring individuals"
+                    ]
+                }
+            ]
+        },
+        define: {
+            name: "Define",
+            functions: [
+                {
+                    name: "Synthesizer",
+                    subtitle: "Transforming raw data into actionable insights",
+                    tasks: [
+                        "Create affinity diagrams from research data",
+                        "Develop user personas grounded in evidence",
+                        "Construct journey maps showing current experience",
+                        "Build service blueprints for existing processes",
+                        "Articulate key insights and design implications",
+                        "Prioritize findings by impact and frequency",
+                        "Translate observations into design principles",
+                        "Identify cause-and-effect relationships",
+                        "Externalize thinking through sketching and diagramming",
+                        "Allow incubation time for insights to emerge",
+                        "Forge unexpected connections between data points"
+                    ]
+                },
+                {
+                    name: "Problem Framer",
+                    subtitle: "Creating generative frames that open solution possibilities",
+                    tasks: [
+                        "Formulate problem statements and HMW questions",
+                        "Generate multiple alternative problem framings",
+                        "Import frames from analogous domains",
+                        "Test frames for generative power and resonance",
+                        "Define success criteria acknowledging provisionality",
+                        "Establish scope boundaries and constraints",
+                        "Decompose complex problems into sub-problems",
+                        "Create problem hierarchies and dependencies",
+                        "Distinguish symptoms from root causes",
+                        "Acknowledge wicked nature of formulation-solution link"
+                    ]
+                },
+                {
+                    name: "Meaning Interpreter",
+                    subtitle: "Articulating the semantic dimensions of the design challenge",
+                    tasks: [
+                        "Define the intended product/service semantics",
+                        "Articulate desired user interpretation and experience",
+                        "Identify symbolic and cultural values to embody",
+                        "Establish the design language and vocabulary",
+                        "Clarify relationship between form, function, meaning",
+                        "Define how artifact should position in users' lives",
+                        "Specify emotional and experiential qualities sought",
+                        "Align stakeholder expectations around intended meaning"
+                    ]
+                },
+                {
+                    name: "Strategy Shaper",
+                    subtitle: "Connecting design direction to broader goals",
+                    tasks: [
+                        "Align problem definition with business objectives",
+                        "Identify design opportunities with strategic impact",
+                        "Define design principles to guide development",
+                        "Create frameworks for decision-making under uncertainty",
+                        "Establish criteria for concept evaluation",
+                        "Build shared understanding among stakeholders",
+                        "Document design brief with clear direction",
+                        "Set project milestones and checkpoints",
+                        "Identify stakeholder value conflicts",
+                        "Plan for ongoing negotiation and satisficing"
+                    ]
+                }
+            ]
+        },
+        develop: {
+            name: "Develop",
+            functions: [
+                {
+                    name: "Ideator",
+                    subtitle: "Producing diverse solution concepts through creative exploration",
+                    tasks: [
+                        "Facilitate brainstorming and ideation sessions",
+                        "Apply lateral thinking and creative techniques",
+                        "Generate concept sketches and quick explorations",
+                        "Use analogical reasoning from other domains",
+                        "Challenge assumptions through provocations",
+                        "Explore extreme and boundary conditions",
+                        "Combine and hybridize partial solutions",
+                        "Document all ideas without premature judgment",
+                        "Create safe-to-fail experiments",
+                        "Recognize and amplify surprising directions"
+                    ]
+                },
+                {
+                    name: "Form Giver",
+                    subtitle: "Translating concepts into tangible expressions",
+                    tasks: [
+                        "Create low-fidelity prototypes and mockups",
+                        "Develop physical models and representations",
+                        "Design wireframes and interaction flows",
+                        "Produce storyboards and scenario illustrations",
+                        "Build service prototypes and simulations",
+                        "Craft visual and aesthetic explorations",
+                        "Develop functional proof-of-concept models",
+                        "Iterate form based on emerging understanding",
+                        "Use prototypes as thinking tools not just testing",
+                        "Allow making to inform problem understanding"
+                    ]
+                },
+                {
+                    name: "Meaning Constructor",
+                    subtitle: "Embedding intended semantics into design solutions",
+                    tasks: [
+                        "Shape affordances to communicate function",
+                        "Design feedback mechanisms and system responses",
+                        "Create coherent visual and interaction languages",
+                        "Ensure consistency of meaning across touchpoints",
+                        "Align form with intended user interpretation",
+                        "Design for appropriate emotional resonance",
+                        "Consider cultural and contextual appropriateness",
+                        "Test semantic clarity with representative users"
+                    ]
+                },
+                {
+                    name: "Reframer",
+                    subtitle: "Allowing solutions to reshape problem understanding",
+                    tasks: [
+                        "Notice when prototypes reveal new problem dimensions",
+                        "Update problem framing based on solution experiments",
+                        "Recognize when initial constraints are artificial",
+                        "Allow failure to generate new insights",
+                        "Cycle back to Define when reframing needed",
+                        "Document how understanding evolved through making"
+                    ]
+                },
+                {
+                    name: "Evaluator",
+                    subtitle: "Assessing concepts while remaining open to surprise",
+                    tasks: [
+                        "Conduct heuristic evaluations of concepts",
+                        "Perform cognitive walkthroughs",
+                        "Test prototypes with representative users",
+                        "Gather feedback on usability and desirability",
+                        "Assess technical feasibility of solutions",
+                        "Evaluate concepts against design principles",
+                        "Compare alternative solutions systematically",
+                        "Document learnings and refinement needs",
+                        "Distinguish failure to meet criteria from need to change criteria",
+                        "Stay alert for unexpected value discoveries"
+                    ]
+                },
+                {
+                    name: "Collaborator",
+                    subtitle: "Integrating diverse expertise and enabling collective creativity",
+                    tasks: [
+                        "Facilitate co-design sessions with users",
+                        "Coordinate with engineering and technical teams",
+                        "Engage business stakeholders in evaluation",
+                        "Incorporate accessibility and inclusion expertise",
+                        "Seek input from domain specialists",
+                        "Build consensus around promising directions",
+                        "Manage creative tensions productively",
+                        "Ensure diverse voices inform development",
+                        "Navigate the fuzzy front end collaboratively",
+                        "Create psychological safety for idea generation"
+                    ]
+                }
+            ]
+        },
+        deliver: {
+            name: "Deliver",
+            functions: [
+                {
+                    name: "Refiner",
+                    subtitle: "Optimizing the solution for implementation",
+                    tasks: [
+                        "Conduct detailed usability testing",
+                        "Perform iterative refinement cycles",
+                        "Optimize for performance and efficiency",
+                        "Address edge cases and error states",
+                        "Ensure accessibility compliance",
+                        "Refine micro-interactions and details",
+                        "Polish visual and aesthetic elements",
+                        "Validate against original success criteria",
+                        "Make principled trade-offs when constraints require",
+                        "Document rationale for refinement decisions"
+                    ]
+                },
+                {
+                    name: "Specifier",
+                    subtitle: "Documenting the solution for production",
+                    tasks: [
+                        "Create detailed design specifications",
+                        "Develop comprehensive style guides",
+                        "Document interaction patterns and behaviors",
+                        "Specify materials, components, and technologies",
+                        "Produce implementation guidelines",
+                        "Define quality standards and tolerances",
+                        "Create asset libraries and component systems",
+                        "Establish maintenance and update protocols",
+                        "Communicate design intent clearly to implementers"
+                    ]
+                },
+                {
+                    name: "Integrator",
+                    subtitle: "Ensuring coherent implementation across systems",
+                    tasks: [
+                        "Coordinate handoff to development teams",
+                        "Oversee implementation fidelity",
+                        "Resolve conflicts between design intent and constraints",
+                        "Ensure consistency across platforms and touchpoints",
+                        "Manage design system governance",
+                        "Align implementation with semantic intent",
+                        "Verify end-to-end experience coherence",
+                        "Address integration issues as they arise",
+                        "Advocate for user needs in trade-off discussions"
+                    ]
+                },
+                {
+                    name: "Validator",
+                    subtitle: "Confirming solution meets human needs and business goals",
+                    tasks: [
+                        "Conduct acceptance testing with users",
+                        "Measure against defined success metrics",
+                        "Gather feedback for future iterations",
+                        "Document lessons learned",
+                        "Assess actual vs intended meaning interpretation",
+                        "Evaluate business impact and value delivery",
+                        "Identify opportunities for enhancement",
+                        "Plan for ongoing optimization and evolution",
+                        "Feed learnings back into organizational knowledge"
+                    ]
+                },
+                {
+                    name: "Communicator",
+                    subtitle: "Articulating design rationale and building capability",
+                    tasks: [
+                        "Present design solutions to stakeholders",
+                        "Document design decisions and rationale",
+                        "Create narratives explaining design intent",
+                        "Train teams on design system usage",
+                        "Advocate for user needs in trade-off discussions",
+                        "Translate design value into business language",
+                        "Share knowledge across the organization",
+                        "Contribute to design community and practice",
+                        "Build design literacy among non-designers"
+                    ]
+                }
+            ]
+        },
+        meta: {
+            name: "Reflective Practitioner",
+            functions: [
+                {
+                    name: "Reflection-in-Action",
+                    subtitle: "Continuous learning during practice (Schön)",
+                    tasks: [
+                        "Notice when situation resists, surprises, or talks back",
+                        "Surface tacit knowing-in-action for examination",
+                        "Recognize when current framing is inadequate",
+                        "Construct new descriptions of the phenomenon",
+                        "Test new understandings through experimental moves"
+                    ]
+                },
+                {
+                    name: "Problem-Solution Co-Evolution",
+                    subtitle: "Parallel exploration of problem and solution spaces (Dorst & Cross)",
+                    tasks: [
+                        "Maintain parallel exploration of problem and solution",
+                        "Allow emerging solutions to reframe problem understanding",
+                        "Recognize surprise moments signaling creative breakthroughs",
+                        "Iterate between convergent and divergent modes fluidly"
+                    ]
+                },
+                {
+                    name: "Frame Creation and Management",
+                    subtitle: "Creating new ways of seeing problems (Dorst)",
+                    tasks: [
+                        "Generate alternative frames for viewing the problem",
+                        "Import frames from analogous domains and situations",
+                        "Test frames for their generative power",
+                        "Shift frames when current perspective proves limiting"
+                    ]
+                },
+                {
+                    name: "Meta-Cognitive Awareness",
+                    subtitle: "Thinking about thinking (Lawson, Cross)",
+                    tasks: [
+                        "Recognize when to switch between analytical and intuitive modes",
+                        "Apply appropriate heuristics from accumulated experience",
+                        "Distinguish symptoms from root causes",
+                        "Manage satisficing under conditions of uncertainty"
+                    ]
+                }
+            ]
+        }
+    };
+
+    // Rating labels for export and display
+    const ratingLabels = {
+        5: "Now",
+        4: "Imminent (12mo)",
+        3: "Near (1-3yr)",
+        2: "Mid (3-5yr)",
+        1: "Long (5-10yr)",
+        0: "Distant/Never"
+    };
+
+    // Store ratings
+    const ratings = {};
+
+    // Initialize the interface
+    function init() {
+        Object.keys(frameworkData).forEach(phaseKey => {
+            const phase = frameworkData[phaseKey];
+            const container = document.getElementById(`${phaseKey}-content`);
+            if (container) {
+                container.innerHTML = renderFunctions(phaseKey, phase.functions);
+            }
+        });
+        updateSummary();
+    }
+
+    function renderFunctions(phaseKey, functions) {
+        return functions.map((func, fIndex) => `
+            <div class="function-card">
+                <div class="function-header" onclick="toggleFunction(this)">
+                    <div>
+                        <div class="function-title">${func.name}</div>
+                        <div class="function-subtitle">${func.subtitle}</div>
+                    </div>
+                    <span class="function-toggle">+</span>
+                </div>
+                <div class="function-content">
+                    <div class="task-header-row">
+                        <span class="task-header-label">Task</span>
+                        <div class="rating-header">
+                            <span class="rating-header-item h5" title="Now">5</span>
+                            <span class="rating-header-item h4" title="Imminent (12mo)">4</span>
+                            <span class="rating-header-item h3" title="Near (1-3yr)">3</span>
+                            <span class="rating-header-item h2" title="Mid (3-5yr)">2</span>
+                            <span class="rating-header-item h1" title="Long (5-10yr)">1</span>
+                            <span class="rating-header-item h0" title="Distant/Never">0</span>
+                        </div>
+                    </div>
+                    ${func.tasks.map((task, tIndex) => {
+                        const taskId = `${phaseKey}-${fIndex}-${tIndex}`;
+                        return `
+                            <div class="task-item">
+                                <span class="task-text">${task}</span>
+                                <div class="rating-selector">
+                                    ${[5,4,3,2,1,0].map(val => `
+                                        <button class="rating-btn" data-task="${taskId}" data-value="${val}" onclick="setRating('${taskId}', ${val})" title="${ratingLabels[val]}">${val}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function setRating(taskId, value) {
+        ratings[taskId] = value;
+        document.querySelectorAll(`[data-task="${taskId}"]`).forEach(btn => {
+            btn.classList.toggle('selected', parseInt(btn.dataset.value) === value);
+        });
+        updateSummary();
+    }
+
+    function updateSummary() {
+        const summaryGrid = document.getElementById('summary-grid');
+        let html = '';
+
+        Object.keys(frameworkData).forEach(phaseKey => {
+            const phase = frameworkData[phaseKey];
+            let totalTasks = 0;
+            let ratedTasks = 0;
+            let totalScore = 0;
+            const levelCounts = {5:0, 4:0, 3:0, 2:0, 1:0, 0:0};
+
+            phase.functions.forEach((func, fIndex) => {
+                func.tasks.forEach((task, tIndex) => {
+                    totalTasks++;
+                    const taskId = `${phaseKey}-${fIndex}-${tIndex}`;
+                    if (ratings[taskId] !== undefined) {
+                        ratedTasks++;
+                        totalScore += ratings[taskId];
+                        levelCounts[ratings[taskId]]++;
+                    }
+                });
+            });
+
+            const avgScore = ratedTasks > 0 ? (totalScore / ratedTasks).toFixed(1) : '-';
+            const completion = Math.round((ratedTasks / totalTasks) * 100);
+
+            html += `
+                <div class="summary-card">
+                    <h3>${phase.name}</h3>
+                    <div class="stat-row">
+                        <span class="stat-label">Tasks Rated</span>
+                        <span class="stat-value">${ratedTasks} / ${totalTasks}</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${completion}%; background: var(--color-accent);"></div>
+                    </div>
+                    <div class="stat-row" style="margin-top: 1rem;">
+                        <span class="stat-label">Average AI Exposure</span>
+                        <span class="stat-value">${avgScore}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Now (5)</span>
+                        <span class="stat-value" style="color: var(--level-5);">${levelCounts[5]}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Imminent — 12mo (4)</span>
+                        <span class="stat-value" style="color: var(--level-4);">${levelCounts[4]}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Near — 1-3yr (3)</span>
+                        <span class="stat-value" style="color: var(--level-3);">${levelCounts[3]}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Mid — 3-5yr (2)</span>
+                        <span class="stat-value" style="color: var(--level-2);">${levelCounts[2]}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Long — 5-10yr (1)</span>
+                        <span class="stat-value" style="color: var(--level-1);">${levelCounts[1]}</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Distant/Never (0)</span>
+                        <span class="stat-value" style="color: var(--level-0);">${levelCounts[0]}</span>
+                    </div>
+                </div>
+            `;
+        });
+
+        summaryGrid.innerHTML = html;
+    }
+
+    function getRespondentInfo() {
+        return {
+            name: document.getElementById('respondent-name').value.trim() || 'Anonymous',
+            comment: document.getElementById('respondent-comment').value.trim() || '',
+            date: new Date().toISOString().split('T')[0]
+        };
+    }
+
+    function getExportData() {
+        const respondent = getRespondentInfo();
+        const tasks = [];
+        let totalRated = 0;
+        let totalScore = 0;
+
+        Object.keys(frameworkData).forEach(phaseKey => {
+            const phase = frameworkData[phaseKey];
+            phase.functions.forEach((func, fIndex) => {
+                func.tasks.forEach((task, tIndex) => {
+                    const taskId = `${phaseKey}-${fIndex}-${tIndex}`;
+                    const rating = ratings[taskId];
+                    const hasRating = rating !== undefined;
+                    if (hasRating) {
+                        totalRated++;
+                        totalScore += rating;
+                    }
+                    tasks.push({
+                        phase: phase.name,
+                        function: func.name,
+                        task: task,
+                        rating: hasRating ? rating : null,
+                        ratingLabel: hasRating ? ratingLabels[rating] : null
+                    });
+                });
+            });
+        });
+
+        return {
+            respondent,
+            summary: {
+                totalTasks: tasks.length,
+                tasksRated: totalRated,
+                averageRating: totalRated > 0 ? (totalScore / totalRated).toFixed(2) : null
+            },
+            tasks
+        };
+    }
+
+    function exportCSV() {
+        const data = getExportData();
+        const respondent = data.respondent;
+
+        let csv = '# Designer AI Exposure Assessment\n';
+        csv += `# Respondent: ${respondent.name}\n`;
+        csv += `# Date: ${respondent.date}\n`;
+        if (respondent.comment) {
+            csv += `# Comment: ${respondent.comment.replace(/\n/g, ' ')}\n`;
+        }
+        csv += `# Tasks Rated: ${data.summary.tasksRated} of ${data.summary.totalTasks}\n`;
+        csv += `# Average Rating: ${data.summary.averageRating || 'N/A'}\n`;
+        csv += '#\n';
+        csv += 'Phase,Function,Task,Rating,Rating Label\n';
+
+        data.tasks.forEach(t => {
+            const rating = t.rating !== null ? t.rating : '';
+            const label = t.ratingLabel || '';
+            csv += `"${t.phase}","${t.function}","${t.task}",${rating},"${label}"\n`;
+        });
+
+        downloadFile(csv, 'text/csv', `ai_exposure_assessment_${respondent.name.replace(/\s+/g, '_')}_${respondent.date}.csv`);
+    }
+
+    function exportJSON() {
+        const data = getExportData();
+        const json = JSON.stringify(data, null, 2);
+        const respondent = data.respondent;
+
+        downloadFile(json, 'application/json', `ai_exposure_assessment_${respondent.name.replace(/\s+/g, '_')}_${respondent.date}.json`);
+    }
+
+    function downloadFile(content, mimeType, filename) {
+        const blob = new Blob([content], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Navigation
+    document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById(this.dataset.section).classList.add('active');
+        });
+    });
+
+    function togglePhase(header) {
+        header.closest('.phase-card').classList.toggle('expanded');
+    }
+
+    function toggleFunction(header) {
+        header.closest('.function-card').classList.toggle('expanded');
+    }
+
+    // Initialize on load
+    init();
+    </script>
+</body>
+</html>

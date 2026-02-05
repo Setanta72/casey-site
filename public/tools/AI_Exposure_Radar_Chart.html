@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer AI Exposure Assessment - Radar Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #e8e8e8;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-title {
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+            color: #00d4ff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #00d4ff, #7b2cbf);
+            border-radius: 2px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+        }
+
+        .insights-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .insight-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid;
+        }
+
+        .insight-card.high {
+            border-color: #ff6b6b;
+        }
+
+        .insight-card.medium {
+            border-color: #ffd93d;
+        }
+
+        .insight-card.low {
+            border-color: #6bcb77;
+        }
+
+        .insight-card h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-card.high h3 { color: #ff6b6b; }
+        .insight-card.medium h3 { color: #ffd93d; }
+        .insight-card.low h3 { color: #6bcb77; }
+
+        .insight-card p {
+            font-size: 0.85rem;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .insight-card .rating {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 900px) {
+            .stats-row {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.3rem;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .bar-chart-container {
+            height: 500px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Designer AI Exposure Assessment</h1>
+            <p class="subtitle">Radar Analysis of AI Impact Across Design Functions</p>
+        </header>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value">2.94</div>
+                <div class="stat-label">Overall Average</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">176</div>
+                <div class="stat-label">Tasks Assessed</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">22</div>
+                <div class="stat-label">Functions</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">4.6</div>
+                <div class="stat-label">Highest (Specifier)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1.2</div>
+                <div class="stat-label">Lowest (Collaborator)</div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="chart-container">
+                <div class="chart-title">AI Exposure by Design Phase</div>
+                <div class="chart-wrapper">
+                    <canvas id="phaseRadar"></canvas>
+                </div>
+            </div>
+
+            <div class="insights-panel">
+                <div class="chart-title">Key Findings</div>
+
+                <div class="insight-card high">
+                    <h3>🔴 Highest Exposure: Specification & Documentation</h3>
+                    <p>Tasks involving creating specifications, technical documentation, and structured outputs are most vulnerable to AI augmentation. A junior designer with AI tools could produce work matching experienced specialists.</p>
+                    <span class="rating">Specifier: 4.6 | Documentarian: 4.5</span>
+                </div>
+
+                <div class="insight-card high">
+                    <h3>🔴 High Exposure: Analytical Functions</h3>
+                    <p>Research synthesis, pattern recognition, and competitive analysis show high AI exposure. These traditionally expert-level skills can now be significantly augmented.</p>
+                    <span class="rating">Analyst: 3.8 | Researcher: 3.4</span>
+                </div>
+
+                <div class="insight-card low">
+                    <h3>🟢 Lowest Exposure: Human Relationships</h3>
+                    <p>Facilitation, collaboration, and stakeholder management remain deeply human. Trust-building, reading rooms, and navigating organizational politics resist automation.</p>
+                    <span class="rating">Collaborator: 1.2 | Facilitator: 1.3</span>
+                </div>
+
+                <div class="insight-card medium">
+                    <h3>🟡 Mixed Exposure: Creative Functions</h3>
+                    <p>Ideation shows split exposure—divergent generation is AI-augmentable, but synthesis and judgment remain human-dependent. Frame innovation stays protected.</p>
+                    <span class="rating">Ideator: 2.8 | Reframer: 2.0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="chart-container full-width">
+                <div class="chart-title">AI Exposure by Function (All 22 Functions)</div>
+                <div class="chart-wrapper bar-chart-container">
+                    <canvas id="functionBar"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="chart-container">
+                <div class="chart-title">Discover Phase Functions</div>
+                <div class="chart-wrapper">
+                    <canvas id="discoverRadar"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Define Phase Functions</div>
+                <div class="chart-wrapper">
+                    <canvas id="defineRadar"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard">
+            <div class="chart-container">
+                <div class="chart-title">Develop Phase Functions</div>
+                <div class="chart-wrapper">
+                    <canvas id="developRadar"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-title">Deliver Phase Functions</div>
+                <div class="chart-wrapper">
+                    <canvas id="deliverRadar"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ff6b6b;"></div>
+                <span>High Exposure (4-5): AI-ready now or imminent</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #ffd93d;"></div>
+                <span>Medium Exposure (2-3): Near to mid-term horizon</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color" style="background: #6bcb77;"></div>
+                <span>Low Exposure (0-1): Long-term or protected</span>
+            </div>
+        </div>
+
+        <footer>
+            <p>Based on Claude's assessment of 176 design tasks across the Double Diamond framework</p>
+            <p>Assessment conducted February 2026 | <a href="Designer_AI_Exposure_Assessment.html">Try the Interactive Assessment Tool →</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Chart.js default configuration
+        Chart.defaults.color = '#aaa';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.1)';
+
+        const radarOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                r: {
+                    beginAtZero: true,
+                    max: 5,
+                    ticks: {
+                        stepSize: 1,
+                        backdropColor: 'transparent',
+                        color: '#666'
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    angleLines: {
+                        color: 'rgba(255, 255, 255, 0.1)'
+                    },
+                    pointLabels: {
+                        font: {
+                            size: 11
+                        },
+                        color: '#ccc'
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#00d4ff',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(0, 212, 255, 0.3)',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            return `AI Exposure: ${context.raw.toFixed(1)} / 5`;
+                        }
+                    }
+                }
+            }
+        };
+
+        // Phase Radar Chart
+        new Chart(document.getElementById('phaseRadar'), {
+            type: 'radar',
+            data: {
+                labels: ['Discover', 'Define', 'Develop', 'Deliver', 'Meta-Function'],
+                datasets: [{
+                    data: [2.8, 2.7, 3.3, 3.5, 2.2],
+                    backgroundColor: 'rgba(0, 212, 255, 0.2)',
+                    borderColor: '#00d4ff',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#00d4ff',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#00d4ff'
+                }]
+            },
+            options: radarOptions
+        });
+
+        // Discover Phase Radar
+        new Chart(document.getElementById('discoverRadar'), {
+            type: 'radar',
+            data: {
+                labels: ['Researcher', 'Ethnographer', 'Analyst', 'Facilitator'],
+                datasets: [{
+                    data: [3.4, 2.4, 3.8, 1.3],
+                    backgroundColor: 'rgba(123, 44, 191, 0.2)',
+                    borderColor: '#7b2cbf',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#7b2cbf',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#7b2cbf'
+                }]
+            },
+            options: radarOptions
+        });
+
+        // Define Phase Radar
+        new Chart(document.getElementById('defineRadar'), {
+            type: 'radar',
+            data: {
+                labels: ['Synthesizer', 'Strategist', 'Reframer', 'Advocate', 'Communicator'],
+                datasets: [{
+                    data: [2.8, 2.6, 2.0, 2.1, 3.6],
+                    backgroundColor: 'rgba(255, 107, 107, 0.2)',
+                    borderColor: '#ff6b6b',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ff6b6b',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#ff6b6b'
+                }]
+            },
+            options: radarOptions
+        });
+
+        // Develop Phase Radar
+        new Chart(document.getElementById('developRadar'), {
+            type: 'radar',
+            data: {
+                labels: ['Ideator', 'Form-Giver', 'Prototyper', 'Tester', 'Collaborator'],
+                datasets: [{
+                    data: [2.8, 3.4, 3.5, 3.6, 1.2],
+                    backgroundColor: 'rgba(255, 217, 61, 0.2)',
+                    borderColor: '#ffd93d',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#ffd93d',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#ffd93d'
+                }]
+            },
+            options: radarOptions
+        });
+
+        // Deliver Phase Radar
+        new Chart(document.getElementById('deliverRadar'), {
+            type: 'radar',
+            data: {
+                labels: ['Specifier', 'Implementer', 'Orchestrator', 'Documentarian', 'Evaluator'],
+                datasets: [{
+                    data: [4.6, 3.5, 2.4, 4.5, 3.5],
+                    backgroundColor: 'rgba(107, 203, 119, 0.2)',
+                    borderColor: '#6bcb77',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#6bcb77',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#6bcb77'
+                }]
+            },
+            options: radarOptions
+        });
+
+        // Function Bar Chart
+        const functionData = [
+            { name: 'Specifier', value: 4.6, phase: 'Deliver' },
+            { name: 'Documentarian', value: 4.5, phase: 'Deliver' },
+            { name: 'Analyst', value: 3.8, phase: 'Discover' },
+            { name: 'Communicator', value: 3.6, phase: 'Define' },
+            { name: 'Tester', value: 3.6, phase: 'Develop' },
+            { name: 'Prototyper', value: 3.5, phase: 'Develop' },
+            { name: 'Implementer', value: 3.5, phase: 'Deliver' },
+            { name: 'Evaluator', value: 3.5, phase: 'Deliver' },
+            { name: 'Form-Giver', value: 3.4, phase: 'Develop' },
+            { name: 'Researcher', value: 3.4, phase: 'Discover' },
+            { name: 'Synthesizer', value: 2.8, phase: 'Define' },
+            { name: 'Ideator', value: 2.8, phase: 'Develop' },
+            { name: 'Strategist', value: 2.6, phase: 'Define' },
+            { name: 'Reflective Practitioner', value: 2.5, phase: 'Meta' },
+            { name: 'Ethnographer', value: 2.4, phase: 'Discover' },
+            { name: 'Orchestrator', value: 2.4, phase: 'Deliver' },
+            { name: 'Advocate', value: 2.1, phase: 'Define' },
+            { name: 'Reframer', value: 2.0, phase: 'Define' },
+            { name: 'Systems Thinker', value: 1.9, phase: 'Meta' },
+            { name: 'Facilitator', value: 1.3, phase: 'Discover' },
+            { name: 'Collaborator', value: 1.2, phase: 'Develop' }
+        ].sort((a, b) => b.value - a.value);
+
+        const phaseColors = {
+            'Discover': '#7b2cbf',
+            'Define': '#ff6b6b',
+            'Develop': '#ffd93d',
+            'Deliver': '#6bcb77',
+            'Meta': '#00d4ff'
+        };
+
+        new Chart(document.getElementById('functionBar'), {
+            type: 'bar',
+            data: {
+                labels: functionData.map(d => d.name),
+                datasets: [{
+                    data: functionData.map(d => d.value),
+                    backgroundColor: functionData.map(d => phaseColors[d.phase] + '99'),
+                    borderColor: functionData.map(d => phaseColors[d.phase]),
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 5,
+                        grid: {
+                            color: 'rgba(255, 255, 255, 0.1)'
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    y: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                        titleColor: '#00d4ff',
+                        bodyColor: '#fff',
+                        callbacks: {
+                            label: function(context) {
+                                const item = functionData[context.dataIndex];
+                                return [`AI Exposure: ${item.value.toFixed(1)} / 5`, `Phase: ${item.phase}`];
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
