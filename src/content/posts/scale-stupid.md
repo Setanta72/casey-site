@@ -6,6 +6,8 @@ tags:
 description: 'A comment on the pace of change in computer use and the level of risk taking '
 image: https://res.cloudinary.com/do7oi2ioy/image/upload/v1770578430/casey-site/casey-site/uncategorized/Stupid.jpg
 ---
+![Image](https://res.cloudinary.com/do7oi2ioy/image/upload/v1770578430/casey-site/casey-site/uncategorized/Stupid.jpg)
+
 # Nothing Scales Like Stupid
 
 
