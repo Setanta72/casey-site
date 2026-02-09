@@ -17,11 +17,9 @@ Our cohort experienced the maturation of concepts that had been gathering pace s
 
 I feel that we are now at a similar point with Artificial Intelligence, but the dynamics have shifted dangerously. We are seeing a return of that "hacking frontier" attitude, but without the friction that once acted as a safety valve.
 
-### The Trap of Exceptionalism and the Irish Context
+### The Trap of Exceptionalism
 
 It is easy to fall into the trap of viewing one's own history as unique. But my experience wasn't exceptional; it was merely unusual. It mirrored the experience of many in technical disciplines across advanced economies.
-
-However, the Irish experience added a specific layer of intensity to this period. In the late 1980s and early 1990s, Ireland was undergoing significant social liberalization and a rapid economic transformation an the "knowledge economy" was just emerging. Some universities were more connected than others; the University of Limerick (UL), by reason of geography and its proximity to the National Technological Park, was notably early on that connection list. We were in the right place at the right time to see the future booting up.
 
 ### Hacking the Future: Hubris and Indignation
 
