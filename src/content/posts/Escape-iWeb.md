@@ -440,7 +440,7 @@ Create config file manually:
 {
   "sitePath": "/home/username/Website/site",
   "mediaPath": "/home/username/Media",
-  "cloudinaryCloudName": "do7oi2ioy"
+  "cloudinaryCloudName": "****"
 }
 ```
 
