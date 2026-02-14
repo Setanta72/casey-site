@@ -22,5 +22,11 @@
     "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1770578430/casey-site/casey-site/uncategorized/Stupid.jpg",
     "public_id": "casey-site/casey-site/uncategorized/Stupid",
     "uploaded_at": "2026-02-08T19:20:31.779Z"
+  },
+  "uncategorized/blenderite.mp4": {
+    "hash": "aaa5e013e360021d6aa96f7585f7814b",
+    "url": "https://res.cloudinary.com/do7oi2ioy/video/upload/v1771066104/casey-site/casey-site/uncategorized/blenderite.mp4",
+    "public_id": "casey-site/casey-site/uncategorized/blenderite",
+    "uploaded_at": "2026-02-14T10:48:27.680Z"
   }
 }

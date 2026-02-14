@@ -5,7 +5,7 @@ category: research
 tags:
   - video
 ---
-This is a quick demo of the current state of play of the Blenderite add-on
+<video src="https://res.cloudinary.com/do7oi2ioy/video/upload/v1771066104/casey-site/casey-site/uncategorized/blenderite.mp4" controls></video>This is a quick demo of the current state of play of the Blenderite add-on
 
 Here we build the basic medium size studio and the default materials and apply them first to Suzanne (thats the monkey, a standard blender mesh) and then to an imported .glb file.
 
