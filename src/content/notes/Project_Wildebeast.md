@@ -13,3 +13,6 @@ Need to document the stack, accounts and login. ![Image](/images/wordpress/brian
 *"Do you remember when rock was young?"*
 
 Testing use under the correct name
+
+We are now up and running on the MBP having fixed the set-up wizard issue, I think. 
+
