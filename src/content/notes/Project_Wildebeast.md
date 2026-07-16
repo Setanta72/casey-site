@@ -11,3 +11,5 @@ I am moving my main blogging workflow to my MBP but more files and settings are 
 
 Need to document the stack, accounts and login. ![Image](/images/wordpress/brianp_headphones_designed_by_marc_newsome_in_the_style_of_syd__fb060d17-eff9-43c2-b7af-4b019e21ed33.png)
 *"Do you remember when rock was young?"*
+
+Testing use under the correct name
