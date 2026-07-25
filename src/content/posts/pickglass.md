@@ -9,7 +9,7 @@ description: >-
   the basic lifting on qualitative research. The aim of these tools is to
   provide an open source open data platform for qualitative research and provide
   a one-stop location for all of the data to facilitate networking.
-image: /media/research/Screenshot 2026-06-11 at 15.27.03.png
+image: /media/research/QualVis.png
 ---
 
 # From Theme Mapper to PickGlass
@@ -18,15 +18,19 @@ This post reports on the development of two tools. The first was Prototyped rapi
 
 The second is a desktop application for carrying an entire qualitative design-research study — sources, codes, insights, memos, literature, and the final write-up — in a folder of plain markdown files.
 
-The second grew out of the first to some degree but also out of my experience of using Obsidian combined with Jupyter notebooks to capture and analyze qualitative data [Qualatative Analysis with Jupyter](2023-05-21-qualitative-analysis-with-jupyter.md). Both grew out of the same Desire to have qualitative analysis tools that fit well with the manner in which design research actually unfolds, but also copes to some degree with the sprawl of data that qualitative analysis can generate while keeping open formats and not locking the research data behind expensive commercial software and proprietary file formats.
+The second grew out of the first to some degree but also out of my experience of using Obsidian combined with Jupyter notebooks to capture and analyze qualitative data [Qualatative Analysis with Jupyter](2023-05-21-qualitative-analysis-with-jupyter.md). Both grew out of the same desire to have qualitative analysis tools that fit well with the manner in which design research actually unfolds, but also copes  with the sprawl of data that qualitative analysis can generate while keeping open formats and not locking the research data behind expensive commercial software and proprietary file formats.
 
 ## The workshop problem
 
-Design research happens in rooms. Workshops, co-design sessions, crit walls — moments where insights are voiced, captured on stickies, and too often die in a photograph of a whiteboard that nobody ever opens again. The conventional tools for qualitative analysis (NVivo, ATLAS.ti, MAXQDA) assume the analysis happens later, at a desk, by a licensed operator. I wanted the opposite: capture and theme insights *during* the session, visibly, so the analysis becomes part of the workshop's shared conversation rather than something done *to* it afterwards.
+Design has a propensity to action. Design research data often arises in dynamic situations such as  workshops, co-design sessions or crit walls. These are moments where insights are voice, frequently captured on stickies and too often die in a photograph of a whiteboard that rapidly looses context over time. Design research is also iterative in nature with one research interaction frequently influencing the design and execution of the next. 
 
-## Theme Mapper: one HTML file, no excuses
+The conventional manual approaches to tools for qualitative analysis and software tools such as NVivo, ATLAS.ti, MAXQDA assume the analysis happens later, at a desk in a quiet room.
 
-Theme Mapper was the answer to that: a **single, self-contained HTML file**. No install, no backend, no network, no IT-department conversation. Open it in a browser on the facilitator's laptop, plug into the projector, and go.
+There are frequently situations where the capture and theme insights *during* the session, visibly, so the analysis becomes part of the workshop's shared conversation rather than something done *to* it afterwards when the quality of the insights can fade.
+
+## Theme Mapper: one HTML file, no overhead
+
+Theme Mapper is an attempt to meet that need with a **single, self-contained HTML file**. No install, no backend, no network, no IT-department conversation. Open it in a browser on the facilitator's laptop, plug into the projector, and go.
 
 *[Screenshot: Theme Mapper's capture view — the insight log with theme chips, and the treemap filling as insights are themed]*
 
@@ -36,11 +40,15 @@ The constraint was the design. Because it was one file that ran offline:
 - It could run in rooms with **no wifi and no data-sharing agreement** — which, in university settings, is many rooms.
 - Everything lived in the browser's local storage, with JSON snapshots and CSV import/export as the escape hatch.
 
-It grew through six versions over a few intense weeks. By the end it had: multi-theme tagging, parent theme groupings, a drill-down treemap, a packed word cloud, a co-occurrence matrix, a cumulative timeline, session filters, a **present mode** that auto-cycled visuals for the projector, dark mode, PNG snapshots of every visual, and a codebook export with descriptions, counts and exemplar quotes.
+The application started as a means of producing a treemap and word cloud from codes generated in a faculty strategy session.Through a number of iterations informed by feedback from colleagues the application was developed to provide multi-theme tagging, parent theme groupings, a drill-down treemap, a packed word cloud, a co-occurrence matrix, a cumulative timeline and session filters. To assist with communication of the data the application features a **present mode** that displays visuals for the projector and a projector friendly dark mode.One of the frequent frustrations with commercial software is the difficulty in exporting data and visuals of the analysis the application therefore provides PNG snapshots of every visual, and a codebook export with descriptions, counts and exemplar quotes which is available in HTML and JSON.
 
 *[Screenshot: present mode on a projector — auto-cycling between treemap and word cloud]*
 
-The most consequential addition was the last: **local AI assistance via Ollama**. A model running on the facilitator's own machine could suggest themes from the working codebook, run a review pass for duplicate themes, and bulk-code an imported CSV of raw insights into a drafted codebook — with every suggestion passing through a human review table before anything was applied. The local-first rule was not an aesthetic preference: some workshops operate under data permissions that simply do not allow participant utterances to be sent to a cloud API. A model on your own laptop changes the ethics conversation entirely. That principle — *AI assistance must be local, optional, and reviewable* — carried straight into everything that came after.
+The application allows import and export of csv or JSON files of insight/codes combinations is a very simple human readable file format so that data sets can easily be exported or data sets generated elsewhere can easily be formatted and imported into the tool for visualisation and analysis.
+
+## AI Assistance
+
+Early in the development of the tool one of the core concepts was that the use of a locally running AI model could be of assistance in 1st pass coding of insights to provide rapid feedback to a workshop and prompt reflection and discussion. The tool as presented offers the use of a  **local AI assistance via Ollama**. A model running on the facilitator's own machine can suggest themes from the working codebook, run a review pass for duplicate themes, and bulk-code an imported CSV of raw insights into a drafted codebook. with every suggestion passing through a human review table before anything was applied. The local-first rule was not an aesthetic preference: some workshops operate under data permissions that simply do not allow participant utterances to be sent to a cloud API. A model on your own laptop changes the ethics conversation entirely. That principle — *AI assistance must be local, optional, and reviewable* — carried straight into everything that came after.
 
 *[Screenshot: the AI review table — model-drafted themes awaiting accept/reject]*
 
