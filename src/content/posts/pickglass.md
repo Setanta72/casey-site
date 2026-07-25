@@ -9,9 +9,9 @@ description: >-
   the basic lifting on qualitative research. The aim of these tools is to
   provide an open source open data platform for qualitative research and provide
   a one-stop location for all of the data to facilitate networking.
-image: /media/research/QualVis.png
+image: https://res.cloudinary.com/do7oi2ioy/image/upload/v1784991274/casey-site/casey-site/research/QualVis.png
 ---
-![Image](/media/research/QualVis.png)
+![Image](https://res.cloudinary.com/do7oi2ioy/image/upload/v1784991274/casey-site/casey-site/research/QualVis.png)
 # From Theme Mapper to PickGlass
 
 This post reports on the development of two tools. The first was Prototyped rapidly to facilitate live qualitative mapping in a workshop session and its first simple instance was a single HTML file for coding workshop insights live, in the room, on a projector.This was enhanced later to build in the capability for first-pass qualitative analysis by a small LLM model running locally and also an improved cross-tab feature to allow for more detailed data analysis. 
@@ -123,7 +123,7 @@ First run: create a new vault, open the **PickGlass user guide** that appears at
 
 ## Feedback
 
-This is a beta, and feedback is the point. Please use [GitHub Issues](https://github.com/Setanta72/PickGlass/issues) — what you did, what you expected, what happened, and your platform. Methodological reactions are as welcome as bug reports: if the tool fights the way you actually analyse, that *is* a bug. If you don't have a GitHub account, [email me](mailto:casey_clan@mac.com) and I'll file it.
+This is a beta, and feedback is the point. Please use [GitHub Issues](https://github.com/Setanta72/PickGlass/issues) — what you did, what you expected, what happened, and your platform. Methodological reactions are as welcome as bug reports: if the tool fights the way you actually analyse, that *is* a bug.
 
 The vault is yours; the app is just a lens on it. That's the whole idea.
 
