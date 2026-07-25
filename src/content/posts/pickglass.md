@@ -11,7 +11,7 @@ description: >-
   a one-stop location for all of the data to facilitate networking.
 image: /media/research/QualVis.png
 ---
-
+![Image](/media/research/QualVis.png)
 # From Theme Mapper to PickGlass
 
 This post reports on the development of two tools. The first was Prototyped rapidly to facilitate live qualitative mapping in a workshop session and its first simple instance was a single HTML file for coding workshop insights live, in the room, on a projector.This was enhanced later to build in the capability for first-pass qualitative analysis by a small LLM model running locally and also an improved cross-tab feature to allow for more detailed data analysis. 
