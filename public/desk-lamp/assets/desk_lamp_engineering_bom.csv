@@ -1,0 +1,43 @@
+item,part_no,part_name,qty,material,mass_g
+1,DL-101,EPDM Anti-Slip Foot (Ø18×4),4,"EPDM 70A, Matte Black",4.9
+2,DL-102,Bottom Weight Plate (166×166×4),1,"Mild Steel, Black Oxide",842.2
+3,DL-103,CSK Socket Bolt (M5×14),4,"304 SS, ISO 10642",10.9
+4,DL-104,Internal Counterweight Block,1,Cast Iron ASTM A48 (2.10 kg),2099.4
+5,DL-105,Lower Plinth Skirt (176×176),1,"EPDM, Matte Charcoal",53.8
+6,DL-106,Base Frustum Housing (3mm Wall),1,"6061-T6 Al, Satin Obsidian",333.3
+7,DL-107,Top Mounting Plate (90×90×3),1,"Copper-Bronze, Brushed",207.8
+8,DL-108,Button-Head Screw (M4×8),4,"Copper-Bronze, ISO 7380",6.0
+9,DL-109,Swivel Bearing Ring (Ø67×0.8),1,"C36000 Brass, Champagne",22.2
+10,DL-110,360° Swivel Turret Drum (Ø70),1,"Copper-Bronze, Brushed",205.4
+11,DL-111,Hollow M16 Kingpin & Hex Nut,1,"304 SS (Ø9 Bore, ±170° Stop)",47.1
+12,DL-201,Rotary Dimmer Bezel Collar (Ø21),1,"304 SS, Smoked Gunmetal",1.3
+13,DL-202,Knurled Push-Rotary Dimmer Knob,1,"C36000 Brass, 56-Flute",17.3
+14,DL-203,Inline Rotary Dimmer Module,1,UL/CE 250V/5A Switch,3.4
+15,DL-204,Rear Mains Strain-Relief Boot,1,Gunmetal / EPDM Boot,0.9
+16,DL-205,Woven Mains Power Cord (Ø5.8),1,"Braided Textile, Matte Black",3.4
+17,DL-206,Stepped Tube Grommets (G0–G4),5,Gunmetal / EPDM Sleeve,3.4
+18,DL-207,Articulated Braided Cord Loops,3,Braided Textile Ø4.5 (3x),5.9
+19,DL-208,Shade Crown Hex Cord Gland (G5),1,C36000 Brass PG7 + EPDM Boot,6.3
+20,DL-301,Base Fork Outer Clevis Cheek,2,"Copper-Bronze, 3mm CNC",28.2
+21,DL-302,Base Fork Inner A-Frame Cheek,2,"Copper-Bronze, 3mm CNC",88.8
+22,DL-303,"Base Main Pivot Axle (P0, Ø8)",1,"304 Stainless, Ground",27.0
+23,DL-304,Parallelogram Pivot Shaft (P1/E1),2,"304 Stainless, Ø6.5",24.6
+24,DL-305,Split Spring Anchor Pins & Caps,6,304 SS Pin + Brass Cap,24.8
+25,DL-306,Lower Hollow Arm Tube (Ø12×0.85),2,"Copper-Bronze, L=200mm",135.1
+26,DL-307,Spring Anchor Tube Clamp (B1/B2),4,"Copper-Bronze, Machined",31.7
+27,DL-308,Central Parallelogram Tie-Rod,1,"304 SS Smoked, Ø7×200",66.3
+28,DL-309,"Lower Extension Spring (S1, 52T)",2,"ASTM A228 Wire, OD11×d1.0",21.5
+29,DL-401,Inverted-U Elbow Yoke (Open Y=0),1,"Copper-Bronze, CNC Monolith",93.9
+30,DL-402,Split M8 Elbow Axle & Brass Washer,2,Copper-Bronze + Brass,31.8
+31,DL-403,Upper Hollow Arm Tube (Ø12×0.85),2,"Copper-Bronze, L=225mm",125.8
+32,DL-404,"Upper Spring Cross-Bar (B2, Ø7)",1,"304 SS, Smoked Gunmetal",17.0
+33,DL-405,"Upper Extension Spring (S2, 72T)",2,"ASTM A228 Wire, OD10.8×d0.95",26.0
+34,DL-406,"Wrist Cross-Barrel (W, Ø13×62)",1,"Copper-Bronze, Brushed",72.4
+35,DL-501,Wrist Yaw Stem & Brass Washer,1,Copper-Bronze + Brass,8.8
+36,DL-502,Straddling Wishbone Shade U-Yoke,1,"Copper-Bronze, 3.5×12mm",79.3
+37,DL-503,Trunnion Friction Disc (Ø18×1.4),2,Graphite-Filled PTFE,1.5
+38,DL-504,Trunnion Cap (-Y) & Brass Thumbscrew,2,Copper Cap + Brass Knurl,22.2
+39,DL-505,"Spun-Metal Bell Shade (Ø155, 8 Vent)",1,"6061-T6 Al 2.2mm, Obsidian",261.4
+40,DL-506,Internal Brass Balance Collar,1,C36000 Brass (CG Balance),96.8
+41,DL-507,Hollow E27 Ceramic Socket,1,Porcelain Ceramic,60.7
+42,DL-508,"Frosted A19 LED Bulb (Ø58, 2450K)",1,Blown Glass (1.2mm Wall),39.0

@@ -1,0 +1,29 @@
+Item,Part_Name,Process,Material,Qty,Mass_Each_g,Notes
+1,Base_Tier1_12mm_CNC,CNC 12mm (1-sided),12mm Baltic Birch Ply,1,144.57,"196x168mm, 5mm steel rabbet, ballast & switchgear bays, trapped DC T-slot"
+2,Base_Tier2_12mm_CNC,CNC 12mm (1-sided),12mm Baltic Birch Ply,1,190.05,"180x152mm, Ø30.2 bore, 5.5mm turret cbore w/ 60deg stop lug, 3mm pot web"
+3,Base_Tier3_12mm_CNC,CNC 12mm (1-sided),12mm Baltic Birch Ply,1,116.51,"112x136mm turret pedestal, Ø30.2 precision bearing bore"
+4,Turret_Flange_12mm_CNC,CNC 12mm (1-sided),12mm Baltic Birch Ply,1,7.95,"Ø44mm flange, 6mm underside Ø30.1 dowel socket + 4x clevis mortises"
+5,Arm_Lower_6mm_Laser,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,2,26.48,"Twin-pill truss, 8x8mm carriage square on -Y cheek, 3x Ø8mm dowel holes"
+6,Arm_Upper_6mm_Laser,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,2,24.85,"Single stadium slot, 6x6mm wrist carriage square on -Y cheek"
+7,Turret_ClevisCheek_6mm_Laser,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,2,6.79,Dual 11x6mm bottom tenons locking into 12mm Turret Flange
+8,Turret_RetainingCollar_6mm_Laser,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,1,6.83,"Ø48xØ13mm collar, 2x vertical M4 screw holes + Ø5mm yaw stop pin bore"
+9,Dimmer_Knob_2x6mm_Laser,Laser Cut & Etch 6mm,6mm Baltic Birch Ply,2,3.2,Subtle 12-flute 1.15mm scallops; Layer 2 has red-fill pointer laser etch
+10,Shade_Rib_Standard_6mm_Laser,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,14,4.94,Flush 50/50 half-lap curved Kumiko ribs w/ R0.7mm micro-dogbones
+11,Shade_SpineFront_WristArch_6mm,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,1,9.79,Split assemblable Front Rib + Wrist Arch + Ø4mm pin bore
+12,Shade_SpineBack_6mm,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,1,5.58,Split assemblable Back Rib hooking into Front Wrist Arch
+13,Shade_CrownRing_6mm_Laser,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,1,13.57,16-slot parallel-walled flush 50/50 half-lap crown ring
+14,Shade_RimRing_6mm_Laser,Laser Cut 6mm (A2 SVG),6mm Baltic Birch Ply,1,21.21,16-slot parallel-walled flush 50/50 half-lap rim ring
+15,Base_BottomPlate_6mm_Steel,Laser/Waterjet/Saw 6mm,6mm Mild Steel Plate,1,883.8,"152x124x6mm ballast & removable service cover, 6x M3 CSK holes"
+16,Base_BallastBar_10mm_Steel,Bar Stock Cut,10x20mm Mild Steel Bar,2,88.43,53x19x9.8mm rear-biased ballast bars trapped by bottom plate
+17,Turret_HollowWalnutDowel,Turned/Drilled Hardwood,Walnut Ø30 OD / Ø11 ID,1,11.12,"28.4mm long hollow pivot shaft, R3mm chamfered bottom cord exit"
+18,Walnut_CrossDowels_8mm,Cut Dowel Stock,Ø8mm Walnut Dowel,13,1.5,"4 base thru, 2 base front blind, 2 clevis, 3 lower arm, 2 upper arm"
+19,DIN603_CarriageBolt_M8x50,Off-the-Shelf Hardware,Black-Oxide Steel,2,24.0,P0 & E0 anti-spin carriage bolts + M8 fender washers + Belleville + wing nuts
+20,DIN603_CarriageBolt_M6x35,Off-the-Shelf Hardware,Black-Oxide Steel,1,12.0,W wrist anti-spin carriage bolt + M6 fender washers + Belleville + wing nut
+21,Nylon66_Washers_Kit,Off-the-Shelf Hardware,White Nylon 6/6,8,1.8,"2x Ø44 turret thrust, 4x Ø28 P0/E0 friction, 2x Ø20 W friction"
+22,Brass_Pins_Inserts_Screws,Off-the-Shelf Hardware,Brass / Black-Oxide,10,2.0,"6x M3 inserts+CSK screws, 2x M4x16 retainer screws, 1x Ø5 stop pin, 1x Ø4 spine pin"
+23,FDM_01_E27_VentedCarrier,FDM 3D Print,Matte Charcoal PETG,1,13.52,4-slot vented bayonet thermal carrier
+24,FDM_02_DCJack_TrappedBezel,FDM 3D Print,Matte Charcoal PETG,1,2.7,Rear 5.5x2.1mm DC bezel w/ 3mm retention ears
+25,FDM_03_PWM_PCB_Cradle,FDM 3D Print,Matte Charcoal PETG,1,1.98,0.8mm steel-plate insulator + 4 corner PCB standoffs
+26,FDM_04_CordGrommets_x4,FDM 3D Print,Matte Charcoal TPU,4,0.5,Soft 22 AWG cord routing grommets
+27,FDM_05_CornerFeet_x4,FDM 3D Print,Matte Charcoal TPU,4,0.4,Ø14x2mm anti-slip corner feet outside steel cover rabbet
+28,Electrics_12V_LED_Kit,Off-the-Shelf Electrics,12V DC Class III SELV,1,144.0,"12V 2A PSU, 5.5x2.1mm jack, PWM dimmer, 22 AWG braided cord, ceramic E27, 2700K G45 LED"

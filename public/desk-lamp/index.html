@@ -1,0 +1,4040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Articulated Desk Lamp — End-to-End AI Design, Flexible Mechanics, Parametric CAD &amp; ISO Drawings</title>
+  <meta name="description" content="Complete engineering case study documenting an articulated constant-tension desk lamp from ink sketch through multi-agent Blender 5.2 modeling, flexible spring &amp; cord Cycles animation, FreeCAD &amp; Fusion 360 parametric CAD, ISO A3 GA/Exploded drawings, 42-item BOM, and full technical addendum.">
+  <style>
+    :root {
+      --bg: #0c0f10;
+      --bg-elev: #13181a;
+      --bg-card: #181e21;
+      --bg-card-hover: #1e2629;
+      --border: rgba(232, 223, 211, 0.11);
+      --border-strong: rgba(200, 125, 78, 0.35);
+      --text: #ece6dd;
+      --text-muted: #9aa3a7;
+      --text-dim: #6f797e;
+      --copper: #cc804e;
+      --copper-soft: rgba(204, 128, 78, 0.16);
+      --cobalt: #1378c4;
+      --cobalt-soft: rgba(19, 120, 196, 0.18);
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      --font-mono: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace;
+      --max-w: 1240px;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+    }
+
+    body {
+      margin: 0;
+      line-height: 1.6;
+      background:
+        radial-gradient(ellipse 80% 45% at 50% -10%, rgba(204, 128, 78, 0.10), transparent 65%),
+        radial-gradient(ellipse 60% 40% at 85% 25%, rgba(19, 120, 196, 0.08), transparent 60%),
+        var(--bg);
+    }
+
+    img, video {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    a { color: inherit; }
+
+    /* =====================================================================
+       Scroll Progress Indicator (modern-web-guidance: scroll-progress-indicator)
+       ===================================================================== */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--cobalt), var(--copper));
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+      z-index: 200;
+      pointer-events: none;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: scroll()) {
+        @keyframes grow-progress {
+          from { transform: scaleX(0); }
+          to   { transform: scaleX(1); }
+        }
+        #scroll-progress {
+          animation: grow-progress auto linear;
+          animation-timeline: scroll();
+        }
+      }
+    }
+
+    /* =====================================================================
+       Header & Navigation
+       ===================================================================== */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(12, 15, 16, 0.80);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.25rem;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+
+    .brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--cobalt), var(--copper));
+      box-shadow: 0 0 12px rgba(204, 128, 78, 0.55);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-links::-webkit-scrollbar { display: none; }
+
+    .nav-links a {
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      padding: 0.4rem 0.7rem;
+      border-radius: 999px;
+      white-space: nowrap;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.06);
+      outline: none;
+    }
+
+    /* =====================================================================
+       Layout & Typography
+       ===================================================================== */
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    section {
+      padding: 5.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type {
+      border-bottom: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--copper);
+      margin-bottom: 0.9rem;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 22px;
+      height: 1px;
+      background: var(--copper);
+    }
+
+    h1, h2, h3 {
+      margin: 0;
+      letter-spacing: -0.03em;
+      line-height: 1.12;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 4.8vw, 3.85rem);
+      max-width: 15ch;
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 3vw, 2.45rem);
+      margin-bottom: 0.85rem;
+    }
+
+    h3 {
+      font-size: 1.08rem;
+      letter-spacing: -0.015em;
+    }
+
+    .lead {
+      color: var(--text-muted);
+      font-size: clamp(1rem, 1.35vw, 1.15rem);
+      max-width: 62ch;
+      margin: 1rem 0 0;
+    }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .section-head p {
+      color: var(--text-muted);
+      max-width: 56ch;
+      margin: 0;
+      font-size: 0.98rem;
+    }
+
+    /* =====================================================================
+       Hero Section
+       ===================================================================== */
+    .hero {
+      padding: 4.5rem 0 5.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 3rem;
+      align-items: center;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 2.25rem;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+    }
+
+    .stat-val {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .stat-label {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .hero-main-frame {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      background: #060809;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.55);
+      cursor: zoom-in;
+    }
+
+    .hero-main-frame img {
+      width: 100%;
+      aspect-ratio: 1024 / 992;
+      object-fit: cover;
+    }
+
+    .hero-sketch-inset {
+      position: absolute;
+      left: -1.5rem;
+      bottom: -1.25rem;
+      width: clamp(120px, 28%, 175px);
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.65);
+      cursor: zoom-in;
+      transition: transform 0.25s ease;
+    }
+
+    .hero-sketch-inset:hover {
+      transform: translateY(-4px) scale(1.03);
+    }
+
+    .hero-sketch-inset img {
+      border-radius: 7px;
+      width: 100%;
+    }
+
+    .hero-sketch-inset span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #222;
+      text-align: center;
+      padding: 4px 2px 1px;
+      font-weight: 600;
+    }
+
+    /* =====================================================================
+       Cards & Media Frames
+       ===================================================================== */
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.75rem;
+    }
+
+    .three-col {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.5rem;
+    }
+
+    .media-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .media-card:hover {
+      border-color: var(--border-strong);
+    }
+
+    .media-trigger {
+      position: relative;
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: #0d1012;
+      cursor: zoom-in;
+      overflow: hidden;
+      text-align: left;
+    }
+
+    .media-trigger.light-paper {
+      background: #ffffff;
+    }
+
+    .media-trigger img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      transition: transform 0.35s ease;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .media-trigger:hover img {
+        transform: scale(1.025);
+      }
+    }
+
+    .zoom-pill {
+      position: absolute;
+      right: 0.85rem;
+      bottom: 0.85rem;
+      background: rgba(12, 15, 16, 0.78);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      backdrop-filter: blur(8px);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.28rem 0.6rem;
+      border-radius: 999px;
+      pointer-events: none;
+    }
+
+    .card-body {
+      padding: 1.25rem 1.4rem 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .card-tag {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--copper);
+    }
+
+    .card-body p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* =====================================================================
+       Multi-Agent Pipeline Strip
+       ===================================================================== */
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .pipe-step {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.25rem;
+      position: relative;
+    }
+
+    .pipe-step .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--cobalt);
+      background: var(--cobalt-soft);
+      display: inline-block;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      margin-bottom: 0.65rem;
+    }
+
+    .pipe-step.designer .step-num {
+      color: var(--copper);
+      background: var(--copper-soft);
+    }
+
+    .pipe-step h3 {
+      font-size: 0.96rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .pipe-step p {
+      margin: 0;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    /* =====================================================================
+       Interactive Before/After Comparison Slider
+       ===================================================================== */
+    .compare-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+
+    .compare-stage {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border-strong);
+      background: #ffffff;
+      user-select: none;
+      touch-action: pan-y;
+      --pos: 52%;
+    }
+
+    .compare-stage.dark-stage {
+      background: #0a0c0d;
+    }
+
+    .compare-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      pointer-events: none;
+    }
+
+    .compare-base {
+      aspect-ratio: 760 / 880;
+    }
+
+    .compare-fullcircle {
+      aspect-ratio: 1024 / 992;
+    }
+
+    .compare-square {
+      aspect-ratio: 1 / 1;
+    }
+
+    .compare-overlay {
+      position: absolute;
+      inset: 0;
+      clip-path: inset(0 calc(100% - var(--pos)) 0 0);
+    }
+
+    .compare-divider {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--pos);
+      width: 2px;
+      background: var(--copper);
+      box-shadow: 0 0 14px rgba(0, 0, 0, 0.6);
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .compare-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 999px;
+      background: var(--bg);
+      border: 2px solid var(--copper);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+
+    .compare-label {
+      position: absolute;
+      top: 1rem;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.35rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(12, 15, 16, 0.82);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .compare-label.left { left: 1rem; }
+    .compare-label.right { right: 1rem; }
+
+    .compare-range {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      opacity: 0;
+      cursor: ew-resize;
+      z-index: 5;
+    }
+
+    .review-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+    }
+
+    .score-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    .score-box {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+    }
+
+    .score-box strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1.35rem;
+      color: var(--copper);
+    }
+
+    .score-box span {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .fix-list {
+      margin: 0;
+      padding-left: 1.15rem;
+      display: grid;
+      gap: 0.45rem;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .fix-list strong { color: var(--text); }
+
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+    }
+
+    .spec-item {
+      background: var(--bg-elev);
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+
+    .spec-item span {
+      display: block;
+      color: var(--text-dim);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+    }
+
+    /* =====================================================================
+       Family Gallery Tabs & 6 CMF Variant Cards
+       ===================================================================== */
+    .tab-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .tab-btn {
+      appearance: none;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.55rem 1.05rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text);
+      border-color: var(--border-strong);
+    }
+
+    .tab-btn[aria-selected="true"] {
+      background: var(--copper-soft);
+      color: var(--text);
+      border-color: var(--copper);
+    }
+
+    .family-viewport {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #101415;
+      margin-bottom: 2rem;
+    }
+
+    .family-panel[hidden] {
+      display: none;
+    }
+
+    .family-panel .media-trigger img {
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+    }
+
+    .cmf-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.15rem;
+    }
+
+    .cmf-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1.2rem 1.3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .cmf-card.featured {
+      border-color: var(--border-strong);
+      background: linear-gradient(180deg, rgba(204, 128, 78, 0.08), var(--bg-card) 48%);
+    }
+
+    .cmf-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .swatches {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    }
+
+    .cmf-meta {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--copper);
+    }
+
+    .cmf-card p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* =====================================================================
+       EEVEE Animation Section
+       ===================================================================== */
+    .video-stage {
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.5);
+    }
+
+    .video-stage video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #07090a;
+    }
+
+    .phase-bar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 0.6rem;
+      padding: 1rem 1.2rem;
+      background: var(--bg-elev);
+      border-top: 1px solid var(--border);
+    }
+
+    .phase-btn {
+      appearance: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.75rem;
+      color: var(--text);
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .phase-btn:hover,
+    .phase-btn:focus-visible {
+      border-color: var(--copper);
+      background: var(--copper-soft);
+      outline: none;
+    }
+
+    .phase-btn span {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.69rem;
+      color: var(--copper);
+      margin-bottom: 0.15rem;
+    }
+
+    .phase-btn strong {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+
+    /* =====================================================================
+       Final Showcase & Footer
+       ===================================================================== */
+    .final-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .site-footer {
+      padding: 3rem 0 4rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.84rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .footer-files {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* =====================================================================
+       Native Lightbox Dialog
+       modern-web-guidance: light-dismiss-a-dialog + animate-to-from-top-layer
+       ===================================================================== */
+    dialog#lightbox {
+      max-width: min(94vw, 1320px);
+      max-height: 92vh;
+      padding: 0;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-lg);
+      background: #0d1012;
+      color: var(--text);
+      box-shadow: 0 36px 100px rgba(0, 0, 0, 0.8);
+      overflow: hidden;
+
+      /* Base (closed / exit) state */
+      opacity: 0;
+      transition-property: opacity, transform, display, overlay;
+      transition-duration: 0.28s;
+      transition-timing-function: ease-out;
+      transition-behavior: allow-discrete;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      dialog#lightbox {
+        transform: scale(0.95);
+      }
+    }
+
+    /* Open state + :where(:not([data-closing])) for Safari/Firefox exit fallback */
+    :is(dialog#lightbox[open]):where(:not([data-closing])) {
+      opacity: 1;
+
+      @starting-style {
+        opacity: 0;
+      }
+
+      @media (prefers-reduced-motion: no-preference) {
+        transform: scale(1);
+
+        @starting-style {
+          transform: scale(0.95);
+        }
+      }
+
+      &::backdrop {
+        background-color: rgb(6 8 10 / 0.84);
+        backdrop-filter: blur(8px);
+
+        @starting-style {
+          background-color: transparent;
+        }
+      }
+    }
+
+    dialog#lightbox::backdrop {
+      background-color: transparent;
+      transition-property: background-color, display, overlay;
+      transition-duration: 0.28s;
+      transition-timing-function: ease-out;
+      transition-behavior: allow-discrete;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      dialog#lightbox,
+      dialog#lightbox::backdrop {
+        transition-duration: 0.1s;
+      }
+    }
+
+    .lightbox-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem 1.2rem;
+      background: var(--bg-elev);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .lightbox-bar h3 {
+      font-size: 0.94rem;
+      font-weight: 500;
+    }
+
+    .lightbox-close {
+      appearance: none;
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      font-family: var(--font-mono);
+      font-size: 0.76rem;
+      cursor: pointer;
+    }
+
+    .lightbox-close:hover {
+      border-color: var(--copper);
+      background: var(--copper-soft);
+    }
+
+    .lightbox-body {
+      padding: 1rem;
+      display: grid;
+      place-items: center;
+      background: #0a0d0e;
+    }
+
+    .lightbox-body img {
+      max-height: 76vh;
+      width: auto;
+      object-fit: contain;
+      border-radius: var(--radius-sm);
+    }
+
+    .lightbox-caption {
+      padding: 0.75rem 1.2rem 1rem;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      margin: 0;
+    }
+
+    /* =====================================================================
+       Download Pills, Video Bars & Drawing Cards
+       ===================================================================== */
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1rem;
+    }
+
+    .dl-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      text-decoration: none;
+      color: var(--text);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      padding: 0.42rem 0.78rem;
+      border-radius: 999px;
+      transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .dl-pill:hover,
+    .dl-pill:focus-visible {
+      border-color: var(--copper);
+      background: var(--copper-soft);
+      color: #fff;
+      outline: none;
+    }
+
+    .dl-pill.primary {
+      border-color: var(--border-strong);
+      background: rgba(204, 128, 78, 0.14);
+      color: #f6decb;
+    }
+
+    .drawing-trigger {
+      background: #ffffff;
+      padding: 0.5rem;
+    }
+
+    .drawing-trigger img {
+      aspect-ratio: 420 / 297;
+      object-fit: contain;
+    }
+
+    /* =====================================================================
+       Responsive Engineering BOM Table
+       (modern-web-guidance: responsive-table)
+       ===================================================================== */
+    .bom-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin: 2.25rem 0 1rem;
+    }
+
+    .bom-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .bom-chip {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      padding: 0.42rem 0.78rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .bom-chip[aria-pressed="true"],
+    .bom-chip:hover {
+      color: var(--text);
+      border-color: var(--copper);
+      background: var(--copper-soft);
+    }
+
+    .bom-search-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .bom-search {
+      background: var(--bg-elev);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.48rem 0.95rem;
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      min-width: 230px;
+    }
+
+    .bom-search:focus-visible {
+      outline: 2px solid var(--copper);
+      outline-offset: 2px;
+    }
+
+    .bom-summary-badge {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--copper);
+      background: rgba(204, 128, 78, 0.12);
+      border: 1px solid var(--border-strong);
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .bom-table-wrapper {
+      overflow: auto;
+      max-inline-size: 100%;
+      max-block-size: min(560px, 72vh);
+      container-type: inline-size;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      background: var(--bg-card);
+    }
+
+    .bom-table-wrapper:focus-visible {
+      outline: 2px solid var(--copper);
+      outline-offset: 3px;
+    }
+
+    .bom-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.86rem;
+      --label-1: "Part No";
+      --label-2: "Item";
+      --label-3: "Component Name";
+      --label-4: "Sub-Assembly";
+      --label-5: "Qty";
+      --label-6: "Material / Spec";
+      --label-7: "Mass (g)";
+    }
+
+    .bom-table caption {
+      text-align: left;
+      padding: 0.9rem 1.15rem;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      background: var(--bg-elev);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .bom-table thead {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 2;
+      background: #101518;
+    }
+
+    .bom-table thead th {
+      text-align: left;
+      padding: 0.78rem 0.95rem;
+      font-family: var(--font-mono);
+      font-size: 0.73rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--copper);
+      border-bottom: 1px solid var(--border-strong);
+      white-space: nowrap;
+    }
+
+    .bom-table tbody th,
+    .bom-table tbody td {
+      padding: 0.65rem 0.95rem;
+      border-bottom: 1px solid rgba(232, 223, 211, 0.07);
+      vertical-align: middle;
+    }
+
+    .bom-table tbody th {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 1;
+      background: var(--bg-card);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #f2d4be;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .bom-table tbody tr:nth-child(even) th,
+    .bom-table tbody tr:nth-child(even) td {
+      background: #151b1e;
+    }
+
+    .bom-table tbody tr:hover th,
+    .bom-table tbody tr:hover td {
+      background: #1f272b;
+    }
+
+    .bom-table .num {
+      font-family: var(--font-mono);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .bom-table .sub-tag {
+      font-family: var(--font-mono);
+      font-size: 0.71rem;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.18rem 0.5rem;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .bom-table tfoot td {
+      position: sticky;
+      inset-block-end: 0;
+      z-index: 2;
+      background: #101518;
+      border-top: 1px solid var(--border-strong);
+      padding: 0.8rem 0.95rem;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    @container (width < 680px) {
+      .bom-table, .bom-table thead, .bom-table tbody, .bom-table tfoot,
+      .bom-table tr, .bom-table th, .bom-table td {
+        display: block;
+      }
+
+      .bom-table thead {
+        display: none;
+      }
+
+      .bom-table tbody tr {
+        margin: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+
+      .bom-table tbody th {
+        position: sticky;
+        inset-block-start: 0;
+        z-index: 2;
+        background: #101518;
+        border-bottom: 1px solid var(--border-strong);
+      }
+
+      .bom-table tbody td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        text-align: right;
+      }
+
+      .bom-table tbody td::before {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        text-align: left;
+      }
+
+      .bom-table tbody td:nth-child(2)::before { content: var(--label-2) ": "; }
+      .bom-table tbody td:nth-child(3)::before { content: var(--label-3) ": "; }
+      .bom-table tbody td:nth-child(4)::before { content: var(--label-4) ": "; }
+      .bom-table tbody td:nth-child(5)::before { content: var(--label-5) ": "; }
+      .bom-table tbody td:nth-child(6)::before { content: var(--label-6) ": "; }
+      .bom-table tbody td:nth-child(7)::before { content: var(--label-7) ": "; }
+    }
+
+    /* =====================================================================
+       Technical Addendum — Accessible Native <details> Accordion
+       (modern-web-guidance: accordion)
+       ===================================================================== */
+    .addendum-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .accordion-toggle-btn {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text);
+      background: var(--bg-elev);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 0.48rem 0.95rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .accordion-toggle-btn:hover,
+    .accordion-toggle-btn:focus-visible {
+      background: var(--copper-soft);
+      border-color: var(--copper);
+      outline: none;
+    }
+
+    [command="--toggle-all"][aria-expanded="true"] .expand,
+    [command="--toggle-all"][aria-expanded="false"] .collapse {
+      display: none;
+    }
+
+    .addendum-accordion {
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .addendum-accordion details {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+
+    .addendum-accordion details[open] {
+      border-color: var(--border-strong);
+    }
+
+    .addendum-accordion summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1.15rem 1.35rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1.02rem;
+      color: var(--text);
+      user-select: none;
+    }
+
+    .addendum-accordion summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .addendum-accordion summary::before {
+      content: "";
+      inline-size: 0.85em;
+      block-size: 0.85em;
+      flex-shrink: 0;
+      background-color: var(--copper);
+      -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' d='M3.2 5.2a.9.9 0 0 1 1.27 0L8 8.73l3.53-3.53a.9.9 0 1 1 1.27 1.27l-4.16 4.17a.9.9 0 0 1-1.28 0L3.2 6.47a.9.9 0 0 1 0-1.27Z'/%3E%3C/svg%3E") no-repeat center / contain;
+      mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='black' d='M3.2 5.2a.9.9 0 0 1 1.27 0L8 8.73l3.53-3.53a.9.9 0 1 1 1.27 1.27l-4.16 4.17a.9.9 0 0 1-1.28 0L3.2 6.47a.9.9 0 0 1 0-1.27Z'/%3E%3C/svg%3E") no-repeat center / contain;
+      rotate: -90deg;
+    }
+
+    .addendum-accordion details[open] > summary::before {
+      rotate: 0deg;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .addendum-accordion summary::before {
+        transition: rotate 0.22s ease;
+      }
+    }
+
+    .addendum-accordion summary:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .summary-meta {
+      margin-inline-start: auto;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .addendum-accordion details::details-content {
+      interpolate-size: allow-keywords;
+      overflow: clip;
+      contain: layout;
+    }
+
+    .addendum-accordion details:not([open])::details-content {
+      block-size: 0;
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .addendum-accordion details::details-content {
+        transition: block-size, content-visibility, display;
+        transition-duration: 0.28s;
+        transition-timing-function: ease-in-out;
+        transition-behavior: allow-discrete;
+      }
+    }
+
+    .addendum-body {
+      padding: 0 1.35rem 1.45rem;
+      border-top: 1px solid rgba(232, 223, 211, 0.07);
+      color: var(--text-muted);
+      font-size: 0.92rem;
+    }
+
+    .addendum-body p {
+      margin: 0.95rem 0 0.75rem;
+    }
+
+    .addendum-body code {
+      font-family: var(--font-mono);
+      font-size: 0.82em;
+      color: #f1d4bd;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0.12rem 0.36rem;
+      border-radius: 5px;
+    }
+
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .tech-card {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+    }
+
+    .tech-card h4 {
+      margin: 0 0 0.4rem;
+      font-size: 0.92rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .tech-card p,
+    .tech-card ul {
+      margin: 0;
+      font-size: 0.84rem;
+      color: var(--text-muted);
+    }
+
+    .tech-card ul {
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 0.3rem;
+      margin-top: 0.45rem;
+    }
+
+    .arch-flow {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.9rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    .arch-node {
+      background: #101518;
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--copper);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+    }
+
+    .arch-node.blue {
+      border-top-color: var(--cobalt);
+    }
+
+    .arch-node .proto {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--copper);
+      margin-bottom: 0.3rem;
+    }
+
+    .arch-node.blue .proto {
+      color: #5cb4f6;
+    }
+
+    .arch-node strong {
+      display: block;
+      color: var(--text);
+      font-size: 0.88rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .arch-node span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .issue-list {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .issue-row {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.35fr);
+      gap: 1rem;
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1.05rem;
+    }
+
+    .issue-symptom strong {
+      display: block;
+      color: #f3b592;
+      font-size: 0.84rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .issue-fix strong {
+      display: block;
+      color: #8fd9a8;
+      font-size: 0.84rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .issue-symptom span,
+    .issue-fix span {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      display: block;
+    }
+
+    /* =====================================================================
+       Section 12: Workshop-Buildable Plywood Lamp (KUMIKO-TRUSS)
+       modern-web-guidance: tabs (single-row scrollable, ::after shape indicator,
+       hidden="until-found" inner wrapper, focusgroup + arrow-key fallback)
+       ===================================================================== */
+    .ply-section {
+      --birch: #d9b88c;
+      --birch-soft: rgba(217, 184, 140, 0.14);
+      --birch-border: rgba(217, 184, 140, 0.34);
+      background:
+        radial-gradient(ellipse 70% 45% at 20% 5%, rgba(217, 184, 140, 0.08), transparent 62%),
+        linear-gradient(180deg, rgba(19, 24, 26, 0.55), rgba(12, 15, 16, 0.95));
+      border-top: 1px solid var(--birch-border);
+    }
+
+    .ply-section .eyebrow {
+      color: var(--birch);
+    }
+
+    .ply-kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.95rem;
+      margin: 1.75rem 0 2.25rem;
+    }
+
+    .ply-kpi {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.15rem;
+    }
+
+    .ply-kpi strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      color: var(--birch);
+      margin-bottom: 0.18rem;
+    }
+
+    .ply-kpi span {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Single-row scrollable tablist (modern-web-guidance: tabs) */
+    .ply-tablist {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 0.35rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.75rem;
+      scroll-snap-type: inline proximity;
+      scrollbar-width: none;
+    }
+
+    .ply-tablist::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ply-tab {
+      position: relative;
+      flex: none;
+      appearance: none;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 0.85rem 1.15rem 0.95rem;
+      cursor: pointer;
+      white-space: nowrap;
+      scroll-snap-align: start;
+      transition: color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .ply-tab:hover,
+    .ply-tab:focus-visible {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.03);
+      outline: none;
+    }
+
+    .ply-tab:focus-visible {
+      outline: 2px solid var(--birch);
+      outline-offset: -2px;
+    }
+
+    .ply-tab[aria-selected="true"] {
+      color: var(--birch);
+    }
+
+    /* Shape indicator via border on pseudo-element (WCAG 1.4.1 / Forced Colors safe) */
+    .ply-tab[aria-selected="true"]::after {
+      content: "";
+      position: absolute;
+      inset: auto 0 0;
+      border-block-end: 3px solid var(--birch);
+    }
+
+    /* Panels stack in same grid cell; NO padding/border/margin on [role="tabpanel"] itself */
+    .ply-panels {
+      display: grid;
+    }
+
+    .ply-panel {
+      grid-area: 1 / 1;
+    }
+
+    .ply-panel-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .ply-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .ply-card-body {
+      padding: 1.15rem 1.35rem 1.3rem;
+    }
+
+    .ply-card-body h3,
+    .ply-card-body h4 {
+      margin: 0 0 0.45rem;
+      font-size: 1.02rem;
+      color: var(--text);
+    }
+
+    .ply-card-body p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .ply-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--birch);
+      background: var(--birch-soft);
+      border: 1px solid var(--birch-border);
+      padding: 0.18rem 0.55rem;
+      border-radius: 999px;
+      margin-bottom: 0.5rem;
+    }
+
+    .ply-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+
+    .ply-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.15rem;
+    }
+
+    .ply-audit-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .ply-audit-item {
+      background: var(--bg-elev);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--birch);
+      border-radius: var(--radius-md);
+      padding: 0.95rem 1.1rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .ply-audit-item strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 0.25rem;
+      font-size: 0.88rem;
+    }
+
+    .ply-audit-tag {
+      font-family: var(--font-mono);
+      font-size: 0.69rem;
+      color: #6ee7b7;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      border-radius: 5px;
+      padding: 0.08rem 0.42rem;
+      margin-inline-start: 0.4rem;
+    }
+
+    .ply-dl-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      padding: 1.15rem 1.35rem;
+      background: var(--bg-elev);
+      border: 1px solid var(--birch-border);
+      border-radius: var(--radius-md);
+      align-items: center;
+    }
+
+    .ply-dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 0.77rem;
+      color: var(--text);
+      background: var(--bg-card);
+      border: 1px solid var(--border-strong);
+      border-radius: 999px;
+      padding: 0.5rem 0.95rem;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .ply-dl-btn:hover,
+    .ply-dl-btn:focus-visible {
+      background: var(--birch-soft);
+      border-color: var(--birch);
+      outline: none;
+    }
+
+    /* =====================================================================
+       Responsive Adjustments
+       ===================================================================== */
+    @media (max-width: 980px) {
+      .hero-grid,
+      .compare-shell,
+      .final-grid,
+      .two-col,
+      .tech-grid,
+      .issue-row,
+      .ply-grid-2,
+      .ply-audit-grid {
+        grid-template-columns: 1fr;
+      }
+      .pipeline,
+      .hero-stats,
+      .arch-flow,
+      .ply-kpi-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .cmf-grid,
+      .three-col,
+      .ply-grid-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .phase-bar {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .hero-sketch-inset {
+        left: 0.75rem;
+        bottom: 0.75rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      section { padding: 3.75rem 0; }
+      .cmf-grid,
+      .three-col,
+      .pipeline,
+      .phase-bar,
+      .arch-flow,
+      .ply-grid-3,
+      .ply-kpi-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="#top">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>Desk Lamp — AI × Blender · FreeCAD · Fusion</span>
+      </a>
+      <nav aria-label="Case study sections">
+        <ul class="nav-links">
+          <li><a href="#sketch">01 Sketch</a></li>
+          <li><a href="#agents">02 MCP Build</a></li>
+          <li><a href="#family">03 Family</a></li>
+          <li><a href="#animation">04 EEVEE</a></li>
+          <li><a href="#final">05 Noir</a></li>
+          <li><a href="#engineering">06 Anglepoise</a></li>
+          <li><a href="#noir-engineered">07 Electrical</a></li>
+          <li><a href="#flexible-motion">08 Flex Motion</a></li>
+          <li><a href="#parametric-cad">09 CAD &amp; Fusion</a></li>
+          <li><a href="#drawings-bom">10 Drawings &amp; BOM</a></li>
+          <li><a href="#technical-addendum">11 Addendum</a></li>
+          <li><a href="#plywood-lamp">12 Plywood</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- ================================================================
+         HERO
+         ================================================================ -->
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow">Industrial Design &amp; Mechanical Engineering Case Study</span>
+          <h1>From Marker Sketch to Production CAD, Flexible Physics &amp; ISO Drawings</h1>
+          <p class="lead">
+            End-to-end engineering documentation tracing an original hand-drawn ink sketch through multi-agent Blender 5.2 MCP lookdev, 4-spring Carwardine re-engineering, Cycles flexible spring &amp; braided-cord animation, native parametric CAD in FreeCAD 1.1.3 &amp; Autodesk Fusion 360, and ISO A3 General Assembly &amp; Exploded BOM sheets.
+          </p>
+
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-val">3 Agents</span>
+              <span class="stat-label">ID + ME + Modeler</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">42 Items</span>
+              <span class="stat-label">75 Parts · 5.26 kg CAD</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">3 Engines</span>
+              <span class="stat-label">Blender · FreeCAD · Fusion</span>
+            </div>
+            <div class="stat">
+              <span class="stat-val">SF 28.5</span>
+              <span class="stat-label">11/11 Clash Checks Pass</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <button
+            type="button"
+            class="media-trigger hero-main-frame"
+            data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451795/casey-site/casey-site/making/desk-lamp/18_anglepoise_noir_v3_hero.jpg"
+            data-title="Flagship Engineered Render — Noir Obsidian v3 Electrical Edition"
+            data-caption="Final 96-sample Cycles Metal GPU studio render of the constant-tension 4-spring Carwardine Anglepoise desk lamp featuring satin obsidian housing, brushed copper-bronze hollow arms, smoked bronze-gunmetal springs, 56-flute knurled champagne-brass dimmer, and hollow-tube braided electrical routing."
+          >
+            <img
+              src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451795/casey-site/casey-site/making/desk-lamp/18_anglepoise_noir_v3_hero.jpg"
+              alt="Final engineered studio render of the Noir Obsidian and copper-bronze Anglepoise desk lamp with rotary brass dimmer and braided electrical cords"
+              width="1200"
+              height="1200"
+              fetchpriority="high"
+            >
+            <span class="zoom-pill">Inspect Flagship v3 ↗</span>
+          </button>
+
+          <button
+            type="button"
+            class="media-trigger hero-sketch-inset"
+            data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451797/casey-site/casey-site/making/desk-lamp/01_initial_sketch.jpg"
+            data-title="Initial Hand Sketch — Ink &amp; Copic Marker"
+            data-caption="The starting point: hand-drawn perspective study establishing the pyramidal chamfered square base, twin articulated parallel arms, coaxial elbow, and flared bell shade."
+          >
+            <img
+              src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451797/casey-site/casey-site/making/desk-lamp/01_initial_sketch.jpg"
+              alt="Original ink and blue marker industrial design sketch of the articulated desk lamp"
+              width="938"
+              height="1024"
+            >
+            <span>01 · Initial Sketch</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         01 — INITIAL SKETCH & AI CONCEPT VISUALIZATION
+         ================================================================ -->
+    <section id="sketch">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 01 · Ideation &amp; Concept Translation</span>
+            <h2>From Hand-Drawn Ink Sketch to AI Concept Reference</h2>
+          </div>
+          <p>
+            Every iconic proportion — the chamfered pyramidal square base, side-by-side twin tubular arms, protruding elbow tail-stop, and two-tier spun shade — originated in the hand-drawn marker sketch before being translated into a photorealistic cobalt-and-stainless concept visualization.
+          </p>
+        </div>
+
+        <div class="two-col">
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451797/casey-site/casey-site/making/desk-lamp/01_initial_sketch.jpg"
+              data-title="01 · Initial Industrial Design Sketch"
+              data-caption="Pen &amp; Copic marker perspective sketch with vertical construction lines, cobalt wash, olive backdrop bar, tension spring studies, and twin-arm kinematic geometry."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451797/casey-site/casey-site/making/desk-lamp/01_initial_sketch.jpg"
+                alt="Hand-drawn industrial design ink and marker sketch of the blue articulated desk lamp"
+                width="938"
+                height="1024"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">01 · Origin Sketch</span>
+              <h3>Ink &amp; Marker Perspective Study</h3>
+              <p>Establishes the architectural stance, wide square chamfered base, dual parallel struts, and two-step spun shade silhouette using classic ID line-weight and marker shading.</p>
+            </div>
+          </article>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451798/casey-site/casey-site/making/desk-lamp/02_ai_concept_ref.jpg"
+              data-title="02 · AI Concept Visualization"
+              data-caption="Photorealistic AI-generated concept reference preserving the sketch's cobalt enamel, brushed stainless parallel arms, matte charcoal plinth, and warm interior glow."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451798/casey-site/casey-site/making/desk-lamp/02_ai_concept_ref.jpg"
+                alt="AI-generated photorealistic studio concept image of the cobalt blue and brushed aluminum desk lamp"
+                width="929"
+                height="1024"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">02 · AI Visualization</span>
+              <h3>Photorealistic Concept Reference</h3>
+              <p>Translates the sketch into tangible CMF cues: glossy cobalt enamel, brushed satin stainless tubes &amp; 4-screw base plate, matte charcoal lower plinth, and warm frosted bulb.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         02 — MULTI-AGENT AI + BLENDER 5.2 MCP BUILD
+         ================================================================ -->
+    <section id="agents">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 02 · Multi-Agent Modeling &amp; Critique</span>
+            <h2>Industrial Designer &amp; Blender Modeler via Live MCP</h2>
+          </div>
+          <p>
+            Connected to live Blender 5.2 LTS via the official Blender Lab MCP server, an <strong>Industrial Designer</strong> agent authored exact real-world dimensions and audited every Cycles render while a <strong>Blender Modeler</strong> agent generated clean procedural geometry in Python.
+          </p>
+        </div>
+
+        <div class="pipeline">
+          <div class="pipe-step designer">
+            <span class="step-num">Step 01 · Designer</span>
+            <h3>Kinematic &amp; CMF Spec</h3>
+            <p>Defined exact 460 mm height, side-by-side scissor-fork elbow offsets, 10-point spun lathe profile, and linear PBR values.</p>
+          </div>
+          <div class="pipe-step">
+            <span class="step-num">Step 02 · Modeler</span>
+            <h3>v1 Live Blender Build</h3>
+            <p>Constructed 64 clean-topology objects in Blender 5.2 via MCP and rendered hero, side elevation, and joint close-up diagnostics.</p>
+          </div>
+          <div class="pipe-step designer">
+            <span class="step-num">Step 03 · Designer</span>
+            <h3>8-Point Visual Critique</h3>
+            <p>Scored geometry 9/10, caught overexposure washout, far-side elbow stub clipping, and deep clevis cutouts — issued exact v2 fixes.</p>
+          </div>
+          <div class="pipe-step">
+            <span class="step-num">Step 04 · Sign-Off</span>
+            <h3>v2 Approved (9.8 / 10)</h3>
+            <p>Recalibrated AgX Punchy lighting, solidified A-frame brackets, added dark reflection cards, and earned formal Industrial Design sign-off.</p>
+          </div>
+        </div>
+
+        <div class="compare-shell">
+          <div class="compare-stage" data-compare>
+            <img
+              class="compare-base"
+              src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451800/casey-site/casey-site/making/desk-lamp/04_blender_v2_hero.jpg"
+              alt="v2 signed-off Cycles render of the cobalt blue desk lamp with rich enamel, brushed stainless contrast, and warm bulb glow"
+              width="760"
+              height="880"
+              loading="lazy"
+            >
+            <div class="compare-overlay">
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451800/casey-site/casey-site/making/desk-lamp/03_blender_v1_hero.jpg"
+                alt="v1 first-pass Cycles render showing accurate geometry but overexposed pastel lighting"
+                width="720"
+                height="820"
+                loading="lazy"
+              >
+            </div>
+            <span class="compare-label left">v1 · First Pass</span>
+            <span class="compare-label right">v2 · Signed Off</span>
+            <div class="compare-divider" aria-hidden="true">
+              <div class="compare-handle">↔</div>
+            </div>
+            <input
+              class="compare-range"
+              type="range"
+              min="0"
+              max="100"
+              value="50"
+              aria-label="Compare Blender v1 first pass against v2 signed-off render"
+            >
+          </div>
+
+          <div class="review-panel">
+            <div>
+              <span class="card-tag">Industrial Designer Review · v1 → v2</span>
+              <h3>How Visual Critique Transformed Lookdev &amp; Joinery</h3>
+            </div>
+
+            <div class="score-row">
+              <div class="score-box">
+                <strong>9.8 / 10</strong>
+                <span>Geometry &amp; Mechanical Credibility</span>
+              </div>
+              <div class="score-box">
+                <strong>9.2 / 10</strong>
+                <span>CMF, Lighting &amp; Presentation</span>
+              </div>
+            </div>
+
+            <ul class="fix-list">
+              <li><strong>Exposure &amp; Backdrop:</strong> Switched to <code>AgX - Punchy</code>, pure <code>#FFFFFF</code> camera-ray world split, and shadow-catcher floor.</li>
+              <li><strong>Brushed Metal Depth:</strong> Added glossy-only dark negative-fill cards so stainless tubes reflect authentic dark-to-bright tonal bands.</li>
+              <li><strong>Scissor-Fork Elbow:</strong> Removed far-side (+Y) stub; kept only the near (-Y) 16 mm tail-stop with recessed dark charcoal plug.</li>
+              <li><strong>Solidified Clevis Pedestals:</strong> Closed lower A-frame faces and widened lower-arm spacing cleanly to <code>Y = ±26 mm</code>.</li>
+              <li><strong>Spun Bell &amp; Warm Glow:</strong> Widened mouth to <code>Ø 155 mm</code> with rolled blue rim wrap and lowered frosted bulb to peek softly into view.</li>
+            </ul>
+
+            <div class="spec-grid">
+              <div class="spec-item"><span>Overall Height</span>460 mm</div>
+              <div class="spec-item"><span>Square Base</span>172 × 172 × 63 mm</div>
+              <div class="spec-item"><span>Arm Stance</span>37.5° back / 42.6° fwd</div>
+              <div class="spec-item"><span>Shade Bell</span>Ø 155 mm · 25° tilt</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451802/casey-site/casey-site/making/desk-lamp/05_blender_v2_side.jpg"
+              data-title="Diagnostic · v2 Side Elevation"
+              data-caption="Strict orthographic side elevation verifying the 37.5° lower-arm lean, 42.6° upper-arm reach, 25° shade tilt, and two-section spun-metal lathe curvature."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451802/casey-site/casey-site/making/desk-lamp/05_blender_v2_side.jpg"
+                alt="Side elevation diagnostic render of the cobalt blue desk lamp"
+                width="640"
+                height="640"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Diagnostic · Elevation</span>
+              <h3>Side Profile &amp; Kinematic Geometry</h3>
+              <p>Confirms exact arm lengths, frustum slope angle (33°), spun-bell inflection curve, and zero ground penetration along Z = 0.</p>
+            </div>
+          </article>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451804/casey-site/casey-site/making/desk-lamp/06_blender_v2_joints.jpg"
+              data-title="Diagnostic · v2 Mechanical Joinery Close-Up"
+              data-caption="Close-up inspection of the solidified A-frame base clevis brackets, 4 pan-head screws, coaxial scissor-fork elbow barrel, separation rings, and near-only capped tail-stop stub."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451804/casey-site/casey-site/making/desk-lamp/06_blender_v2_joints.jpg"
+                alt="Close-up diagnostic render of the desk lamp brushed steel base clevis brackets and scissor-fork coaxial elbow"
+                width="640"
+                height="640"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Diagnostic · Joinery</span>
+              <h3>Clevis Brackets &amp; Scissor-Fork Elbow</h3>
+              <p>Verifies flush concentric knuckles, machined separation rings, brushed stainless grain, and the iconic single near-side tail-stop stub.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         03 — 6-VARIATION PARAMETRIC FAMILY & CMF EXPLORATION
+         ================================================================ -->
+    <section id="family">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 03 · Parametric Product Family</span>
+            <h2>Six Proportion &amp; CMF Variations</h2>
+          </div>
+          <p>
+            Duplicating the approved scene into a parametric generator, all 6 lamps were built from kinematic rules — preserving circular tubes and flush joints across compact, tall, upright, and wide-cantilever stances — then re-lit in a moody dark-slate Blenderite studio at 2560×1440.
+          </p>
+        </div>
+
+        <div class="tab-bar" role="tablist" aria-label="6-Lamp family studio views">
+          <button class="tab-btn" role="tab" aria-selected="true" aria-controls="panel-dark-hero" id="tab-dark-hero">
+            Dark Slate Hero · 2560×1440
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-dark-over" id="tab-dark-over">
+            Dark Slate Overview · 2560×1440
+          </button>
+          <button class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-highkey" id="tab-highkey">
+            High-Key White Studio · v1
+          </button>
+        </div>
+
+        <div class="family-viewport">
+          <div class="family-panel" id="panel-dark-hero" role="tabpanel" aria-labelledby="tab-dark-hero">
+            <button
+              type="button"
+              class="media-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451805/casey-site/casey-site/making/desk-lamp/08_family_dark_hero.jpg"
+              data-title="6-Lamp Family — High-Resolution Dark Slate Hero (2560×1440)"
+              data-caption="128-sample Cycles Metal GPU render with dialed-down studio softboxes against the dark-slate Blenderite backdrop, letting all 6 enamels, brushed metals, and warm bulbs shine."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451805/casey-site/casey-site/making/desk-lamp/08_family_dark_hero.jpg"
+                alt="High-resolution dark slate studio lineup of all six articulated desk lamp variations"
+                width="2560"
+                height="1440"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Full 2560×1440 ↗</span>
+            </button>
+          </div>
+
+          <div class="family-panel" id="panel-dark-over" role="tabpanel" aria-labelledby="tab-dark-over" hidden>
+            <button
+              type="button"
+              class="media-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451808/casey-site/casey-site/making/desk-lamp/09_family_dark_overview.jpg"
+              data-title="6-Lamp Family — High-Resolution Elevated Overview (2560×1440)"
+              data-caption="Elevated 3/4 gallery perspective showcasing the staggered 2-row layout, chamfered square base proportions, 4-screw mounting plates, and clean rear cord routing."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451808/casey-site/casey-site/making/desk-lamp/09_family_dark_overview.jpg"
+                alt="Elevated three-quarter overview render of all six articulated desk lamp variations on a dark slate studio floor"
+                width="2560"
+                height="1440"
+                fetchpriority="low"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Full 2560×1440 ↗</span>
+            </button>
+          </div>
+
+          <div class="family-panel" id="panel-highkey" role="tabpanel" aria-labelledby="tab-highkey" hidden>
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451811/casey-site/casey-site/making/desk-lamp/07_family_highkey.jpg"
+              data-title="6-Lamp Family — High-Key White Studio Pass"
+              data-caption="Initial high-key seamless white catalog lighting pass prior to bringing down overall studio lighting for the moody dark-slate hero shoot."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451811/casey-site/casey-site/making/desk-lamp/07_family_highkey.jpg"
+                alt="High-key seamless white studio lineup render of all six desk lamp variations"
+                width="1280"
+                height="720"
+                fetchpriority="low"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="cmf-grid">
+          <article class="cmf-card">
+            <div class="cmf-top">
+              <h3>01 · Original Studio</h3>
+              <div class="swatches" aria-label="Cobalt blue, brushed stainless, matte charcoal swatches">
+                <span class="swatch" style="background:#0068AE"></span>
+                <span class="swatch" style="background:#BFC0BC"></span>
+                <span class="swatch" style="background:#1E1F22"></span>
+              </div>
+            </div>
+            <span class="cmf-meta">H 460 mm · Ø 155 mm bell · 172 mm base</span>
+            <p>Glossy Cobalt Blue enamel, Brushed Satin Stainless hardware, Matte Charcoal plinth &amp; warm 2800K cream interior.</p>
+          </article>
+
+          <article class="cmf-card">
+            <div class="cmf-top">
+              <h3>02 · Architect Tall</h3>
+              <div class="swatches" aria-label="Bone white, natural aluminum, warm taupe swatches">
+                <span class="swatch" style="background:#EAE4D8"></span>
+                <span class="swatch" style="background:#D4D6D8"></span>
+                <span class="swatch" style="background:#5E5952"></span>
+              </div>
+            </div>
+            <span class="cmf-meta">H 525 mm (+14%) · Wide Ø 168 mm bell</span>
+            <p>Satin-Matte Warm Bone White, Brushed Natural Aluminum, Warm Taupe plinth, and crisp 3000K drafting illumination.</p>
+          </article>
+
+          <article class="cmf-card">
+            <div class="cmf-top">
+              <h3>03 · Atelier Compact</h3>
+              <div class="swatches" aria-label="Terracotta, brushed brass, espresso swatches">
+                <span class="swatch" style="background:#B84A27"></span>
+                <span class="swatch" style="background:#C9A45A"></span>
+                <span class="swatch" style="background:#211B18"></span>
+              </div>
+            </div>
+            <span class="cmf-meta">H 395 mm (-14%) · Slender Ø 13.5 mm tubes</span>
+            <p>Satin-Matte Terracotta, Brushed Warm Brass, Deep Espresso plinth, compact Ø 136 mm deep dome &amp; cozy 2500K glow.</p>
+          </article>
+
+          <article class="cmf-card">
+            <div class="cmf-top">
+              <h3>04 · Heritage Library</h3>
+              <div class="swatches" aria-label="Forest green, champagne nickel, pine charcoal swatches">
+                <span class="swatch" style="background:#0F4A32"></span>
+                <span class="swatch" style="background:#CFC5B2"></span>
+                <span class="swatch" style="background:#171B19"></span>
+              </div>
+            </div>
+            <span class="cmf-meta">H 485 mm · Tall 158 mm slender reading bell</span>
+            <p>Glossy Deep British Racing Green, Satin Champagne Nickel, upright 26° lower-arm posture &amp; warm parchment interior.</p>
+          </article>
+
+          <article class="cmf-card featured">
+            <div class="cmf-top">
+              <h3>05 · Noir Executive ★</h3>
+              <div class="swatches" aria-label="Obsidian black, copper-bronze, champagne gold swatches">
+                <span class="swatch" style="background:#161719"></span>
+                <span class="swatch" style="background:#B8734A"></span>
+                <span class="swatch" style="background:#E2C38E"></span>
+              </div>
+            </div>
+            <span class="cmf-meta">H 435 mm · Broad 186 mm base · Cantilevered</span>
+            <p>Satin-Matte Obsidian Black, Brushed Copper-Bronze arms &amp; warm Champagne-Gold reflector interior — selected for the animation &amp; final hero.</p>
+          </article>
+
+          <article class="cmf-card">
+            <div class="cmf-top">
+              <h3>06 · Bauhaus Signal</h3>
+              <div class="swatches" aria-label="Signal vermilion, satin chrome, dark slate swatches">
+                <span class="swatch" style="background:#C82D14"></span>
+                <span class="swatch" style="background:#D8DCE0"></span>
+                <span class="swatch" style="background:#222428"></span>
+              </div>
+            </div>
+            <span class="cmf-meta">H 445 mm · Conical-bell Ø 146 mm spot</span>
+            <p>Glossy Signal Vermilion red-orange, Polished Satin Chrome tubes &amp; hinges, Dark Slate plinth &amp; crisp 2850K output.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         04 — KINEMATIC RIG & EEVEE ARTICULATION ANIMATION
+         ================================================================ -->
+    <section id="animation">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 04 · Mechanical Articulation &amp; Motion</span>
+            <h2>3-Axis Kinematic Rig &amp; EEVEE Orbit Animation</h2>
+          </div>
+          <p>
+            Isolating <strong>Noir Executive</strong>, all 54 parts were nested under three coaxial hinge pivots (<code>Pivot_Base → Pivot_Elbow → Pivot_Shade</code>) inside a seamless 360° dark studio bowl and rendered in Blender 5.2 EEVEE at 1080p / 24 fps as the camera zooms in and orbits 260°.
+          </p>
+        </div>
+
+        <div class="video-stage">
+          <!-- modern-web-guidance: lazy-load-video-and-audio (explicit width/height + loading="lazy" + preload="metadata") -->
+          <video
+            id="lamp-video"
+            controls
+            loading="lazy"
+            autoplay
+            loop
+            muted
+            playsinline
+            width="1920"
+            height="1080"
+            poster="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451812/casey-site/casey-site/making/desk-lamp/10_noir_eevee_poster.jpg"
+            preload="metadata"
+          >
+            <source src="https://res.cloudinary.com/do7oi2ioy/video/upload/v1795451843/casey-site/casey-site/making/desk-lamp/10_noir_articulation_eevee.mp4" type="video/mp4">
+            Your browser does not support embedded MP4 video playback.
+          </video>
+
+          <div class="phase-bar" aria-label="Jump to articulation phase">
+            <button type="button" class="phase-btn" data-seek="0">
+              <span>0.0s · Frame 001</span>
+              <strong>Hero Cantilever Stance</strong>
+            </button>
+            <button type="button" class="phase-btn" data-seek="1.5">
+              <span>1.5s · Frame 036</span>
+              <strong>Tall Upright Reach</strong>
+            </button>
+            <button type="button" class="phase-btn" data-seek="3.05">
+              <span>3.1s · Frame 074</span>
+              <strong>Low Task Dive &amp; Glow</strong>
+            </button>
+            <button type="button" class="phase-btn" data-seek="4.65">
+              <span>4.7s · Frame 112</span>
+              <strong>Independent Shade Nod</strong>
+            </button>
+            <button type="button" class="phase-btn" data-seek="6.0">
+              <span>6.0s · Frame 145</span>
+              <strong>Return to Rest Pose</strong>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         05 — FINAL HERO RENDER & FULL-CIRCLE COMPARISON
+         ================================================================ -->
+    <section id="final">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 05 · Full Circle</span>
+            <h2>Final Noir Render — Sketch to Finished Product</h2>
+          </div>
+          <p>
+            Drag the comparison handle to wipe directly from the original pen-and-marker sketch to the finished Noir Obsidian &amp; Copper-Bronze studio render — showing how design intent and silhouette clarity endured every stage of AI-assisted 3D engineering.
+          </p>
+        </div>
+
+        <div class="final-grid">
+          <div class="compare-stage dark-stage" data-compare>
+            <img
+              class="compare-base compare-fullcircle"
+              src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451844/casey-site/casey-site/making/desk-lamp/11_final_noir_render.jpg"
+              alt="Final Noir Obsidian and brushed copper-bronze desk lamp studio render"
+              width="1024"
+              height="992"
+              loading="lazy"
+            >
+            <div class="compare-overlay">
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451797/casey-site/casey-site/making/desk-lamp/01_initial_sketch.jpg"
+                alt="Initial ink and marker hand sketch of the articulated desk lamp"
+                width="938"
+                height="1024"
+                loading="lazy"
+              >
+            </div>
+            <span class="compare-label left">Initial Sketch</span>
+            <span class="compare-label right">Final Noir Render</span>
+            <div class="compare-divider" aria-hidden="true">
+              <div class="compare-handle">↔</div>
+            </div>
+            <input
+              class="compare-range"
+              type="range"
+              min="0"
+              max="100"
+              value="42"
+              aria-label="Compare initial hand sketch against final Noir Obsidian studio render"
+            >
+          </div>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451844/casey-site/casey-site/making/desk-lamp/11_final_noir_render.jpg"
+              data-title="Final Studio Render — Noir Obsidian &amp; Copper-Bronze"
+              data-caption="The finished product visualization: crisp chamfered obsidian base, luminous warm copper-bronze twin tubes &amp; machined clevis joints, and inviting amber-gold pool of light."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451844/casey-site/casey-site/making/desk-lamp/11_final_noir_render.jpg"
+                alt="Final Noir Obsidian and brushed copper-bronze desk lamp hero render"
+                width="1024"
+                height="992"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Inspect Full Resolution ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Final Production Visual</span>
+              <h3>Noir Obsidian × Brushed Copper-Bronze</h3>
+              <p>Soft specular separation across the satin obsidian shell, warm metallic highlights along the coaxial twin-tube joints, and an inviting tabletop light pool bring the initial sketch fully to life.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         06 — CLASSIC ANGLEPOISE CONSTANT-TENSION ENGINEERING (3-AGENT BUILD)
+         ================================================================ -->
+    <section id="engineering">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 06 · 3-Agent Mechanical Engineering</span>
+            <h2>True Carwardine Constant-Tension Springs, Counterweight &amp; Hinges</h2>
+          </div>
+          <p>
+            To move beyond friction-only hinges and achieve effortless classic Anglepoise balance, we introduced a third specialized agent — a <strong>Mechanical Engineer</strong> — working alongside our <strong>Industrial Designer</strong> and <strong>Blender Modeler</strong> to engineer a physically balanced 4-spring parallelogram mechanism, cast-iron base counterweight, and straddling wishbone shade U-yoke.
+          </p>
+        </div>
+
+        <div class="pipeline">
+          <div class="pipe-step">
+            <span class="step-num">Agent 01 · Mechanical</span>
+            <h3>Carwardine Physics</h3>
+            <p>Sized 4 ASTM A228 music-wire extension springs (93–100% gravity balance, &lt;49% max stress), split cantilever pins, and a 3.55 kg cast-iron counterweight (SF 2.91).</p>
+          </div>
+          <div class="pipe-step designer">
+            <span class="step-num">Agent 02 · Designer</span>
+            <h3>Form &amp; Hierarchy</h3>
+            <p>Harmonized Ø 12 mm satin tubes &gt; OD 11 mm coils &gt; Ø 7 mm tie-rod, sculpted forged-look double-shear forks, brass bearing rings, and crown vents.</p>
+          </div>
+          <div class="pipe-step">
+            <span class="step-num">Audit · ME + ID</span>
+            <h3>Defect-Driven v2 Fix</h3>
+            <p>Mechanical audit caught top-clipping wrist tabs, floating trunnions, and a tie-rod collision at A1 — fixed with a true wishbone U-yoke, rear-offset tie-rod, and 300° hooks.</p>
+          </div>
+          <div class="pipe-step designer">
+            <span class="step-num">Dual Sign-Off</span>
+            <h3>9.6 ME · 9.8 ID</h3>
+            <p>Both agents signed off on v2 after verifying vertical parallelogram leveling and genuine helical spring stretch across Rest Pose and Low Drafting Pose B.</p>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-bottom: 1.75rem;">
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451845/casey-site/casey-site/making/desk-lamp/12_anglepoise_cobalt_hero.jpg"
+              data-title="06 · Engineered Constant-Tension Anglepoise (Cobalt Blue — Dual Signed Off)"
+              data-caption="Dual-stage 4-spring Carwardine parallelogram with Ø 12 mm brushed stainless tubes, OD 11 mm bright chrome-nickel coils, Ø 7 mm central tie-rod, 360° brass-ringed swivel turret, and straddling wishbone U-yoke."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451845/casey-site/casey-site/making/desk-lamp/12_anglepoise_cobalt_hero.jpg"
+                alt="Cobalt blue mechanically engineered constant-tension Anglepoise desk lamp with four helical extension springs and wishbone shade yoke"
+                width="860"
+                height="980"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Cobalt Anchor · Dual Sign-Off (9.6 ME / 9.8 ID)</span>
+              <h3>4-Spring Carwardine Architecture</h3>
+              <p>Preserves our original Cobalt Blue &amp; chamfered square-frustum DNA while integrating four pre-tensioned helical coils nested cleanly inside the twin-tube frame.</p>
+            </div>
+          </article>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451857/casey-site/casey-site/making/desk-lamp/13_anglepoise_cobalt_joints.jpg"
+              data-title="06 · Mechanical Joinery &amp; Zero-Gap 300° Spring Hooks"
+              data-caption="Close-up verifying concentric full-wire-diameter 300° crossover spring hooks on all 8 brass-grooved pins, split A1/A2 cantilever window for the Y=0 tie-rod, flush E0 elbow, and straddling shade U-yoke with PTFE friction discs."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451857/casey-site/casey-site/making/desk-lamp/13_anglepoise_cobalt_joints.jpg"
+                alt="Macro close-up of the engineered Anglepoise lamp joints, concentric 300-degree spring end hooks, inverted-U elbow yoke, and straddling shade U-yoke"
+                width="900"
+                height="900"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Audit Detail · Zero-Interference Stacking</span>
+              <h3>Concentric Hooks, Split Pins &amp; Wishbone Yoke</h3>
+              <p>Split cantilevered A1/A2 pins leave an 18 mm open window for the rear-offset P1→E1 tie-rod; flush E0 hubs and PTFE trunnion discs eliminate clipping across the full range of motion.</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="two-col">
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451858/casey-site/casey-site/making/desk-lamp/14_anglepoise_poses.jpg"
+              data-title="06 · 2-Pose Kinematics &amp; Dynamic Spring Elongation Proof"
+              data-caption="Side-by-side verification of Rest Pose (θ1=-28°, θ2=+36°) vs. Low Drafting Pose B (θ1=-12°, θ2=+68°): the 4-bar parallelogram holds the inverted-U elbow strictly vertical while S2 visibly extends +18.8 mm."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451858/casey-site/casey-site/making/desk-lamp/14_anglepoise_poses.jpg"
+                alt="Side-by-side comparison of Rest Pose and Low Drafting Pose B proving vertical parallelogram alignment and genuine helical spring stretch"
+                width="1280"
+                height="720"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Kinematic Proof · Rest vs. Pose B</span>
+              <h3>Real Parallelogram Leveling &amp; Spring Stretch</h3>
+              <p>Demonstrates true 2-DOF constant-tension mechanics: the inverted-U elbow stays dead vertical across articulation while the upper coils stretch cleanly from 133.1 mm to 151.9 mm.</p>
+            </div>
+          </article>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451859/casey-site/casey-site/making/desk-lamp/15_anglepoise_underside.jpg"
+              data-title="06 · 3.55 kg Counterweight Base &amp; Underside Engineering"
+              data-caption="Machined 166×166×4 mm black-oxide steel bottom weight plate (0.82 kg) backing an internal 2.10 kg gray cast-iron counterweight block, secured with 4 recessed countersunk stainless M5 hex-socket bolts and 4 corner EPDM pads (Tipping Safety Factor 2.91)."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451859/casey-site/casey-site/making/desk-lamp/15_anglepoise_underside.jpg"
+                alt="Underside view of the desk lamp base showing the black-oxide steel counterweight plate, four recessed M5 hex-socket bolts, and four corner EPDM rubber feet"
+                width="860"
+                height="640"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Expand ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Stability · SF 2.91 at Max Reach</span>
+              <h3>Cast-Iron Counterweight &amp; Recessed Fasteners</h3>
+              <p>Combines an internal 2.10 kg gray cast-iron block with a 4 mm black-oxide steel bottom plate, flush countersunk M5 bolts, and 4 corner EPDM feet for rock-solid forward cantilever stability.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         07 — NOIR OBSIDIAN ENGINEERED EDITION, DIMMER & ELECTRICAL ROUTING
+         ================================================================ -->
+    <section id="noir-engineered">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 07 · Noir Engineered, Switch &amp; Electrical Routing</span>
+            <h2>Noir Obsidian Complete — Tactile Dimmer &amp; Articulated Wiring</h2>
+          </div>
+          <p>
+            Translating the mechanically verified Anglepoise into our beloved <strong>Noir Obsidian &amp; Burnt Copper-Bronze</strong> palette across three version-guarded iterations (<code>v1 → v2 → v3_electrical</code>): refining executive stance and smoked bronze-gunmetal springs, then completing the product with a front-mounted <strong>knurled champagne-brass push-rotary dimmer</strong> and full hollow-tube woven braided electrical routing.
+          </p>
+        </div>
+
+        <div class="compare-shell">
+          <div class="compare-stage dark-stage" data-compare>
+            <img
+              class="compare-base compare-square"
+              src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451795/casey-site/casey-site/making/desk-lamp/18_anglepoise_noir_v3_hero.jpg"
+              alt="Final v3 Noir Obsidian engineered Anglepoise desk lamp with crouching cantilever stance, smoked bronze-gunmetal springs, front knurled champagne-brass rotary dimmer, and woven braided electrical routing"
+              width="1200"
+              height="1200"
+              loading="lazy"
+            >
+            <div class="compare-overlay">
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451861/casey-site/casey-site/making/desk-lamp/16_anglepoise_noir_v1_hero.jpg"
+                alt="v1 Noir Obsidian engineered pass before stance refinement, warmer copper-bronze tuning, rotary dimmer, and electrical routing"
+                width="1080"
+                height="1080"
+                loading="lazy"
+              >
+            </div>
+            <span class="compare-label left">Noir v1 · Initial Pass</span>
+            <span class="compare-label right">Noir v3 · Complete Electrical</span>
+            <div class="compare-divider" aria-hidden="true">
+              <div class="compare-handle">↔</div>
+            </div>
+            <input
+              class="compare-range"
+              type="range"
+              min="0"
+              max="100"
+              value="44"
+              aria-label="Compare Noir Engineered v1 initial pass against v3 complete electrical edition"
+            >
+          </div>
+
+          <div class="review-panel">
+            <div>
+              <span class="card-tag">Versioned Progression · v1 → v2 → v3 Electrical</span>
+              <h3>From Moody Prototype to Complete Buildable Product</h3>
+            </div>
+
+            <div class="score-row">
+              <div class="score-box">
+                <strong>9.9 / 10</strong>
+                <span>Style, Hardware Craft &amp; Stance</span>
+              </div>
+              <div class="score-box">
+                <strong>3 Loops + Dimmer</strong>
+                <span>UL/CE-Safe Hollow-Arm Routing</span>
+              </div>
+            </div>
+
+            <ul class="fix-list">
+              <li><strong>Crouching Cantilever Stance (v2):</strong> Opened pose to <code>θ1 = -38°, θ2 = +54°, ψ = +25°</code> (~88° elbow angle) with smoldering burnt-bronze copper and warm smoked bronze-gunmetal springs.</li>
+              <li><strong>Push-Rotary Dimmer Dial (v3):</strong> 56-flute knurled champagne-brass dial inside a smoked-gunmetal bezel centered on the front sloped obsidian wall (+10.2 mm clear above counterweight).</li>
+              <li><strong>Hollow-Tube Woven Routing (v3):</strong> <code>Ø 4.5 mm</code> matte-black herringbone textile cord runs from the hollow M16 swivel kingpin through the hollow <code>-Y</code> copper arms via stepped gunmetal/EPDM grommets (<code>G0–G4</code>) with three non-pinching <code>R ≥ 23 mm</code> slack service loops.</li>
+              <li><strong>Shade Crown Hex Gland (v3):</strong> Machined champagne-brass hex lock-nut, knurled compression collar &amp; ribbed EPDM flex boot seated flush on the shade crown feeding straight into the E27 socket.</li>
+            </ul>
+
+            <div class="spec-grid">
+              <div class="spec-item"><span>Dimmer Anchor</span>(76.2, 0, 40.8) mm</div>
+              <div class="spec-item"><span>Braided Cord</span>Ø 4.5 mm · R ≥ 23 mm</div>
+              <div class="spec-item"><span>Shade Gland G5</span>(82.0, 0, 357.3) mm</div>
+              <div class="spec-item"><span>Swivel Stop</span>±170° Hollow M16</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="two-col">
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451795/casey-site/casey-site/making/desk-lamp/18_anglepoise_noir_v3_hero.jpg"
+              data-title="07 · Noir Engineered v3 — Complete Product Hero (1200×1200)"
+              data-caption="96-sample Cycles Metal GPU hero render of desk_lamp_anglepoise_noir_v3_electrical.blend: velvet-satin obsidian shell, smoldering burnt copper-bronze frame, warm smoked bronze-gunmetal helical springs, front champagne-brass rotary dimmer, woven textile service loops, and warm 2450K tabletop pool."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451795/casey-site/casey-site/making/desk-lamp/18_anglepoise_noir_v3_hero.jpg"
+                alt="Complete Noir Obsidian engineered Anglepoise desk lamp hero render showing front brass rotary dimmer and articulated woven braided cord"
+                width="1200"
+                height="1200"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Full 1200×1200 ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">v3 Flagship Hero · Complete Product</span>
+              <h3>Noir Obsidian × Copper-Bronze × Champagne-Brass</h3>
+              <p>Unites genuine Carwardine spring mechanics, weighted cast-iron stability, front-mounted tactile dimming, and articulated braided electrical routing in our signature moody studio tone.</p>
+            </div>
+          </article>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451862/casey-site/casey-site/making/desk-lamp/19_anglepoise_noir_v3_electrical.jpg"
+              data-title="07 · Electrical Routing, Stepped Grommets &amp; Rotary Dimmer Detail (1024×1024)"
+              data-caption="Macro inspection of the 56-flute knurled champagne-brass push-rotary dimmer dial, smoked gunmetal escutcheon collar, P0/E0/W woven textile service loops with two-stage stepped grommets, and machined champagne-brass hex shade crown cord gland."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451862/casey-site/casey-site/making/desk-lamp/19_anglepoise_noir_v3_electrical.jpg"
+                alt="Close-up detail of the knurled champagne-brass rotary dimmer dial on the obsidian base, woven braided cord loops at the elbow and wrist, and brass hex cord gland on the shade crown"
+                width="1024"
+                height="1024"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Inspect Detail ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Electrical Detail · Switch, Loops &amp; Gland</span>
+              <h3>Dimmer Dial, Service Loops &amp; Crown Hex Gland</h3>
+              <p>Every electrical entry/exit is protected by stepped smoked-gunmetal &amp; EPDM strain-relief hardware, keeping the woven braided cord clear of the springs, tie-rod, and wishbone yoke.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         08 — PHYSICALLY FLEXIBLE MOTION SIMULATION (BLENDER 5.2 CYCLES)
+         ================================================================ -->
+    <section id="flexible-motion">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 08 · Flexible Physics &amp; Cycles Metal Animation</span>
+            <h2>Stretching Helical Springs &amp; Flexing Braided Cords in Motion</h2>
+          </div>
+          <p>
+            Standard rigid-body CAD rigs distort spring wire cross-sections when scaled and detach cables at moving joints. In <strong>Blender 5.2 LTS (Cycles Metal GPU)</strong>, we authored a frame-driven procedural solver (<code>desk_lamp_anglepoise_noir_v4_flex_anim.blend</code>) that regenerates all four constant-wire-diameter helical springs and all three constant-arc-length braided cord loops live on every frame.
+          </p>
+        </div>
+
+        <div class="video-shell">
+          <video
+            id="flex-video"
+            controls
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451863/casey-site/casey-site/making/desk-lamp/23_noir_flex_poster.jpg"
+            width="1280"
+            height="720"
+            aria-label="10-second Cycles path-traced studio animation showing stretching helical tension springs, flexing woven braided cords, rotary brass dimmer, and full 4-bar Carwardine parallelogram articulation"
+          >
+            <source src="https://res.cloudinary.com/do7oi2ioy/video/upload/v1795451864/casey-site/casey-site/making/desk-lamp/23_noir_flexible_motion.mp4" type="video/mp4">
+            Your browser does not support HTML5 video playback. Open <code>assets/23_noir_flexible_motion.mp4</code> directly.
+          </video>
+          <div class="phase-bar" role="group" aria-label="Jump to flexible motion beats">
+            <button type="button" class="phase-btn" data-video-target="flex-video" data-seek="0.0">
+              <strong>0.0s · Dimmer Swell</strong>
+              <span>Brass dial turns · 2450K glow rises</span>
+            </button>
+            <button type="button" class="phase-btn" data-video-target="flex-video" data-seek="3.5">
+              <strong>3.5s · Low Drafting Reach</strong>
+              <span>S1/S2 coils stretch · Full forward sweep</span>
+            </button>
+            <button type="button" class="phase-btn" data-video-target="flex-video" data-seek="5.9">
+              <strong>5.9s · Tall Sculptural Arch</strong>
+              <span>High lift · Elbow C-loop absorbs slack</span>
+            </button>
+            <button type="button" class="phase-btn" data-video-target="flex-video" data-seek="7.2">
+              <strong>7.2s · Swivel, Yaw &amp; Nod</strong>
+              <span>360° turret sweep · Wishbone &amp; shade aim</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top: 1.75rem;">
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451863/casey-site/casey-site/making/desk-lamp/23_noir_flex_poster.jpg"
+              data-title="08 · Frame 85 — Full Forward Drafting Reach with Live Stretching Springs &amp; Flexing Cords"
+              data-caption="Direct Cycles Metal GPU frame at peak forward reach (θ1=+10°, θ2=+84°): both S1 and S2 gunmetal helical coils open cleanly with constant wire gauge (Ø1.00 / Ø0.95 mm) and rigid circular end-hooks locked on the brass pins, the plumb-compensated wishbone keeps the shade cleanly clear of the upper arm, and all three braided textile loops flex smoothly out of their stepped EPDM grommets."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451863/casey-site/casey-site/making/desk-lamp/23_noir_flex_poster.jpg"
+                alt="Cycles studio frame showing full forward drafting reach with stretching helical springs, plumb wishbone shade yoke, and flexing braided textile cords"
+                width="1280"
+                height="720"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Inspect Frame 85 ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Procedural Physics · Constant Wire Gauge &amp; Arc Length</span>
+              <h3>Zero-Distortion Coils &amp; Inextensible Cord Loops</h3>
+              <p>On every frame, anchor empties attached to the turret, lower arm, elbow, upper arm, and shade feed exact world coordinates into a 3D beveled helix generator (constant wire radius + rigid 280° pin hooks) and an 8-iteration bisection Bezier arc-length solver keeping every cord tangent to its EPDM grommet.</p>
+            </div>
+          </article>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451867/casey-site/casey-site/making/desk-lamp/24_noir_flex_hero_frame.jpg"
+              data-title="08 · Frame 202 — Turret Swivel, Wrist Yaw &amp; Frosted 2450K Bulb Reveal (1280×720 Cycles)"
+              data-caption="Full 16:9 Cycles Metal GPU studio frame during the multi-axis swivel beat (turret -26°, wrist yaw -18°, PTFE trunnion pitch): the Identity-rest kinematic hierarchy and axis-angle wrist swivel keep every fastener, washer, and cord gland aligned with zero clipping across the complete 240-frame range of motion."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451867/casey-site/casey-site/making/desk-lamp/24_noir_flex_hero_frame.jpg"
+                alt="Full 16:9 Cycles render of the articulated Noir Obsidian desk lamp swiveling toward camera revealing the glowing frosted 2450K amber bulb"
+                width="1280"
+                height="720"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Inspect Frame 202 ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">240 Frames @ 24 fps · Full-Frame Studio Orbit</span>
+              <h3>164 Rigid Parts · 10 Kinematic Groups · 7 Flex Elements</h3>
+              <p>Every screw, washer, grommet, and linkage cheek moves cleanly with its parent sub-assembly while the 4-bar parallelogram keeps the elbow vertical and the plumb-compensated wrist barrel keeps the wishbone yoke cleanly suspended across all 240 path-traced frames.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         09 — PARAMETRIC CAD IN FREECAD 1.1.3 & NATIVE AUTODESK FUSION 360
+         ================================================================ -->
+    <section id="parametric-cad">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 09 · Parametric B-Rep CAD &amp; Native Feature Timeline</span>
+            <h2>True Feature-by-Feature Build in Autodesk Fusion 360 &amp; FreeCAD</h2>
+          </div>
+          <p>
+            Transitioning from visual mesh modeling to manufacture-ready solid B-Rep geometry driven by a single canonical JSON parameter specification (<code>lamp_cad_params.json</code>): built both as an OpenCASCADE parametric assembly in <strong>FreeCAD 1.1.3</strong> (exporting 233,221-entity AP242 STEP) and as a true human-style feature-by-feature parametric timeline in <strong>Autodesk Fusion 360</strong>.
+          </p>
+        </div>
+
+        <div class="video-shell">
+          <video
+            id="fusion-video"
+            controls
+            playsinline
+            preload="metadata"
+            poster="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451872/casey-site/casey-site/making/desk-lamp/22_fusion_build_poster.jpg"
+            width="1920"
+            height="1080"
+            aria-label="Step-by-step Autodesk Fusion 360 parametric timeline playback showing the native Sketch, Extrude, Revolve, Loft, Sweep, and Joint construction of Desklamp_Gemini_Neon followed by the motion simulation script"
+          >
+            <source src="https://res.cloudinary.com/do7oi2ioy/video/upload/v1795451888/casey-site/casey-site/making/desk-lamp/GeminiLamp.mp4" type="video/mp4">
+            Your browser does not support HTML5 video playback. Open <code>assets/GeminiLamp.mp4</code> directly.
+          </video>
+          <div class="phase-bar" role="group" aria-label="Jump to Fusion 360 build stages">
+            <button type="button" class="phase-btn" data-video-target="fusion-video" data-seek="5">
+              <strong>0:05 · Base &amp; Ballast</strong>
+              <span>Sketches, Loft frustum, cast-iron block</span>
+            </button>
+            <button type="button" class="phase-btn" data-video-target="fusion-video" data-seek="35">
+              <strong>0:35 · Turret &amp; Fork</strong>
+              <span>360° drum, M4 plate, double-shear cheeks</span>
+            </button>
+            <button type="button" class="phase-btn" data-video-target="fusion-video" data-seek="65">
+              <strong>1:05 · Arms &amp; Shade</strong>
+              <span>Hollow tubes, elbow, revolved bell &amp; vents</span>
+            </button>
+            <button type="button" class="phase-btn" data-video-target="fusion-video" data-seek="92">
+              <strong>1:32 · Springs &amp; Motion</strong>
+              <span>Helical coils, cords &amp; jointed animation</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top: 1.75rem;">
+          <div class="review-panel">
+            <div>
+              <span class="card-tag">Autodesk Fusion 360 · Native Python API Timeline</span>
+              <h3>Human-Style Parametric Features &amp; Physical Joint Limits</h3>
+            </div>
+            <ul class="fix-list">
+              <li><strong>True Feature History:</strong> <code>DeskLamp_Native_Parametric.py</code> constructs all 9 sub-assemblies via native Sketches, Extrudes, 360° Revolves, Lofts, Sweeps, Circular Patterns (8 crown vents), and Fillets visible step-by-step on Fusion's bottom timeline.</li>
+              <li><strong>Anti-Inversion Revolute Limits:</strong> All 8 mechanical Revolute Joints enforce physical angular stops (Turret <code>±170°</code>, Lower Arm <code>-55°..+25°</code>, Upper Arm <code>+15°..+105°</code>, Shade Trunnion <code>-20°..+70°</code>) to eliminate mouse-drag inversion and base self-intersection.</li>
+              <li><strong>Controlled Motion Playback:</strong> <code>DeskLamp_Animate_Fusion.py</code> drives smooth cosine-eased joint angles directly through Fusion's <code>AsBuiltJoint</code> / <code>JointMotion</code> API.</li>
+            </ul>
+          </div>
+
+          <div class="review-panel">
+            <div>
+              <span class="card-tag">FreeCAD 1.1.3 · OpenCASCADE B-Rep &amp; Verification</span>
+              <h3>Exact Mass Properties, Clash Audit &amp; AP242 STEP</h3>
+            </div>
+            <ul class="fix-list">
+              <li><strong>Parametric VarSet Master:</strong> 20-parameter FreeCAD <code>VarSet</code> drives 57 exact B-Rep solids including the <code>1.2 mm</code> hollow blown-glass A19 bulb, hollow E27 ceramic socket, and <code>2.2 mm</code> spun aluminum bell shade.</li>
+              <li><strong>Verified Mass &amp; Stability:</strong> Total CAD mass <code>5.259 kg</code> (base <code>3.859 kg</code>), composite center of gravity at <code>(4.47, 0, 81.41) mm</code>, yielding a rest-pose tipping safety factor of <code>SF = 28.48</code>.</li>
+              <li><strong>Zero-Clash B-Rep Audit:</strong> Automated Boolean volume-intersection check confirmed <code>11 / 11</code> critical sub-assembly pairs pass with <code>0.000 mm³</code> solid interference.</li>
+            </ul>
+            <div class="spec-grid">
+              <div class="spec-item"><span>STEP AP242</span>233,221 Entities (24 MB)</div>
+              <div class="spec-item"><span>Total Mass</span>5,259.5 g (5.26 kg)</div>
+              <div class="spec-item"><span>Composite CG</span>(4.47, 0.0, 81.41) mm</div>
+              <div class="spec-item"><span>Clash Checks</span>11 / 11 PASS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         10 — ISO A3 ENGINEERING DRAWINGS & FULL 42-ITEM BOM
+         ================================================================ -->
+    <section id="drawings-bom">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 10 · Production Documentation &amp; Bill of Materials</span>
+            <h2>ISO A3 General Assembly, Exploded View &amp; Complete 42-Line BOM</h2>
+          </div>
+          <p>
+            Generated headlessly from FreeCAD 1.1.3 using OpenCASCADE exact Hidden-Line Removal (<code>TechDraw.projectEx</code>), ISO 2162 helical spring schematics, and bundled <code>PySide6.QtSvg</code> / <code>QPrinter</code> vector PDF rendering. Click either A3 sheet to inspect at full resolution or download the vector PDF/SVG and CSV files directly.
+          </p>
+        </div>
+
+        <div class="two-col">
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper drawing-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451896/casey-site/casey-site/making/desk-lamp/20_GA_Sheet1_General_Assembly.jpg"
+              data-title="Sheet 1 of 2 (DL-GA-001) — ISO A3 General Assembly Drawing (Scale 1:3)"
+              data-caption="Third-angle orthographic projection generated via OpenCASCADE HLR: Top Plan, Right Side Elevation with hidden-line internals, kinematic centerlines (E0/W), CG symbol (4.5, 0, 81.4), overall reach (454.4 mm) &amp; height (431.5 mm), Front Elevation (73.0 mm yoke span), Isometric View, General Engineering Notes, and ISO Title Block."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451896/casey-site/casey-site/making/desk-lamp/20_GA_Sheet1_General_Assembly.jpg"
+                alt="ISO A3 Sheet 1 General Assembly technical drawing DL-GA-001 showing Top Plan, Side Elevation, Front Elevation, Isometric View, dimensions, and engineering notes"
+                width="3307"
+                height="2339"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Inspect Full A3 Sheet ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Drawing DL-GA-001 · Sheet 1 of 2 · Scale 1:3</span>
+              <h3>General Assembly — Orthographic &amp; Kinematic Profile</h3>
+              <p>Complete third-angle multi-view engineering drawing with dashed hidden-line internals (counterweight, hollow arms, E27 socket, blown bulb), kinematic link overlays, and composite center-of-gravity callout.</p>
+              <div class="action-row">
+                <a class="dl-pill primary" href="https://res.cloudinary.com/do7oi2ioy/raw/upload/v1795451898/casey-site/making/desk-lamp/20_GA_Sheet1_General_Assembly.pdf" target="_blank" rel="noopener">↓ Vector PDF (A3)</a>
+                <a class="dl-pill" href="assets/20_GA_Sheet1_General_Assembly.svg" target="_blank" rel="noopener">↓ Vector SVG</a>
+              </div>
+            </div>
+          </article>
+
+          <article class="media-card">
+            <button
+              type="button"
+              class="media-trigger light-paper drawing-trigger"
+              data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451899/casey-site/casey-site/making/desk-lamp/21_GA_Sheet2_Exploded_BOM.jpg"
+              data-title="Sheet 2 of 2 (DL-EX-002) — ISO A3 Exploded Assembly &amp; 42-Row BOM (Scale 1:2.9)"
+              data-caption="Isometric exploded assembly drawing separating all 42 numbered BOM line items (75 individual parts, 5,259.5 g total mass) along their true physical assembly axes with dashed guide lines, non-overlapping circular callout balloons 1–42, and the complete engineering Bill of Materials table."
+            >
+              <img
+                src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451899/casey-site/casey-site/making/desk-lamp/21_GA_Sheet2_Exploded_BOM.jpg"
+                alt="ISO A3 Sheet 2 Exploded Assembly technical drawing DL-EX-002 with 42 numbered callout balloons and full Bill of Materials table"
+                width="3307"
+                height="2339"
+                loading="lazy"
+              >
+              <span class="zoom-pill">Inspect Full A3 Sheet ↗</span>
+            </button>
+            <div class="card-body">
+              <span class="card-tag">Drawing DL-EX-002 · Sheet 2 of 2 · 42 Line Items</span>
+              <h3>Exploded Assembly &amp; Numbered Engineering BOM</h3>
+              <p>Separates every sub-assembly stack along its authentic assembly vector — base ballast stack, front dimmer, rear mains, parallelogram arms &amp; springs, wishbone yoke, and shade/balance collar/socket/bulb stack.</p>
+              <div class="action-row">
+                <a class="dl-pill primary" href="https://res.cloudinary.com/do7oi2ioy/raw/upload/v1795451903/casey-site/making/desk-lamp/21_GA_Sheet2_Exploded_BOM.pdf" target="_blank" rel="noopener">↓ Vector PDF (A3)</a>
+                <a class="dl-pill" href="assets/21_GA_Sheet2_Exploded_BOM.svg" target="_blank" rel="noopener">↓ Vector SVG</a>
+                <a class="dl-pill" href="assets/desk_lamp_engineering_bom.csv" download>↓ BOM CSV</a>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Interactive Filterable 42-Item Responsive Engineering BOM Table -->
+        <div class="bom-controls">
+          <div class="bom-filters" role="group" aria-label="Filter BOM by sub-assembly">
+            <button type="button" class="bom-chip" data-bom-group="ALL" aria-pressed="true">All (42)</button>
+            <button type="button" class="bom-chip" data-bom-group="DL-1" aria-pressed="false">01 Base (11)</button>
+            <button type="button" class="bom-chip" data-bom-group="DL-2" aria-pressed="false">02 Electrical (8)</button>
+            <button type="button" class="bom-chip" data-bom-group="DL-3" aria-pressed="false">03 Lower Arm (9)</button>
+            <button type="button" class="bom-chip" data-bom-group="DL-4" aria-pressed="false">04 Elbow &amp; Upper (6)</button>
+            <button type="button" class="bom-chip" data-bom-group="DL-5" aria-pressed="false">05 Shade &amp; Yoke (8)</button>
+          </div>
+          <div class="bom-search-wrap">
+            <label for="bom-search-input" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);">Search Bill of Materials</label>
+            <input type="search" id="bom-search-input" class="bom-search" placeholder="Filter part no., name, or material…">
+            <span class="bom-summary-badge" id="bom-live-summary" aria-live="polite">42 items · 75 pcs · 5,259.5 g</span>
+          </div>
+        </div>
+
+        <div tabindex="0" role="region" aria-labelledby="bom-table-caption" class="bom-table-wrapper">
+          <table class="bom-table" id="engineering-bom-table">
+            <caption id="bom-table-caption">Complete Engineering Bill of Materials — Anglepoise Desk Lamp Noir Engineered v3 (DL-101 to DL-508)</caption>
+            <thead>
+              <tr>
+                <th scope="col">Part No</th>
+                <th scope="col">Item</th>
+                <th scope="col">Component Name</th>
+                <th scope="col">Sub-Assembly</th>
+                <th scope="col" class="num">Qty</th>
+                <th scope="col">Material / Specification</th>
+                <th scope="col" class="num">Mass (g)</th>
+              </tr>
+            </thead>
+            <tbody id="bom-tbody">
+              <!-- Populated deterministically from inline canonical BOM JSON -->
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="4" id="bom-foot-label">TOTAL ASSEMBLY — 42 LINE ITEMS</td>
+                <td class="num" id="bom-foot-qty">75</td>
+                <td>EXACT CAD B-REP MASS</td>
+                <td class="num" id="bom-foot-mass">5,259.5</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         11 — TECHNICAL ADDENDUM: PIPELINE, SOFTWARE & CONNECTIONS
+         ================================================================ -->
+    <section id="technical-addendum">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">Stage 11 · Technical Addendum &amp; Systems Architecture</span>
+            <h2>How We Built It — Toolchain, Live Bridges &amp; Troubleshooting Log</h2>
+          </div>
+          <p>
+            A transparent engineering record documenting every stage of the workflow, the exact software stack and runtime versions used on macOS (Apple Silicon M5 Pro), how live AI-to-CAD/DCC connections were established, and the concrete blockers we resolved to get every tool running cleanly.
+          </p>
+        </div>
+
+        <div class="addendum-toolbar">
+          <span class="card-tag" style="margin:0;">4 Technical Reference Sections · Expand Individually or All at Once</span>
+          <button
+            type="button"
+            class="accordion-toggle-btn"
+            id="addendum-toggle-all"
+            commandfor="addendum-accordion"
+            command="--toggle-all"
+            aria-expanded="false"
+          >
+            <span class="expand">Expand All Sections</span>
+            <span class="collapse">Collapse All Sections</span>
+          </button>
+        </div>
+
+        <div class="addendum-accordion" id="addendum-accordion">
+          <!-- Panel 1: Chronological Engineering Steps -->
+          <details open>
+            <summary>
+              <span>1. End-to-End Chronological Project Execution Steps</span>
+              <span class="summary-meta">10 Stages · Sketch → Production Package</span>
+            </summary>
+            <div class="addendum-body">
+              <p>The entire desk lamp progressed through ten sequential, version-guarded milestones—each preserving backward compatibility with prior artifacts while increasing physical, kinematic, and manufacturing fidelity:</p>
+              <div class="tech-grid">
+                <div class="tech-card">
+                  <h4>Stages 01–03 · Ideation, Multi-Agent MCP &amp; CMF Family</h4>
+                  <ul>
+                    <li>Translated the user's hand-drawn ink &amp; Copic marker sketch into an AI concept reference locking proportions (460 mm height, chamfered pyramidal base, twin tubes, flared bell shade).</li>
+                    <li>Spawned two specialized subagents (<strong>Industrial Designer</strong> + <strong>Blender 3D Modeler</strong>) driving live Blender 5.2 via MCP; executed a formal 8-point visual critique elevating v1 to signed-off v2 (<code>9.8/10</code>).</li>
+                    <li>Expanded into a 6-variant parametric CMF family (<code>desk_lamp_variations_6.blend</code>), selecting <strong>Noir Obsidian × Brushed Copper-Bronze</strong> as flagship.</li>
+                  </ul>
+                </div>
+                <div class="tech-card">
+                  <h4>Stages 04–07 · Carwardine Physics &amp; Electrical Integration</h4>
+                  <ul>
+                    <li>Added a <strong>Mechanical Engineer</strong> subagent to replace friction-only hinges with a true 4-spring Carwardine parallelogram, split cantilever pins, straddling wishbone shade U-yoke, and 2.10 kg cast-iron + 0.84 kg steel base ballast (dual sign-off <code>9.6 ME / 9.8 ID</code>).</li>
+                    <li>Ported the engineered geometry to Noir Obsidian across <code>v1 → v2 → v3_electrical.blend</code> (<code>9.9/10</code> ID sign-off), adding the 56-flute knurled champagne-brass push-rotary dimmer, stepped grommets <code>G0–G4</code>, 3 woven braided cord service loops (<code>R ≥ 23 mm</code>), and brass PG7 crown cord gland <code>G5</code>.</li>
+                  </ul>
+                </div>
+                <div class="tech-card">
+                  <h4>Stages 08–09 · Parametric B-Rep CAD (FreeCAD + Fusion 360)</h4>
+                  <ul>
+                    <li>Distilled all dimensions, kinematics, spring rates, and material densities into one canonical source of truth: <code>cad/lamp_cad_params.json</code>.</li>
+                    <li>Generated an exact 57-part OpenCASCADE B-Rep assembly in <strong>FreeCAD 1.1.3</strong> (20-param <code>VarSet</code>, AP242 STEP, 11/11 clash checks passing, exact mass <code>5.259 kg</code>).</li>
+                    <li>Built a human-style feature-by-feature native script (<code>DeskLamp_Native_Parametric.py</code>) + motion driver (<code>DeskLamp_Animate_Fusion.py</code>) inside <strong>Autodesk Fusion 360</strong> with physical rotation limits on all 8 revolute joints.</li>
+                  </ul>
+                </div>
+                <div class="tech-card">
+                  <h4>Stages 10–11 · ISO A3 Drawings, Flexible Physics &amp; Showcase</h4>
+                  <ul>
+                    <li>Automated headless OpenCASCADE exact Hidden-Line Removal (<code>TechDraw.projectEx</code>) + PySide6 QtSvg/QPrinter export to produce ISO A3 Sheet 1 (<code>DL-GA-001</code>), Sheet 2 Exploded View + 42-item BOM (<code>DL-EX-002</code>), CSV BOM, and dual Assembled/Exploded <code>.FCStd</code>.</li>
+                    <li>Rigged <code>v4_flex_anim.blend</code> in Blender 5.2 with constant-wire-gauge procedural stretching springs and bisection-solved constant-arc-length Bezier cords, rendering 240 path-traced Cycles Metal frames to H.264 MP4 and assembling this self-contained showcase.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Panel 2: Software & Hardware Stack -->
+          <details>
+            <summary>
+              <span>2. Software Stack, Runtimes &amp; Compute Environment</span>
+              <span class="summary-meta">macOS · Apple M5 Pro · 6 Core Tools</span>
+            </summary>
+            <div class="addendum-body">
+              <div class="tech-grid">
+                <div class="tech-card">
+                  <h4>Blender 5.2.0 LTS + Cycles Metal GPU</h4>
+                  <p>Primary lookdev, procedural mesh/curve modeling, physically based material authoring, and path-traced animation rendering accelerated on the <strong>Apple M5 Pro 20-core Metal GPU</strong> (~1.5 s/frame at 1280×720, 28 spp adaptive + OpenImageDenoise).</p>
+                </div>
+                <div class="tech-card">
+                  <h4>Blender Lab MCP Server (<code>blender-mcp</code>)</h4>
+                  <p>Installed in an isolated virtualenv at <code>~/.local/share/blender_mcp/mcp/.venv/bin/blender-mcp</code> and registered in <code>~/.gemini/config/mcp_config.json</code>, giving agents live Python execution, viewport screenshot capture, and datablock inspection directly inside running Blender 5.2.</p>
+                </div>
+                <div class="tech-card">
+                  <h4>FreeCAD 1.1.3 (OpenCASCADE OCCT + TechDraw)</h4>
+                  <p>Used headlessly via its bundled Python runtime (<code>/Applications/FreeCAD.app/Contents/Resources/bin/python</code>) with <code>Part</code>, <code>TechDraw.projectEx</code> exact B-Rep HLR, AP242 STEP export, and bundled <code>PySide6.QtSvg</code> / <code>QtPrintSupport.QPrinter</code> for native vector A3 PDF &amp; 200-DPI PNG generation.</p>
+                </div>
+                <div class="tech-card">
+                  <h4>Autodesk Fusion 360 (Python API <code>adsk.fusion</code>)</h4>
+                  <p>Native parametric CAD timeline engine running locally on macOS; driven via installed API script bundles (<code>DeskLamp_Native_Parametric</code> &amp; <code>DeskLamp_Animate_Fusion</code>) executing native Sketch, Extrude, Revolve, Loft, Sweep, Fillet, Pattern, and Joint API calls.</p>
+                </div>
+                <div class="tech-card">
+                  <h4>FFmpeg 8.1 (<code>libx264</code> / <code>ffprobe</code>)</h4>
+                  <p>Homebrew media pipeline encoding our 240-frame PNG sequence to web-ready <code>yuv420p</code> H.264 MP4 with <code>-movflags +faststart</code>, remuxing the 1080p Fusion capture (<code>GeminiLamp.mp4</code>) for instant HTTP range seeking, and extracting hero poster frames.</p>
+                </div>
+                <div class="tech-card">
+                  <h4>Antigravity Multi-Agent Orchestrator &amp; Modern Web</h4>
+                  <p>Coordinated specialized subagents (Industrial Designer, Mechanical Engineer, Blender Modeler) with formal numerical sign-off gates and built this zero-dependency static HTML5/CSS/JS showcase validated against <code>modern-web-guidance</code> standards.</p>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Panel 3: Connection Architecture -->
+          <details>
+            <summary>
+              <span>3. Establishing Live Connections Across DCC &amp; CAD Applications</span>
+              <span class="summary-meta">MCP JSON-RPC · Headless Python · API Bundles</span>
+            </summary>
+            <div class="addendum-body">
+              <p>Because Blender, FreeCAD, and Autodesk Fusion 360 each expose completely different automation surfaces on macOS, we established three tailored integration bridges rather than forcing brittle GUI automation:</p>
+              <div class="arch-flow">
+                <div class="arch-node">
+                  <span class="proto">Bridge 01 · Live MCP</span>
+                  <strong>Antigravity ↔ Blender 5.2</strong>
+                  <span>Configured <code>mcp_config.json</code> pointing to <code>blender-mcp</code>. Connected to Blender's live add-on socket for interactive Python execution, camera switching, and visual render feedback loops.</span>
+                </div>
+                <div class="arch-node blue">
+                  <span class="proto">Bridge 02 · Headless CLI</span>
+                  <strong>Shell → Blender &amp; FreeCAD</strong>
+                  <span>Batch renders run via <code>Blender --background</code>; FreeCAD B-Rep builds and HLR drawings execute via FreeCAD's bundled <code>bin/python</code> with <code>Resources/lib</code> on <code>sys.path</code> and <code>QT_QPA_PLATFORM=offscreen</code>.</span>
+                </div>
+                <div class="arch-node">
+                  <span class="proto">Bridge 03 · Native API</span>
+                  <strong>Workspace → Fusion 360</strong>
+                  <span>Verified running Fusion 360 process and deployed self-contained Python + <code>.manifest</code> bundles directly into Fusion's local <code>API/Scripts/</code> directory for one-click execution in <em>Utilities → Scripts &amp; Add-Ins</em>.</span>
+                </div>
+                <div class="arch-node blue">
+                  <span class="proto">Bridge 04 · Single Truth</span>
+                  <strong>Shared JSON Schema</strong>
+                  <span><code>lamp_cad_params.json</code> synchronizes identical millimeters, kinematic angles, spring specs, and material densities across Blender, FreeCAD, Fusion 360, and the ISO A3 drawing generator.</span>
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <!-- Panel 4: Real Blockers & Fixes Undertaken -->
+          <details>
+            <summary>
+              <span>4. Real Technical Blockers Encountered &amp; Exact Fixes Undertaken</span>
+              <span class="summary-meta">8 Root-Cause Engineering Resolutions</span>
+            </summary>
+            <div class="addendum-body">
+              <p>Getting three distinct 3D/CAD kernels to interoperate cleanly required diagnosing and resolving real API quirks, kernel bottlenecks, and physical defects along the way:</p>
+              <div class="issue-list">
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>1. Fusion 360 Read-Only Root Component</strong>
+                    <span><code>RuntimeError: 3 : root component name cannot be changed</code> aborted initial native script startup on line 540.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Removed direct assignment to <code>design.rootComponent.name</code>; structured all 9 sub-assemblies cleanly as named child occurrences under root while keeping document naming managed by Fusion.</span>
+                  </div>
+                </div>
+
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>2. Fusion 360 Revolve &amp; Crown Vent Cut Failure</strong>
+                    <span><code>RuntimeError: 3 : No target body found to cut or intersect</code> occurred when cutting the 8 crown vents into the spun bell shade.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Added explicit <code>setAngleExtent("360 deg")</code> on all Revolve features and corrected the inner shade profile spline sign (<code>s - wt_sh</code> → <code>s + wt_sh</code>) so the spun wall formed a closed manifold solid before cutting.</span>
+                  </div>
+                </div>
+
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>3. Kinematic Inversion &amp; Erratic Dragging in Fusion 360</strong>
+                    <span>Dragging the shade interactively caused the upper/lower arms to flip 180° through the base frustum because unconstrained Revolute Joints allowed full 360° inversion.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Added explicit mechanical <code>rotationLimits</code> (minimum/maximum angular stops) to all 8 Revolute Joints and created <code>DeskLamp_Animate_Fusion.py</code> for deterministic cosine-eased motion playback.</span>
+                  </div>
+                </div>
+
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>4. FreeCAD <code>freecadcmd -c</code> &amp; Headless Qt Abort</strong>
+                    <span>Multi-line <code>freecadcmd -c</code> invocations and importing <code>PySide6.QtGui</code> without an active macOS window server crashed with <code>Application unexpectedly terminated</code>.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Switched execution to FreeCAD's bundled <code>/Applications/FreeCAD.app/Contents/Resources/bin/python</code> with <code>QT_QPA_PLATFORM=offscreen</code> and <code>Resources/lib</code> prepended to <code>sys.path</code>—unlocking stable headless OCCT + native vector PDF/PNG export without external Inkscape/rsvg dependencies.</span>
+                  </div>
+                </div>
+
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>5. OpenCASCADE HLR Stall on 248 Helical B-Spline Turns</strong>
+                    <span>Running <code>TechDraw.projectEx</code> directly on all 4 swept 3D helical springs triggered an <code>O(N²)</code> B-Spline visibility bottleneck (&gt;40 s per view) and merged 1 mm wire strokes into solid smudges at 1:3 scale.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Preserved all 4 exact 3D swept helical B-Rep solids inside <code>desk_lamp_exploded_assembly.FCStd</code> and mass calculations, while projecting crisp ISO 2162 helical coil schematics directly from exact 3D anchor points in 2D SVG—cutting full 2-sheet generation time to ~15 seconds with razor-sharp drafting clarity.</span>
+                  </div>
+                </div>
+
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>6. <code>Part.Compound</code> Missing <code>.CenterOfMass</code></strong>
+                    <span>Multi-solid grouped BOM assemblies (e.g., 4× EPDM feet or paired arm tubes) threw attribute errors when computing centroid anchors for balloon leaders.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Implemented volume-weighted centroid integration across <code>shape.Solids</code> and selected the camera-facing <code>-Y</code> solid centroid for symmetric pairs so every exploded balloon points cleanly to the visible foreground member.</span>
+                  </div>
+                </div>
+
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>7. Mechanical Clash Audit Defects (v1 → v2)</strong>
+                    <span>Early mechanical review caught top-clipping wrist tabs, floating trunnions, and a central tie-rod interference against the A1 spring pin.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Engineered the straddling wishbone shade U-yoke, shifted the tie-rod rearwards to <code>X = -12 mm</code> through split cantilevered A1/A2 pins (18 mm open center window), and verified <code>11/11</code> zero-interference B-Rep clash checks.</span>
+                  </div>
+                </div>
+
+                <div class="issue-row">
+                  <div class="issue-symptom">
+                    <strong>8. Realistic Flexible Springs &amp; Cords During Motion</strong>
+                    <span>Non-uniform scaling of static spring meshes flattens circular wire into ovals and stretches hooks off pins; static cords detach from moving grommets during articulation.</span>
+                  </div>
+                  <div class="issue-fix">
+                    <strong>Fix Applied</strong>
+                    <span>Authored a live <code>frame_change_pre</code> Blender driver using rigid anchor empties to regenerate 3D beveled constant-wire-diameter helices (rigid circular hooks + uniform pitch expansion) and an 8-step bisection Bezier solver maintaining constant cord length and grommet exit tangency across all 240 Cycles frames.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================
+         12. WORKSHOP-BUILDABLE PLYWOOD DESK LAMP (KUMIKO-TRUSS)
+         ================================================================ -->
+    <section id="plywood-lamp" class="ply-section">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow">Section 12 · Workshop-Buildable Spin-Off Project (KUMIKO-TRUSS)</span>
+          <h2>Developing the Build-Ready Plywood Desk Lamp</h2>
+          <p class="lead">
+            Applying the same multi-agent industrial design and mechanical engineering workflow to a real workshop build:
+            CNC-milled <code>12 mm</code> Baltic birch stepped base, laser-cut &amp; engraved <code>6 mm</code> Baltic birch arms,
+            flush half-lap Kumiko bell shade, limited matte charcoal FDM PETG/TPU functional interfaces, off-the-shelf black-oxide hardware,
+            and touch-safe <code>12V DC</code> warm <code>2700K</code> G45 LED electrics.
+          </p>
+        </div>
+
+        <div class="ply-kpi-row">
+          <div class="ply-kpi">
+            <strong>12 mm + 6 mm</strong>
+            <span>1-Sided CNC Birch Base &amp; Laser-Cut Birch Upper</span>
+          </div>
+          <div class="ply-kpi">
+            <strong>16 / 16 PASS</strong>
+            <span>Automated FreeCAD V6 Zero-Overlap B-Rep Checks</span>
+          </div>
+          <div class="ply-kpi">
+            <strong>FoS 2.05 – 4.09</strong>
+            <span>Worst-Case Stability Across All Yaw Angles (1.06 kg Steel)</span>
+          </div>
+          <div class="ply-kpi">
+            <strong>2 Kits / A2 Sheet</strong>
+            <span>54 Laser Parts Nested at 0.025 pt Black Cut &amp; Red Fill Etch</span>
+          </div>
+        </div>
+
+        <!-- Single-row scrollable accessible tablist (modern-web-guidance: tabs) -->
+        <div class="ply-tablist" focusgroup="tablist nomemory" role="tablist" aria-label="Plywood lamp development stages">
+          <button type="button" role="tab" class="ply-tab" id="ply-tab-1" data-panel="ply-panel-1" aria-selected="true" focusgroupstart>01 Concept Sketchbook</button>
+          <button type="button" role="tab" class="ply-tab" id="ply-tab-2" data-panel="ply-panel-2" aria-selected="false">02 Blender 4-Variation Study</button>
+          <button type="button" role="tab" class="ply-tab" id="ply-tab-3" data-panel="ply-panel-3" aria-selected="false">03 V5 Cutaway &amp; Engineering Audit</button>
+          <button type="button" role="tab" class="ply-tab" id="ply-tab-4" data-panel="ply-panel-4" aria-selected="false">04 V6 A2 Laser SVGs &amp; CNC</button>
+          <button type="button" role="tab" class="ply-tab" id="ply-tab-5" data-panel="ply-panel-5" aria-selected="false">05 ISO A3 GA &amp; Exploded BOM</button>
+        </div>
+
+        <div class="ply-panels">
+          <!-- STAGE 1: BRIEF & 8-VARIATION CONCEPT SKETCHBOOK -->
+          <div role="tabpanel" class="ply-panel" id="ply-panel-1" aria-labelledby="ply-tab-1">
+            <div class="ply-panel-inner">
+              <div class="ply-grid-2">
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451904/casey-site/casey-site/making/desk-lamp/25_ply_8_concept_sketches.jpg"
+                          data-title="KUMIKO-TRUSS — Unified 8-Variation Concept Sketchbook"
+                          data-caption="Loose telephoto industrial design sketchbook comparing 4 Kigumi Lantern (A1–A4) and 4 Kumiko Ribbed Dome (C1–C4) studies on one sheet with warm 2700K G45 LED bulbs.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451904/casey-site/casey-site/making/desk-lamp/25_ply_8_concept_sketches.jpg"
+                         alt="Unified one-page sketchbook displaying eight plywood articulated desk lamp concepts across Kigumi Lantern and Kumiko Dome families"
+                         loading="lazy" width="1600" height="1067">
+                  </button>
+                  <div class="ply-card-body">
+                    <span class="ply-badge">Stage 01 · Industrial Design Exploration</span>
+                    <h3>8 Variations on One Telephoto Sketch Sheet</h3>
+                    <p>Explored two interlocking plywood shade languages—<strong>Option A (A1–A4 Kigumi Lantern / Drafting Hood)</strong> and <strong>Option C (C1–C4 Kumiko Ribbed Bell)</strong>—paired with stepped laminated bases, cut-out truss arms, and friction wing-nut joints.</p>
+                  </div>
+                </article>
+
+                <div class="review-panel">
+                  <div>
+                    <span class="ply-badge">Selected Hybrid Direction</span>
+                    <h3 style="margin:0 0 0.5rem;">C1 Kumiko Bell × A2 Stepped Base × A3 Cut-Out Arms</h3>
+                    <p style="margin:0;color:var(--text-muted);font-size:0.9rem;">
+                      Rather than locking into a single sketch immediately, we combined the strongest buildable features from across the sheet and moved into rapid 3D Blender concept exploration before committing to CAD.
+                    </p>
+                  </div>
+                  <ul class="fix-list">
+                    <li><strong>75% Compact Shade Scale:</strong> Reduced Kumiko bell rim to <code>Ø132 mm</code> with an integrated front+back wrist spine rib and warm <code>12V E27/G45 2700K</code> frosted LED bulb.</li>
+                    <li><strong>Hollow Rotating Dowel Turret:</strong> <code>Ø30 mm OD / Ø11 mm ID</code> walnut pivot dowel passing the low-voltage <code>22 AWG</code> braided cord cleanly through the rotational axis.</li>
+                    <li><strong>Tactile Plywood Controls:</strong> Replaced plastic knobs with a 2-layer <code>6 mm + 6 mm</code> laser-cut scalloped birch rotary dimmer dial + laser-engraved arc ticks.</li>
+                    <li><strong>True Sheet-Stock Architecture:</strong> Full <code>12 mm</code> CNC birch base stackup, <code>6 mm</code> laser-cut upper arms &amp; shade, and minimal charcoal PETG/TPU prints only where thermal or cable protection requires them.</li>
+                  </ul>
+                  <div class="spec-grid">
+                    <div class="spec-item"><span>CNC Sheet Stock</span>12 mm Baltic Birch</div>
+                    <div class="spec-item"><span>Laser Sheet Stock</span>6 mm Baltic Birch (A2)</div>
+                    <div class="spec-item"><span>Electrics</span>12V DC SELV · 2700K G45</div>
+                    <div class="spec-item"><span>Friction Hardware</span>Black-Oxide + Nylon 6/6</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STAGE 2: BLENDER 4-VARIATION CONCEPT EXPLORATION -->
+          <div role="tabpanel" class="ply-panel" id="ply-panel-2" aria-labelledby="ply-tab-2" hidden="until-found">
+            <div class="ply-panel-inner">
+              <article class="ply-card">
+                <button type="button" class="media-trigger"
+                        data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451907/casey-site/casey-site/making/desk-lamp/26_ply_4var_overview.jpg"
+                        data-title="Blender 4-Variation Side-by-Side Concept Lineup (V1–V4)"
+                        data-caption="Four parametric plywood lamp concepts built inside one Cycles Metal-GPU scene: V1 Classic 16-Rib (6mm arms), V2 Tulip 12-Rib (twin-pill 6mm arms), V3 A3 Interlocking Drafting Hood (6mm tapered arms), and V4 Cantilevered Base (12mm charcoal arm comparison).">
+                  <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451907/casey-site/casey-site/making/desk-lamp/26_ply_4var_overview.jpg"
+                       alt="Four variations of the plywood articulated desk lamp rendered side by side in Blender Cycles"
+                       loading="lazy" width="1920" height="900">
+                </button>
+                <div class="ply-card-body">
+                  <span class="ply-badge">Stage 02 · Parametric Blender Concept Iteration (V1 – V4)</span>
+                  <h3>Four Live Variations in One Parametric Blender Scene</h3>
+                  <p>Built procedurally via <code>build_plywood_4_variations.py</code> so every review tweak—downsizing arms from <code>12 mm</code> to <code>6 mm</code>, refining castellations, and softening dimmer scallops—rebuilt cleanly across all four concepts in ~15 seconds on Apple Silicon Metal GPU.</p>
+                </div>
+              </article>
+
+              <div class="ply-grid-3">
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451908/casey-site/casey-site/making/desk-lamp/28_ply_v1_flush_ribs_detail.jpg"
+                          data-title="V1 Close-Up — Flush 50/50 Half-Lap Kumiko Ribs &amp; Rings"
+                          data-caption="Receiving half-lap notches carved into every curved 6mm rib mate with parallel-walled 6mm radial slots on both castellated rings so outer faces sit 100% flush (0.00 mm protrusion).">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451908/casey-site/casey-site/making/desk-lamp/28_ply_v1_flush_ribs_detail.jpg"
+                         alt="Close-up render of V1 Kumiko bell showing flush half-lap interlocking ribs and castellated rings"
+                         loading="lazy" width="1440" height="900">
+                  </button>
+                  <div class="ply-card-body">
+                    <h4>V1 · 100% Flush Half-Lap Joinery</h4>
+                    <p>True 50/50 receiving notches on every curved rib lock flush into parallel-walled radial ring slots with zero step or overhang.</p>
+                  </div>
+                </article>
+
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451913/casey-site/casey-site/making/desk-lamp/27_ply_v3_a3_hood_detail.jpg"
+                          data-title="V3 Close-Up — Longer Interlocking A3 Drafting Hood"
+                          data-caption="Extended angled drafting hood completely shields the G45 bulb, with true complementary 6mm mating finger joints carved into both Left and Right cheeks across rear, roof, and front visor panels.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451913/casey-site/casey-site/making/desk-lamp/27_ply_v3_a3_hood_detail.jpg"
+                         alt="Close-up render of V3 angled A3 drafting hood with interlocking finger joints on both cheeks"
+                         loading="lazy" width="1440" height="900">
+                  </button>
+                  <div class="ply-card-body">
+                    <h4>V3 · Complementary A3 Finger Joints</h4>
+                    <p>Direct 3D vector-basis panel construction eliminated slope rotation errors and interlocked all four hood planes flush on both cheeks.</p>
+                  </div>
+                </article>
+
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451914/casey-site/casey-site/making/desk-lamp/29_ply_turret_dimmer_detail.jpg"
+                          data-title="Base Detail — Subtle 12-Flute 2×6mm Dimmer &amp; Hollow Dowel Turret"
+                          data-caption="Refined 2-layer 6mm+6mm scalloped birch rotary dimmer (1.15mm gentle flutes) beside the hollow rotating Ø30/Ø11mm walnut dowel turret and white Nylon 6/6 thrust ring on the 3-tier 12mm CNC base.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451914/casey-site/casey-site/making/desk-lamp/29_ply_turret_dimmer_detail.jpg"
+                         alt="Close-up of the subtle 12-flute two-layer 6mm plywood dimmer dial and hollow walnut dowel pivot turret"
+                         loading="lazy" width="1440" height="900">
+                  </button>
+                  <div class="ply-card-body">
+                    <h4>Subtle 2×6 mm Dimmer &amp; Hollow Dowel</h4>
+                    <p>Softened perimeter scallops from <code>3.2 mm</code> to subtle <code>1.15 mm</code> flutes across the 2-layer birch knob next to the exposed Nylon thrust ring.</p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+
+          <!-- STAGE 3: V5 HYBRID CUTAWAY & SENIOR MECHANICAL ENGINEERING AUDIT -->
+          <div role="tabpanel" class="ply-panel" id="ply-panel-3" aria-labelledby="ply-tab-3" hidden="until-found">
+            <div class="ply-panel-inner">
+              <div class="ply-grid-2">
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451916/casey-site/casey-site/making/desk-lamp/30_ply_v5_hero.jpg"
+                          data-title="V5 Hybrid Hero — V1 Natural Birch Upper + V4 Cantilevered Base"
+                          data-caption="Final chosen silhouette combining V1's natural birch 16-rib flush Kumiko bell and 6mm laser-cut arms with V4's stepped cantilevered 3×12mm CNC birch base.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451916/casey-site/casey-site/making/desk-lamp/30_ply_v5_hero.jpg"
+                         alt="Hero render of the V5 hybrid natural birch plywood lamp combining V1 upper assembly with V4 cantilevered base"
+                         loading="lazy" width="1440" height="1080">
+                  </button>
+                  <div class="ply-card-body">
+                    <span class="ply-badge">V5 Hybrid Convergence</span>
+                    <h4>V1 Birch Upper × V4 Cantilevered Base</h4>
+                    <p>Stepped lower deck frames the scalloped birch dimmer while the raised rear pedestal anchors the hollow rotating walnut dowel.</p>
+                  </div>
+                </article>
+
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451918/casey-site/casey-site/making/desk-lamp/31_ply_v5_base_exploded.jpg"
+                          data-title="V5 Exploded 3×12mm CNC Cut-Out Base &amp; Internals"
+                          data-caption="Exploded Blender cutaway illustrating Tier 1–3 CNC cavities, twin rear steel ballast bars, hollow dowel retention collar, PWM dimmer switchgear, and removable underside service cover.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451918/casey-site/casey-site/making/desk-lamp/31_ply_v5_base_exploded.jpg"
+                         alt="Exploded view of the three-tier 12mm CNC cantilevered plywood base showing internal pockets and hardware"
+                         loading="lazy" width="1440" height="1080">
+                  </button>
+                  <div class="ply-card-body">
+                    <span class="ply-badge">Internal Base Packaging</span>
+                    <h4>Exploded 3-Tier CNC Stackup</h4>
+                    <p>Every electrical component—PWM dimmer PCB, rear <code>5.5×2.1 mm</code> DC barrel jack, wire channel, ballast bars, and dowel retainer—packs cleanly inside the <code>36 mm</code> base.</p>
+                  </div>
+                </article>
+
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451918/casey-site/casey-site/making/desk-lamp/32_ply_v5_section_cutaway.jpg"
+                          data-title="V5 Y=0 Architectural Cross-Section Cutaway"
+                          data-caption="True centerline section through the hollow rotating walnut dowel, upper &amp; lower Nylon 6/6 thrust washers, retaining collar, wire sweep, counterbored dimmer mounting web, PWM PCB, and DC jack.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451918/casey-site/casey-site/making/desk-lamp/32_ply_v5_section_cutaway.jpg"
+                         alt="Architectural Y=0 cross-section cutaway through the plywood base showing hollow dowel bearing, thrust washers, wiring, and PWM dimmer"
+                         loading="lazy" width="1440" height="900">
+                  </button>
+                  <div class="ply-card-body">
+                    <h4><code>Y = 0</code> Architectural Section Cutaway</h4>
+                    <p>Visualizes exact bearing engagement, thrust-washer sandwich, internal wire bend radius, and potentiometer bushing stack.</p>
+                  </div>
+                </article>
+
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451921/casey-site/casey-site/making/desk-lamp/33_ply_v5_underside_open.jpg"
+                          data-title="V5 Open Underside CNC Pockets (Pre-Audit)"
+                          data-caption="Underside view with service plate removed—this exact render helped our Mechanical Engineer spot the TPU foot overlap on the cover rabbet and front screw-to-dowel interference before cutting wood.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451921/casey-site/casey-site/making/desk-lamp/33_ply_v5_underside_open.jpg"
+                         alt="Underside view of the cut-out CNC plywood base with service cover removed exposing ballast bars, retaining ring, and PWM PCB"
+                         loading="lazy" width="1440" height="1080">
+                  </button>
+                  <div class="ply-card-body">
+                    <h4>Open Underside Inspection (Audit Trigger)</h4>
+                    <p>Subjecting V5 to a formal Senior Mechanical Engineering Review caught <strong>6 physical build blockers</strong> before entering FreeCAD.</p>
+                  </div>
+                </article>
+              </div>
+
+              <div class="review-panel">
+                <div>
+                  <span class="ply-badge">Formal Engineering Gate · V5 Audit → V6 Fixes</span>
+                  <h3 style="margin:0 0 0.35rem;">6 Critical Engineering Catches Resolved Before Fabrication</h3>
+                  <p style="margin:0;color:var(--text-muted);font-size:0.88rem;">Every single defect flagged in our quantitative audit was redesigned and proven collision-free in FreeCAD 1.1.3 B-Rep solids.</p>
+                </div>
+                <div class="ply-audit-grid">
+                  <div class="ply-audit-item">
+                    <strong>1. Sideways &amp; Rearward Tipping <span class="ply-audit-tag">FoS 0.96 → 2.05+</span></strong>
+                    V5's <code>809 g</code> base tipped sideways at full reach. Replaced the PETG lid with a recessed <code>6 mm</code> mild steel plate (<code>152×124 mm</code>) + twin <code>10 mm</code> steel bars (<code>1,061 g</code> steel → <code>FoS 4.09</code> fwd, <code>2.05</code> @ 90°).
+                  </div>
+                  <div class="ply-audit-item">
+                    <strong>2. Underside Foot &amp; Screw Collisions <span class="ply-audit-tag">0.00 mm³ Overlap</span></strong>
+                    Corner TPU feet overlapped the cover rabbet and front M3 screws hit front dowels. Moved <code>Ø14 mm</code> feet cleanly outside the rabbet at <code>(±86, ±74)</code> and placed all 6 M3 inserts <code>≥10 mm</code> from dowels &amp; pockets.
+                  </div>
+                  <div class="ply-audit-item">
+                    <strong>3. Floating Yaw Stop &amp; Unbuildable Cross-Pins <span class="ply-audit-tag">1-Sided Screw-Up</span></strong>
+                    Replaced horizontal cross-pins with a bottom-bolted <code>6 mm</code> retaining collar (<code>2×</code> vertical <code>M4×16</code> screws into walnut) + integral <code>60°</code> birch stop lug machined inside Tier 2's <code>Ø60 mm</code> counterbore.
+                  </div>
+                  <div class="ply-audit-item">
+                    <strong>4. Unmortised Base Clevis Butt Joint <span class="ply-audit-tag">4× Mortise-Tenon</span></strong>
+                    Cut 4 × <code>6×11×6 mm</code> mortise pockets into the <code>12 mm</code> Turret Flange receiving dual tenons on both <code>6 mm</code> clevis cheeks—clear of both the <code>Ø12 mm</code> wire hole and underside <code>Ø30 mm</code> dowel socket.
+                  </div>
+                  <div class="ply-audit-item">
+                    <strong>5. Laser-Raster Hex Crushing (14.3 MPa) <span class="ply-audit-tag">→ 3.0 MPa Safe</span></strong>
+                    Replaced variable-depth raster hex pockets in <code>6 mm</code> ply with <strong>DIN 603 black-oxide carriage bolts</strong> in clean through-cut square holes + fender &amp; Belleville disc washers.
+                  </div>
+                  <div class="ply-audit-item">
+                    <strong>6. Unassemblable 1-Piece Spine &amp; Pot Web <span class="ply-audit-tag">Split Spine + 3 mm Web</span></strong>
+                    Split the monocoque spine behind the crown so unbroken closed rings assemble cleanly; stepped Tier 2's pot web locally to <code>3.0 mm</code> for full <code>M7</code> thread grip; added PETG PCB cradle &amp; trapped DC bezel ears.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- STAGE 4: V6 FREECAD CAD, A2 ILLUSTRATOR LASER SVGS & 12MM CNC -->
+          <div role="tabpanel" class="ply-panel" id="ply-panel-4" aria-labelledby="ply-tab-4" hidden="until-found">
+            <div class="ply-panel-inner">
+              <div class="ply-grid-2">
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451922/casey-site/casey-site/making/desk-lamp/35_ply_v6_a2_2xkits_preview.png"
+                          data-title="V6 A2 (594×420 mm) Max-Yield Laser Nest — 2 Complete Lamps (54 Parts)"
+                          data-caption="Illustrator-ready 1:1 72-DPI pt SVG nesting 2 complete lamp kits (54 parts) onto a single A2 6mm Baltic birch board via spoon-nested curved ribs and concentric nested Kumiko rings &amp; dimmer dials. Verified 0 OOB / 0 Overlaps.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451922/casey-site/casey-site/making/desk-lamp/35_ply_v6_a2_2xkits_preview.png"
+                         alt="A2 laser cutter nesting layout packing two complete 6mm birch plywood lamp kits totaling 54 parts onto one 594 by 420 millimeter sheet"
+                         loading="lazy" width="2240" height="1584">
+                  </button>
+                  <div class="ply-card-body">
+                    <span class="ply-badge">6 mm Laser · Max Yield A2 SVG</span>
+                    <h4>2 Complete Lamps (54 Parts) on One A2 Sheet</h4>
+                    <p>Spoon-nested curved Kumiko ribs (<code>15.6 mm</code> pitch) and concentric ring-inside-ring nesting pack two full lamps onto one <code>594 × 420 mm</code> board with <strong>0 overlaps</strong>. Native 72-DPI <code>pt</code> SVG: <code>0.025 pt</code> pure black cut, pure red fill (no stroke) etch.</p>
+                  </div>
+                </article>
+
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451924/casey-site/casey-site/making/desk-lamp/36_ply_v6_cnc_12mm_preview.png"
+                          data-title="V6 12 mm Single-Sided CNC Birch Milling Pack (CAM Depth Layers)"
+                          data-caption="Color-coded CAM DXF nesting all four 12mm birch components (Tiers 1–3 + mortised Turret Flange) onto a 440×360mm blank—100% single-sided CNC ops with Ø6mm endmill corners (R ≥ 3.5mm).">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451924/casey-site/casey-site/making/desk-lamp/36_ply_v6_cnc_12mm_preview.png"
+                         alt="Color-coded 12mm Baltic birch CNC milling sheet showing Tier 1, Tier 2 with yaw-stop lug and dimmer pockets, Tier 3, and mortised Turret Flange"
+                         loading="lazy" width="1920" height="1472">
+                  </button>
+                  <div class="ply-card-body">
+                    <span class="ply-badge">12 mm CNC · Single-Sided CAM DXF</span>
+                    <h4>Zero-Flip 12 mm Birch CNC Milling Pack</h4>
+                    <p>Tiers 1, 2, 3, and the mortised Turret Flange sit on separated CAM depth layers (through cuts, <code>6 mm</code> steel rabbet, <code>5.5 mm</code> turret counterbore w/ integral <code>60°</code> birch stop lug, <code>7 mm</code> dimmer bay, and local <code>9 mm</code> pot counterbore).</p>
+                  </div>
+                </article>
+              </div>
+
+              <article class="ply-card">
+                <div class="ply-grid-2" style="align-items:center;">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451926/casey-site/casey-site/making/desk-lamp/34_ply_v6_a2_single_preview.png"
+                          data-title="V6 A2 Single-Lamp Laser Nest (27 Parts — Preserves Full A3 Offcut)"
+                          data-caption="Single-lamp A2 layout packing all 27 6mm birch parts into the left half (X ≤ 290 mm) so the right half remains an unbroken full A3 (300×420 mm) usable plywood board.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451926/casey-site/casey-site/making/desk-lamp/34_ply_v6_a2_single_preview.png"
+                         alt="Single-lamp A2 laser cutting sheet packing 27 parts cleanly into the left half to preserve an unbroken A3 offcut"
+                         loading="lazy" width="2240" height="1584">
+                  </button>
+                  <div class="ply-card-body" style="padding:1.5rem;">
+                    <span class="ply-badge">FreeCAD 1.1.3 B-Rep + Workshop Files</span>
+                    <h3>Ready-to-Cut Production Package</h3>
+                    <p style="margin-bottom:1rem;">
+                      Built in native FreeCAD (<code>plywood_lamp_v6_parametric.FCStd</code> + <code>AP214 STEP</code>, <code>28</code> BOM lines, <code>5</code> FDM STLs) with automated B-Rep clash checking confirming <strong>16/16 zero-overlap pairs</strong> and <strong>FoS ≥ 2.05</strong> in every direction.
+                    </p>
+                    <p style="margin-bottom:0;">
+                      For a single build, use the <strong>Single-Lamp A2 SVG</strong> to leave an intact full-A3 birch offcut; for batch runs, cut the <strong>2× Max-Yield A2 SVG</strong>. Part labels live on a dedicated <code>ETCH_PART_LABELS</code> sub-group in Illustrator for one-click toggling.
+                    </p>
+                  </div>
+                </div>
+              </article>
+
+              <div class="ply-dl-bar" aria-label="Download V6 plywood fabrication files">
+                <span style="font-family:var(--font-mono);font-size:0.75rem;color:var(--birch);text-transform:uppercase;letter-spacing:0.06em;">V6 Workshop Exports:</span>
+                <a class="ply-dl-btn" href="assets/Laser_6mm_Birch_A2_SingleLamp.svg" download>⬇ A2 Laser SVG (1 Lamp · 0.025pt)</a>
+                <a class="ply-dl-btn" href="assets/Laser_6mm_Birch_A2_MaxYield_2xKits.svg" download>⬇ A2 Laser SVG (2 Lamps Max Yield)</a>
+                <a class="ply-dl-btn" href="assets/CNC_12mm_Birch_V6_Nest.dxf" download>⬇ 12mm CNC Birch DXF</a>
+                <a class="ply-dl-btn" href="assets/Steel_6mm_BottomPlate_V6.dxf" download>⬇ 6mm Steel Plate DXF</a>
+                <a class="ply-dl-btn" href="assets/plywood_lamp_v6_bom.csv" download>⬇ V6 Production BOM CSV</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- STAGE 5: ISO A3 GENERAL ASSEMBLY (PL-GA-001) & EXPLODED BOM (PL-EX-002) -->
+          <div role="tabpanel" class="ply-panel" id="ply-panel-5" aria-labelledby="ply-tab-5" hidden="until-found">
+            <div class="ply-panel-inner">
+              <div class="ply-grid-2">
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451928/casey-site/casey-site/making/desk-lamp/37_ply_GA_Sheet1_General_Assembly.jpg"
+                          data-title="ISO A3 Sheet 1 (PL-GA-001) — Plywood Lamp General Assembly"
+                          data-caption="True OpenCASCADE TechDraw.projectEx B-Rep HLR 3rd-angle orthographic projections (Top Plan, Front Elevation, Right Elevation) plus Isometric Assembly, key workshop dimensions, and V6.0-PROD fabrication notes.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451928/casey-site/casey-site/making/desk-lamp/37_ply_GA_Sheet1_General_Assembly.jpg"
+                         alt="ISO A3 General Assembly engineering drawing PL-GA-001 of the KUMIKO-TRUSS V6 plywood desk lamp with Top, Front, Right, and Isometric HLR views"
+                         loading="lazy" width="3307" height="2339">
+                  </button>
+                  <div class="ply-card-body">
+                    <span class="ply-badge">Sheet 1 of 2 · DWG PL-GA-001 · Scale 1:3.2</span>
+                    <h4>ISO A3 General Assembly Drawing</h4>
+                    <p style="margin-bottom:0.85rem;">Exact 3rd-angle OpenCASCADE HLR projections (Top Plan, Front, Right, Isometric) with key overall envelope dimensions (<code>434.3 H × 325.2 × 168.0 mm</code>), kinematic axes, and V6 fabrication notes.</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                      <a class="ply-dl-btn" href="https://res.cloudinary.com/do7oi2ioy/raw/upload/v1795451929/casey-site/making/desk-lamp/37_ply_GA_Sheet1_General_Assembly.pdf" target="_blank" rel="noopener">⬇ Vector PDF (A3)</a>
+                      <a class="ply-dl-btn" href="assets/37_ply_GA_Sheet1_General_Assembly.svg" download>⬇ Vector SVG</a>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="ply-card">
+                  <button type="button" class="media-trigger"
+                          data-lightbox="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451930/casey-site/casey-site/making/desk-lamp/38_ply_GA_Sheet2_Exploded_BOM.jpg"
+                          data-title="ISO A3 Sheet 2 (PL-EX-002) — Exploded Assembly &amp; 26-Item BOM"
+                          data-caption="Isometric exploded HLR view of all 79 V6 B-Rep solids grouped into 26 numbered ballooned BOM line items (55 pcs, 2.09 kg total CAD mass), matching plywood_lamp_v6_exploded_assembly.FCStd.">
+                    <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795451930/casey-site/casey-site/making/desk-lamp/38_ply_GA_Sheet2_Exploded_BOM.jpg"
+                         alt="ISO A3 Exploded Assembly and 26-item Bill of Materials drawing PL-EX-002 of the KUMIKO-TRUSS V6 plywood desk lamp"
+                         loading="lazy" width="3307" height="2339">
+                  </button>
+                  <div class="ply-card-body">
+                    <span class="ply-badge">Sheet 2 of 2 · DWG PL-EX-002 · Scale 1:3.5</span>
+                    <h4>ISO A3 Exploded Assembly &amp; 26-Item BOM</h4>
+                    <p style="margin-bottom:0.85rem;">All <code>79</code> V6 solid parts exploded along true vertical, lateral, and shade assembly axes—clearly showing the split Kumiko spine, mortised turret flange, hollow dowel retainer, internal switchgear, and full <code>2.09 kg</code> BOM.</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:0.5rem;">
+                      <a class="ply-dl-btn" href="https://res.cloudinary.com/do7oi2ioy/raw/upload/v1795451932/casey-site/making/desk-lamp/38_ply_GA_Sheet2_Exploded_BOM.pdf" target="_blank" rel="noopener">⬇ Vector PDF (A3)</a>
+                      <a class="ply-dl-btn" href="assets/38_ply_GA_Sheet2_Exploded_BOM.svg" download>⬇ Vector SVG</a>
+                    </div>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>Articulated Desk Lamp &amp; KUMIKO-TRUSS V6 Plywood Lamp — Industrial Design, Engineering &amp; Fabrication Case Study</div>
+      <div class="footer-files">Blender 5.2 LTS · FreeCAD 1.1.3 (OCCT B-Rep + STEP + ISO A3) · Fusion 360 · A2 Laser SVGs (0.025pt) &amp; 12mm CNC DXFs</div>
+    </div>
+  </footer>
+
+  <!-- ==================================================================
+       Native Modal Lightbox Dialog
+       modern-web-guidance: light-dismiss-a-dialog + animate-to-from-top-layer
+       ================================================================== -->
+  <dialog id="lightbox" closedby="any" aria-labelledby="lightbox-title">
+    <div class="lightbox-bar">
+      <h3 id="lightbox-title">Image Preview</h3>
+      <button type="button" class="lightbox-close" id="lightbox-close-btn">Close (Esc)</button>
+    </div>
+    <div class="lightbox-body">
+      <img id="lightbox-img" src="" alt="">
+    </div>
+    <p class="lightbox-caption" id="lightbox-caption"></p>
+  </dialog>
+
+  <script>
+    // 1. Scroll progress indicator fallback when native CSS scroll() is unsupported
+    //    (modern-web-guidance: scroll-progress-indicator)
+    if (!CSS.supports('animation-timeline', 'scroll()')) {
+      const progressBar = document.getElementById('scroll-progress');
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (progressBar && !prefersReduced) {
+        const updateProgress = () => {
+          const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+          const pct = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+          progressBar.style.transform = `scaleX(${pct})`;
+        };
+        window.addEventListener('scroll', updateProgress, { passive: true });
+        updateProgress();
+      }
+    }
+
+    // 2. Interactive Before/After Comparison Sliders
+    for (const stage of document.querySelectorAll('[data-compare]')) {
+      const range = stage.querySelector('.compare-range');
+      const sync = () => stage.style.setProperty('--pos', `${range.value}%`);
+      range.addEventListener('input', sync);
+      sync();
+    }
+
+    // 3. Family Studio View Tabs
+    const tabButtons = document.querySelectorAll('.tab-btn[role="tab"]');
+    const tabPanels = document.querySelectorAll('.family-panel[role="tabpanel"]');
+    for (const btn of tabButtons) {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('aria-controls');
+        for (const b of tabButtons) {
+          b.setAttribute('aria-selected', String(b === btn));
+        }
+        for (const p of tabPanels) {
+          p.hidden = p.id !== targetId;
+        }
+      });
+    }
+
+    // 4. Video Reduced-Motion Sync + Phase Seek Buttons
+    //    (modern-web-guidance: lazy-load-video-and-audio)
+    const lampVideo = document.getElementById('lamp-video');
+    const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    function syncReducedMotion(prefersReduced) {
+      for (const video of document.querySelectorAll('video[autoplay]')) {
+        if (prefersReduced) {
+          video.removeAttribute('autoplay');
+          video.pause();
+        }
+      }
+    }
+    syncReducedMotion(reducedMotionQuery.matches);
+    reducedMotionQuery.addEventListener('change', (e) => syncReducedMotion(e.matches));
+
+    for (const phaseBtn of document.querySelectorAll('.phase-btn[data-seek]')) {
+      phaseBtn.addEventListener('click', () => {
+        const targetId = phaseBtn.dataset.videoTarget || 'lamp-video';
+        const vid = document.getElementById(targetId);
+        if (!vid) return;
+        const timeSec = parseFloat(phaseBtn.dataset.seek);
+        if (!Number.isNaN(timeSec)) {
+          vid.currentTime = timeSec;
+          vid.play().catch(() => {});
+        }
+      });
+    }
+
+    // 6. Interactive Filterable 42-Item Engineering BOM Table
+    //    (modern-web-guidance: responsive-table)
+    const BOM_DATA = [
+      [1,  "DL-101", "EPDM Anti-Slip Foot (Ø18×4)",          "01 Base",        4, "EPDM 70A, Matte Black",        4.9],
+      [2,  "DL-102", "Bottom Weight Plate (166×166×4)",      "01 Base",        1, "Mild Steel, Black Oxide",      842.2],
+      [3,  "DL-103", "CSK Socket Bolt (M5×14)",              "01 Base",        4, "304 SS, ISO 10642",            10.9],
+      [4,  "DL-104", "Internal Counterweight Block",         "01 Base",        1, "Cast Iron ASTM A48 (2.10 kg)", 2099.4],
+      [5,  "DL-105", "Lower Plinth Skirt (176×176)",         "01 Base",        1, "EPDM, Matte Charcoal",         53.8],
+      [6,  "DL-106", "Base Frustum Housing (3mm Wall)",      "01 Base",        1, "6061-T6 Al, Satin Obsidian",   333.3],
+      [7,  "DL-107", "Top Mounting Plate (90×90×3)",         "01 Base",        1, "Copper-Bronze, Brushed",       207.8],
+      [8,  "DL-108", "Button-Head Screw (M4×8)",             "01 Base",        4, "Copper-Bronze, ISO 7380",      6.0],
+      [9,  "DL-109", "Swivel Bearing Ring (Ø67×0.8)",        "01 Base",        1, "C36000 Brass, Champagne",      22.2],
+      [10, "DL-110", "360° Swivel Turret Drum (Ø70)",        "01 Base",        1, "Copper-Bronze, Brushed",       205.4],
+      [11, "DL-111", "Hollow M16 Kingpin & Hex Nut",         "01 Base",        1, "304 SS (Ø9 Bore, ±170° Stop)", 47.1],
+      [12, "DL-201", "Rotary Dimmer Bezel Collar (Ø21)",     "02 Electrical",  1, "304 SS, Smoked Gunmetal",      1.3],
+      [13, "DL-202", "Knurled Push-Rotary Dimmer Knob",      "02 Electrical",  1, "C36000 Brass, 56-Flute",       17.3],
+      [14, "DL-203", "Inline Rotary Dimmer Module",          "02 Electrical",  1, "UL/CE 250V/5A Switch",         3.4],
+      [15, "DL-204", "Rear Mains Strain-Relief Boot",        "02 Electrical",  1, "Gunmetal / EPDM Boot",         0.9],
+      [16, "DL-205", "Woven Mains Power Cord (Ø5.8)",        "02 Electrical",  1, "Braided Textile, Matte Black", 3.4],
+      [17, "DL-206", "Stepped Tube Grommets (G0–G4)",        "02 Electrical",  5, "Gunmetal / EPDM Sleeve",       3.4],
+      [18, "DL-207", "Articulated Braided Cord Loops",       "02 Electrical",  3, "Braided Textile Ø4.5 (3x)",    5.9],
+      [19, "DL-208", "Shade Crown Hex Cord Gland (G5)",      "02 Electrical",  1, "C36000 Brass PG7 + EPDM Boot", 6.3],
+      [20, "DL-301", "Base Fork Outer Clevis Cheek",         "03 Lower Arm",   2, "Copper-Bronze, 3mm CNC",       28.2],
+      [21, "DL-302", "Base Fork Inner A-Frame Cheek",        "03 Lower Arm",   2, "Copper-Bronze, 3mm CNC",       88.8],
+      [22, "DL-303", "Base Main Pivot Axle (P0, Ø8)",        "03 Lower Arm",   1, "304 Stainless, Ground",        27.0],
+      [23, "DL-304", "Parallelogram Pivot Shaft (P1/E1)",    "03 Lower Arm",   2, "304 Stainless, Ø6.5",          24.6],
+      [24, "DL-305", "Split Spring Anchor Pins & Caps",      "03 Lower Arm",   6, "304 SS Pin + Brass Cap",       24.8],
+      [25, "DL-306", "Lower Hollow Arm Tube (Ø12×0.85)",     "03 Lower Arm",   2, "Copper-Bronze, L=200mm",       135.1],
+      [26, "DL-307", "Spring Anchor Tube Clamp (B1/B2)",     "03 Lower Arm",   4, "Copper-Bronze, Machined",      31.7],
+      [27, "DL-308", "Central Parallelogram Tie-Rod",        "03 Lower Arm",   1, "304 SS Smoked, Ø7×200",        66.3],
+      [28, "DL-309", "Lower Extension Spring (S1, 52T)",     "03 Lower Arm",   2, "ASTM A228 Wire, OD11×d1.0",    21.5],
+      [29, "DL-401", "Inverted-U Elbow Yoke (Open Y=0)",     "04 Elbow/Upper", 1, "Copper-Bronze, CNC Monolith",  93.9],
+      [30, "DL-402", "Split M8 Elbow Axle & Brass Washer",   "04 Elbow/Upper", 2, "Copper-Bronze + Brass",        31.8],
+      [31, "DL-403", "Upper Hollow Arm Tube (Ø12×0.85)",     "04 Elbow/Upper", 2, "Copper-Bronze, L=225mm",       125.8],
+      [32, "DL-404", "Upper Spring Cross-Bar (B2, Ø7)",      "04 Elbow/Upper", 1, "304 SS, Smoked Gunmetal",      17.0],
+      [33, "DL-405", "Upper Extension Spring (S2, 72T)",     "04 Elbow/Upper", 2, "ASTM A228 Wire, OD10.8×d0.95", 26.0],
+      [34, "DL-406", "Wrist Cross-Barrel (W, Ø13×62)",       "04 Elbow/Upper", 1, "Copper-Bronze, Brushed",       72.4],
+      [35, "DL-501", "Wrist Yaw Stem & Brass Washer",        "05 Shade/Yoke",  1, "Copper-Bronze + Brass",        8.8],
+      [36, "DL-502", "Straddling Wishbone Shade U-Yoke",     "05 Shade/Yoke",  1, "Copper-Bronze, 3.5×12mm",      79.3],
+      [37, "DL-503", "Trunnion Friction Disc (Ø18×1.4)",     "05 Shade/Yoke",  2, "Graphite-Filled PTFE",         1.5],
+      [38, "DL-504", "Trunnion Cap (-Y) & Brass Thumbscrew", "05 Shade/Yoke",  2, "Copper Cap + Brass Knurl",     22.2],
+      [39, "DL-505", "Spun-Metal Bell Shade (Ø155, 8 Vent)", "05 Shade/Yoke",  1, "6061-T6 Al 2.2mm, Obsidian",   261.4],
+      [40, "DL-506", "Internal Brass Balance Collar",        "05 Shade/Yoke",  1, "C36000 Brass (CG Balance)",    96.8],
+      [41, "DL-507", "Hollow E27 Ceramic Socket",            "05 Shade/Yoke",  1, "Porcelain Ceramic",            60.7],
+      [42, "DL-508", "Frosted A19 LED Bulb (Ø58, 2450K)",    "05 Shade/Yoke",  1, "Blown Glass (1.2mm Wall)",     39.0],
+    ];
+
+    const bomTbody = document.getElementById('bom-tbody');
+    const bomSearch = document.getElementById('bom-search-input');
+    const bomSummary = document.getElementById('bom-live-summary');
+    const bomFootLabel = document.getElementById('bom-foot-label');
+    const bomFootQty = document.getElementById('bom-foot-qty');
+    const bomFootMass = document.getElementById('bom-foot-mass');
+    let activeBomGroup = 'ALL';
+
+    function renderBomRows() {
+      if (!bomTbody) return;
+      const q = (bomSearch?.value || '').trim().toLowerCase();
+      const filtered = BOM_DATA.filter((row) => {
+        const [, partNo, name, sub, , mat] = row;
+        if (activeBomGroup !== 'ALL' && !partNo.startsWith(activeBomGroup)) return false;
+        if (q && !`${partNo} ${name} ${sub} ${mat}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      bomTbody.textContent = '';
+      let sumQty = 0;
+      let sumMass = 0;
+      const frag = document.createDocumentFragment();
+      for (const [item, partNo, name, sub, qty, mat, mass] of filtered) {
+        sumQty += qty;
+        sumMass += mass;
+        const tr = document.createElement('tr');
+        const th = document.createElement('th');
+        th.scope = 'row';
+        th.textContent = partNo;
+        tr.appendChild(th);
+
+        const cells = [
+          [String(item).padStart(2, '0'), 'num'],
+          [name, ''],
+          [sub, 'sub'],
+          [String(qty), 'num'],
+          [mat, ''],
+          [mass.toFixed(1), 'num'],
+        ];
+        for (const [val, cls] of cells) {
+          const td = document.createElement('td');
+          if (cls === 'sub') {
+            const span = document.createElement('span');
+            span.className = 'sub-tag';
+            span.textContent = val;
+            td.appendChild(span);
+          } else {
+            if (cls) td.className = cls;
+            td.textContent = val;
+          }
+          tr.appendChild(td);
+        }
+        frag.appendChild(tr);
+      }
+      bomTbody.appendChild(frag);
+      const massFmt = sumMass.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+      if (bomSummary) bomSummary.textContent = `${filtered.length} items · ${sumQty} pcs · ${massFmt} g`;
+      if (bomFootLabel) bomFootLabel.textContent = `SHOWING ${filtered.length} OF ${BOM_DATA.length} LINE ITEMS`;
+      if (bomFootQty) bomFootQty.textContent = String(sumQty);
+      if (bomFootMass) bomFootMass.textContent = massFmt;
+    }
+
+    for (const chip of document.querySelectorAll('.bom-chip[data-bom-group]')) {
+      chip.addEventListener('click', () => {
+        activeBomGroup = chip.dataset.bomGroup;
+        for (const c of document.querySelectorAll('.bom-chip[data-bom-group]')) {
+          c.setAttribute('aria-pressed', String(c === chip));
+        }
+        renderBomRows();
+      });
+    }
+    if (bomSearch) bomSearch.addEventListener('input', renderBomRows);
+    renderBomRows();
+
+    // 7. Accessible Accordion Expand/Collapse All (Invoker Commands + Fallback)
+    //    (modern-web-guidance: accordion)
+    const addendumAccordion = document.getElementById('addendum-accordion');
+    const addendumToggleBtn = document.getElementById('addendum-toggle-all');
+
+    function syncAccordionButton() {
+      if (!addendumAccordion || !addendumToggleBtn) return;
+      const items = addendumAccordion.querySelectorAll(':scope > details');
+      const allOpen = Array.prototype.every.call(items, (d) => d.open);
+      addendumToggleBtn.setAttribute('aria-expanded', String(allOpen));
+    }
+
+    function toggleAllAddendum(sourceBtn) {
+      if (!addendumAccordion) return;
+      const expand = sourceBtn.getAttribute('aria-expanded') !== 'true';
+      for (const details of addendumAccordion.querySelectorAll(':scope > details')) {
+        details.open = expand;
+      }
+      syncAccordionButton();
+    }
+
+    document.addEventListener('command', (event) => {
+      if (event.command !== '--toggle-all') return;
+      toggleAllAddendum(event.source);
+    }, { capture: true });
+
+    if (addendumToggleBtn && !Object.hasOwn(HTMLButtonElement.prototype, 'commandForElement')) {
+      addendumToggleBtn.addEventListener('click', () => toggleAllAddendum(addendumToggleBtn));
+    }
+
+    if (addendumAccordion) {
+      addendumAccordion.addEventListener('toggle', () => syncAccordionButton(), { capture: true });
+      syncAccordionButton();
+    }
+
+    // 5. Lightbox Modal Dialog with Top-Layer Exit Fallback + Safari closedby Fallback
+    //    (modern-web-guidance: light-dismiss-a-dialog + animate-to-from-top-layer)
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxCloseBtn = document.getElementById('lightbox-close-btn');
+
+    let supportsDisplayTransition;
+    function canTransitionDisplay() {
+      if (supportsDisplayTransition !== undefined) return supportsDisplayTransition;
+      if (!window.CSS?.supports?.('transition-behavior', 'allow-discrete') || !document.body) {
+        return false;
+      }
+      const probe = document.createElement('div');
+      probe.style.cssText = 'transition: display 1s allow-discrete !important; display: block;';
+      document.body.appendChild(probe);
+      getComputedStyle(probe).display;
+      probe.style.display = 'none';
+      supportsDisplayTransition = getComputedStyle(probe).display === 'block';
+      probe.remove();
+      return supportsDisplayTransition;
+    }
+
+    function supportsTopLayerExit() {
+      return window.CSS?.supports?.('overlay', 'auto') && canTransitionDisplay();
+    }
+
+    async function closeTopLayer(element) {
+      if (!element.open) return;
+      if (!supportsTopLayerExit()) {
+        element.setAttribute('data-closing', '');
+        const animations = element.getAnimations({ subtree: true });
+        if (animations.length > 0) {
+          await Promise.race([
+            Promise.allSettled(animations.map((a) => a.finished)),
+            new Promise((r) => setTimeout(r, 1500)),
+          ]);
+        }
+        if (!element.hasAttribute('data-closing')) return;
+        element.removeAttribute('data-closing');
+      }
+      element.close();
+    }
+
+    for (const trigger of document.querySelectorAll('[data-lightbox]')) {
+      trigger.addEventListener('click', () => {
+        lightbox.removeAttribute('data-closing');
+        lightboxImg.src = trigger.dataset.lightbox;
+        lightboxImg.alt = trigger.querySelector('img')?.alt || trigger.dataset.title || '';
+        lightboxTitle.textContent = trigger.dataset.title || 'Preview';
+        lightboxCaption.textContent = trigger.dataset.caption || '';
+        lightbox.showModal();
+      });
+    }
+
+    lightboxCloseBtn.addEventListener('click', () => closeTopLayer(lightbox));
+
+    lightbox.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      closeTopLayer(lightbox);
+    });
+
+    // Mandatory fallback for browsers without native <dialog closedby="any"> support (e.g. Safari)
+    if (!('closedBy' in HTMLDialogElement.prototype)) {
+      lightbox.addEventListener('click', (event) => {
+        if (event.target !== lightbox) return;
+        const rect = lightbox.getBoundingClientRect();
+        const isDialogContent = (
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width
+        );
+        if (isDialogContent) return;
+        closeTopLayer(lightbox);
+      });
+    }
+
+    // 8. Section 12 Plywood Development Stage Tabs
+    //    (modern-web-guidance: tabs — focusgroupstart, hidden="until-found" + beforematch,
+    //     scrollIntoView container:'nearest', and arrow-key roving-tabindex fallback)
+    const plyTabs = Array.from(document.querySelectorAll('.ply-tab[role="tab"]'));
+    const plyPanels = Array.from(document.querySelectorAll('.ply-panel[role="tabpanel"]'));
+
+    function selectPlyTab(targetTab, { moveFocus = false } = {}) {
+      if (!targetTab) return;
+      const targetPanelId = targetTab.dataset.panel;
+      for (const tab of plyTabs) {
+        const isSel = tab === targetTab;
+        tab.setAttribute('aria-selected', String(isSel));
+        tab.toggleAttribute('focusgroupstart', isSel);
+        if (!Object.hasOwn(HTMLElement.prototype, 'focusGroup')) {
+          tab.tabIndex = isSel ? 0 : -1;
+        }
+      }
+      for (const panel of plyPanels) {
+        if (panel.id === targetPanelId) {
+          panel.removeAttribute('hidden');
+        } else {
+          panel.hidden = 'until-found';
+        }
+      }
+      try {
+        targetTab.scrollIntoView({ block: 'nearest', inline: 'nearest', container: 'nearest' });
+      } catch {
+        targetTab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+      }
+      if (moveFocus) targetTab.focus();
+    }
+
+    if (plyTabs.length) {
+      if (!Object.hasOwn(HTMLElement.prototype, 'focusGroup')) {
+        plyTabs.forEach((tab, idx) => { tab.tabIndex = idx === 0 ? 0 : -1; });
+      }
+      for (const tab of plyTabs) {
+        tab.addEventListener('click', () => selectPlyTab(tab));
+        tab.addEventListener('keydown', (e) => {
+          const i = plyTabs.indexOf(tab);
+          if (e.key === 'ArrowRight') { e.preventDefault(); selectPlyTab(plyTabs[(i + 1) % plyTabs.length], { moveFocus: true }); }
+          else if (e.key === 'ArrowLeft') { e.preventDefault(); selectPlyTab(plyTabs[(i - 1 + plyTabs.length) % plyTabs.length], { moveFocus: true }); }
+          else if (e.key === 'Home') { e.preventDefault(); selectPlyTab(plyTabs[0], { moveFocus: true }); }
+          else if (e.key === 'End') { e.preventDefault(); selectPlyTab(plyTabs[plyTabs.length - 1], { moveFocus: true }); }
+        });
+      }
+      for (const panel of plyPanels) {
+        panel.addEventListener('beforematch', () => {
+          const ownerTab = plyTabs.find((t) => t.dataset.panel === panel.id);
+          if (ownerTab) selectPlyTab(ownerTab);
+        });
+      }
+    }
+  </script>
+</body>
+</html>
