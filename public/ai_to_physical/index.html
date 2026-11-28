@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KUMIKO-TRUSS V6.2 — Hands-Off Agentic Design-to-Fabrication Monograph</title>
+  <meta name="description" content="Standalone process and artifact showcase demonstrating hands-off AI-assisted physical product design: from Classic Anglepoise CAD lineage through FreeCAD B-Rep, multi-plate Bambu Studio slicing, rapid MDF prototyping, and 360° digital-vs-physical verification.">
+  <style>
+    :root {
+      --bg: #F6F4EE;
+      --surface: #FFFFFF;
+      --surface-alt: #EFECE4;
+      --ink: #141A1F;
+      --ink-soft: #4A5560;
+      --ink-muted: #717D88;
+      --border: #DDD8CE;
+      --border-strong: #C5BEB2;
+      --accent: #D9480F;
+      --accent-soft: #FFF1EB;
+      --steel: #0B5D8A;
+      --steel-soft: #EDF7FC;
+      --green: #166534;
+      --green-soft: #ECFDF3;
+      --amber: #B45309;
+      --amber-soft: #FFFBEB;
+      --radius: 10px;
+      --max-w: 1240px;
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-serif: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.84em;
+      background: var(--surface-alt);
+      padding: 0.08rem 0.32rem;
+      border-radius: 4px;
+      color: var(--ink);
+    }
+
+    /* Scroll Progress Indicator (modern-web-guidance: scroll-progress-indicator) */
+    #scroll-progress {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      inline-size: 100%;
+      block-size: 3px;
+      background: linear-gradient(90deg, var(--accent), #F59E0B);
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+      z-index: 1000;
+      pointer-events: none;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: scroll()) {
+        @keyframes grow-progress {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+        #scroll-progress {
+          animation: grow-progress auto linear;
+          animation-timeline: scroll();
+        }
+      }
+    }
+
+    /* Sticky Top Navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(246, 244, 238, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .topbar-inner {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      text-decoration: none;
+      color: var(--ink);
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      font-size: 0.92rem;
+    }
+    .brand-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(217, 72, 15, 0.18);
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.15rem;
+      flex-wrap: wrap;
+      font-size: 0.82rem;
+    }
+    .nav-links a {
+      color: var(--ink-soft);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    .wrap {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    section {
+      padding: 4.5rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    section:last-of-type { border-bottom: none; }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin: 0 0 0.7rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 2.2rem;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.75rem, 3vw, 2.45rem);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      font-weight: 700;
+    }
+    .section-lead {
+      max-width: 72ch;
+      color: var(--ink-soft);
+      margin: 0.65rem 0 0;
+      font-size: 1.01rem;
+    }
+
+    /* Hero */
+    .hero { padding: 3.5rem 0 4.5rem; }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: 3rem;
+      align-items: center;
+    }
+    .hero h1 {
+      font-size: clamp(2.45rem, 4.8vw, 4rem);
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      margin: 0 0 1.1rem;
+      font-weight: 800;
+    }
+    .hero h1 em {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      font-style: italic;
+      color: var(--accent);
+    }
+    .hero-sub {
+      font-size: 1.06rem;
+      color: var(--ink-soft);
+      max-width: 60ch;
+      margin: 0 0 1.65rem;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-bottom: 1.85rem;
+    }
+    .pill {
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      padding: 0.34rem 0.68rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 500;
+    }
+    .pill.accent {
+      background: var(--accent-soft);
+      border-color: rgba(217, 72, 15, 0.35);
+      color: var(--accent);
+    }
+    .pill.steel {
+      background: var(--steel-soft);
+      border-color: rgba(11, 93, 138, 0.3);
+      color: var(--steel);
+    }
+    .pill.green {
+      background: var(--green-soft);
+      border-color: rgba(22, 101, 52, 0.3);
+      color: var(--green);
+    }
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+      margin-top: 1.85rem;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.95rem 1rem;
+    }
+    .metric-val {
+      font-family: var(--font-mono);
+      font-size: 1.32rem;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1.15;
+    }
+    .metric-lbl {
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+      margin-top: 0.25rem;
+    }
+
+    .hero-visual {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 0.85rem;
+      box-shadow: 0 18px 45px rgba(20, 26, 31, 0.08);
+    }
+    .hero-visual button.img-trigger {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: transparent;
+      cursor: zoom-in;
+      border-radius: 9px;
+      overflow: hidden;
+    }
+    .hero-visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 540px;
+      object-fit: cover;
+      border-radius: 9px;
+    }
+    .hero-caption {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0.25rem 0.1rem;
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+    .status-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid rgba(22, 101, 52, 0.28);
+      white-space: nowrap;
+    }
+
+    /* Section 01 — Side-by-Side 360° Orbit Comparison + Birch Hero Slots */
+    .birch-band {
+      background: linear-gradient(180deg, #FBF9F4 0%, #F1EEE6 100%);
+    }
+    .orbit-compare {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.65rem;
+    }
+    .video-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .video-stage {
+      position: relative;
+      background: #1C2024;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+    }
+    .video-stage video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .video-holding {
+      aspect-ratio: 16 / 9;
+      background: var(--surface);
+      background-image: radial-gradient(#DDD8CE 1px, transparent 1px);
+      background-size: 16px 16px;
+      border-bottom: 1px dashed var(--border-strong);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 1.5rem;
+    }
+    .video-card.holding-wrap {
+      border: 1.5px dashed var(--border-strong);
+    }
+    .video-meta {
+      padding: 1rem 1.15rem 1.1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+    .video-meta h3 { margin: 0 0 0.25rem; font-size: 1rem; }
+    .video-meta p { margin: 0; font-size: 0.84rem; color: var(--ink-soft); }
+
+    .birch-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr 1fr;
+      gap: 1.25rem;
+    }
+    .holding-card {
+      position: relative;
+      background: var(--surface);
+      border: 1.5px dashed var(--border-strong);
+      border-radius: 12px;
+      min-height: 295px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.35rem;
+      overflow: hidden;
+      background-image: radial-gradient(#DDD8CE 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .holding-card.loaded {
+      border-style: solid;
+      border-color: var(--border);
+      padding: 0.65rem;
+      background-image: none;
+    }
+    .holding-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .slot-code {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.22rem 0.5rem;
+      border-radius: 4px;
+      background: var(--ink);
+      color: #FFFFFF;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .slot-status {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .holding-center {
+      text-align: center;
+      padding: 1.4rem 0.5rem;
+    }
+    .holding-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid var(--border-strong);
+      background: var(--bg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+      margin-bottom: 0.75rem;
+    }
+    .holding-center h3 { margin: 0 0 0.35rem; font-size: 1rem; }
+    .holding-center p { margin: 0; font-size: 0.83rem; color: var(--ink-soft); }
+    .holding-foot {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--ink-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 0.65rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .drop-note {
+      margin-top: 1.25rem;
+      padding: 0.9rem 1.1rem;
+      border-radius: var(--radius);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      font-size: 0.85rem;
+      color: var(--ink-soft);
+    }
+
+    /* Lineage Split */
+    .lineage-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.4rem;
+      align-items: stretch;
+    }
+    .lineage-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .lineage-media-pair {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr;
+      gap: 2px;
+      background: var(--border);
+      border-bottom: 1px solid var(--border);
+      height: 225px;
+    }
+    .lineage-media-pair.three-up {
+      grid-template-columns: 0.95fr 0.95fr 1.15fr;
+    }
+    .lineage-media-pair button {
+      border: 0; padding: 0; margin: 0;
+      background: #141A1F;
+      cursor: zoom-in;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      display: block;
+      position: relative;
+    }
+    .lineage-media-pair button.light-bg {
+      background: #FFFFFF;
+    }
+    .lineage-media-pair img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+    .lineage-body {
+      padding: 1.35rem 1.45rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .lineage-body h3 { margin: 0; font-size: 1.15rem; }
+    .lineage-body p { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
+
+    /* Filter Tabs & Gallery Cards */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .filter-btn {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.45rem 0.85rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--ink-soft);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    .filter-btn:hover { border-color: var(--ink); color: var(--ink); }
+    .filter-btn[aria-pressed="true"] {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: #FFFFFF;
+    }
+
+    /* Featured Software Proof Strip (FreeCAD GUI + Bambu Studio Multi-Plate!) */
+    .proof-trio {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(20, 26, 31, 0.08);
+    }
+    .card.hidden { display: none; }
+    .card.featured-proof {
+      border-color: rgba(217, 72, 15, 0.42);
+      box-shadow: 0 6px 22px rgba(217, 72, 15, 0.07);
+    }
+    .card-media {
+      position: relative;
+      background: #FAF9F6;
+      border-bottom: 1px solid var(--border);
+      aspect-ratio: 16 / 10.5;
+      overflow: hidden;
+      padding: 0;
+      border-top: 0; border-left: 0; border-right: 0;
+      width: 100%;
+      cursor: zoom-in;
+      display: block;
+    }
+    .card-media.portrait { aspect-ratio: 4 / 4.7; }
+    .card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-media.contain img {
+      object-fit: contain;
+      background: #FFFFFF;
+      padding: 0.3rem;
+    }
+    .card-tag {
+      position: absolute;
+      top: 0.6rem;
+      left: 0.6rem;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 700;
+      padding: 0.22rem 0.5rem;
+      border-radius: 4px;
+      background: rgba(20, 26, 31, 0.86);
+      color: #FFFFFF;
+      backdrop-filter: blur(4px);
+    }
+    .card-media.contain .card-tag {
+      top: auto;
+      left: auto;
+      bottom: 0.5rem;
+      right: 0.5rem;
+    }
+    .card-tag.accent-tag { background: var(--accent); }
+    .card-body {
+      padding: 1rem 1.1rem 1.15rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+    .card-body h3 { margin: 0; font-size: 0.98rem; line-height: 1.3; }
+    .card-body p { margin: 0; font-size: 0.85rem; color: var(--ink-soft); }
+
+    /* AI-Engineered Physical Innovations Grid */
+    .innov-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .innov-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.4rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+    .innov-card.hero-innov {
+      border-left: 4px solid var(--accent);
+      background: linear-gradient(135deg, #FFFFFF 0%, #FFF8F5 100%);
+    }
+    .innov-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .innov-card h3 { margin: 0; font-size: 1.08rem; }
+    .innov-card p { margin: 0; font-size: 0.89rem; color: var(--ink-soft); }
+    .innov-specs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.35rem;
+    }
+
+    /* Responsive Iteration Table (modern-web-guidance: responsive-table) */
+    .table-wrapper {
+      overflow: auto;
+      max-inline-size: 100%;
+      max-block-size: min(640px, 82vh);
+      container-type: inline-size;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 2rem;
+    }
+    .table-wrapper:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+    .audit-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 0.86rem;
+      text-align: left;
+      --label-1: "Iteration Trigger";
+      --label-2: "Workshop Observation";
+      --label-3: "Hands-Off Agentic Turnaround";
+      --label-4: "Outcome (V6.1 → V6.2)";
+    }
+    .audit-table caption {
+      text-align: left;
+      padding: 1rem 1.2rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      background: var(--surface-alt);
+      border-bottom: 1px solid var(--border);
+      color: var(--ink);
+    }
+    .audit-table thead {
+      position: sticky;
+      inset-block-start: 0;
+      z-index: 2;
+    }
+    .audit-table thead th {
+      background: var(--ink);
+      color: #FFFFFF;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.8rem 1rem;
+    }
+    .audit-table tbody th,
+    .audit-table tbody td {
+      padding: 0.95rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .audit-table tbody th {
+      position: sticky;
+      inset-inline-start: 0;
+      z-index: 1;
+      background: #FCFBF8;
+      font-weight: 700;
+      color: var(--ink);
+      min-width: 185px;
+      border-right: 1px solid var(--border);
+    }
+    .audit-table tbody tr:last-child th,
+    .audit-table tbody tr:last-child td { border-bottom: none; }
+    .audit-num {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: var(--accent-soft);
+      color: var(--accent);
+      padding: 0.1rem 0.42rem;
+      border-radius: 4px;
+      margin-bottom: 0.3rem;
+    }
+
+    @container (width < 720px) {
+      .audit-table, .audit-table thead, .audit-table tbody,
+      .audit-table tr, .audit-table th, .audit-table td { display: block; }
+      .audit-table thead { display: none; }
+      .audit-table tr {
+        margin: 0.85rem;
+        border: 1px solid var(--border-strong);
+        border-radius: 8px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+      .audit-table tbody th {
+        position: sticky;
+        inset-block-start: 0;
+        inset-inline-start: auto;
+        z-index: 2;
+        background: var(--surface-alt);
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .audit-table td:nth-child(2)::before { content: var(--label-2) ": "; font-weight: 700; color: var(--ink); }
+      .audit-table td:nth-child(3)::before { content: var(--label-3) ": "; font-weight: 700; color: var(--steel); }
+      .audit-table td:nth-child(4)::before { content: var(--label-4) ": "; font-weight: 700; color: var(--green); }
+    }
+
+    /* Pedagogy & Next Forks */
+    .tri-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .duo-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+    .panel-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.45rem;
+    }
+    .panel-card h3 { margin: 0.35rem 0 0.6rem; font-size: 1.08rem; line-height: 1.3; }
+    .panel-card p { margin: 0; font-size: 0.9rem; color: var(--ink-soft); }
+    .panel-card ul { margin: 0.75rem 0 0; padding-left: 1.15rem; font-size: 0.86rem; color: var(--ink-soft); }
+    .panel-card li { margin-bottom: 0.35rem; }
+
+    /* Native Modal Lightbox (modern-web-guidance: light-dismiss-a-dialog) */
+    dialog#lightbox {
+      max-width: min(94vw, 1400px);
+      max-height: 92vh;
+      width: fit-content;
+      padding: 0;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 12px;
+      background: #141A1F;
+      color: #F8FAFC;
+      overflow: hidden;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.55);
+    }
+    dialog#lightbox::backdrop {
+      background-color: rgba(12, 16, 20, 0.8);
+      backdrop-filter: blur(4px);
+    }
+    .lb-shell { display: flex; flex-direction: column; max-height: 92vh; }
+    .lb-bar {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      padding: 0.75rem 1rem; background: #1B232A;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .lb-bar h3 { margin: 0; font-size: 0.92rem; font-weight: 600; }
+    .lb-actions { display: flex; align-items: center; gap: 0.45rem; }
+    .lb-btn {
+      font-family: var(--font-mono); font-size: 0.78rem;
+      padding: 0.35rem 0.7rem; border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.08); color: #FFFFFF; cursor: pointer;
+    }
+    .lb-btn:hover { background: rgba(255, 255, 255, 0.18); }
+    .lb-stage {
+      padding: 0.75rem; display: flex; align-items: center; justify-content: center;
+      overflow: auto; background: #0F1418;
+    }
+    .lb-stage img {
+      max-width: 100%; max-height: 76vh; width: auto; height: auto;
+      display: block; border-radius: 6px;
+    }
+    .lb-caption {
+      padding: 0.7rem 1rem; font-size: 0.84rem; color: #CBD5E1;
+      background: #1B232A; border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    footer { padding: 2.5rem 0 3.5rem; font-size: 0.82rem; color: var(--ink-muted); }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+
+    @media (max-width: 960px) {
+      .hero-grid, .orbit-compare, .birch-grid, .lineage-grid, .proof-trio,
+      .innov-grid, .tri-grid, .duo-grid, .gallery-grid { grid-template-columns: 1fr; }
+      .metrics-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#top" class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <span>KUMIKO-TRUSS · V6.2</span>
+      </a>
+      <nav class="nav-links" aria-label="Showcase sections">
+        <a href="#birch-hero">360° &amp; Birch Hero</a>
+        <a href="#lineage">Anglepoise Lineage</a>
+        <a href="#pipeline">Hands-Off CAD &amp; CAM</a>
+        <a href="#innovations">AI Engineering</a>
+        <a href="#prototype">Rapid Iteration</a>
+        <a href="#manual">9-Plate Manual</a>
+        <a href="#pedagogy">Pedagogy &amp; Forks</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <p class="eyebrow">AI for Physical-World Engineering · Standalone Monograph</p>
+          <h1>KUMIKO-TRUSS<br><em>Hands-Off CAD to Real Physical Craft</em></h1>
+          <p class="hero-sub">
+            A small-scale, high-rigor demonstration proving that readily available AI agents can design for the physical world — autonomously authoring a 79-part parametric FreeCAD assembly, generating zero-overlap A2 laser nests, operating Bambu Studio across multi-plate prints, and accelerating physical iteration from initial cut to a working, illuminated lamp in record time.
+          </p>
+          <div class="pill-row">
+            <span class="pill green">Zero Manual GUI CAD Modeling</span>
+            <span class="pill accent">Multi-Plate Bambu Studio CLI</span>
+            <span class="pill">12 mm CNC + 6 mm Laser Birch</span>
+            <span class="pill steel">24V DC IKEA LED1938R3</span>
+          </div>
+          <div class="metrics-strip">
+            <div class="metric-card">
+              <div class="metric-val">79 Parts</div>
+              <div class="metric-lbl">Live parametric solids in FreeCAD</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">16 / 16</div>
+              <div class="metric-lbl">Zero-overlap B-Rep checks PASS</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">4.09 / 2.05</div>
+              <div class="metric-lbl">Tipping FoS (fwd / 90° sideways)</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-val">1st-Pass Fit</div>
+              <div class="metric-lbl">MDF trial slotted together cleanly</div>
+            </div>
+          </div>
+        </div>
+
+        <figure class="hero-visual">
+          <button type="button" class="img-trigger" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867840/casey-site/casey-site/research/ai_to_physical/13_proto_mdf_profile.jpg" data-lb-title="Rapid Trial Assembly (MDF + PS Foam + Orange Bambu X1C V6.1 Hardware)" data-lb-cap="First-pass workshop build proving all laser-cut ribs, arms, and printed hardware slotted together smoothly straight from autonomous CAD/CAM outputs.">
+            <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867840/casey-site/casey-site/research/ai_to_physical/13_proto_mdf_profile.jpg"
+                 alt="Working physical prototype of KUMIKO-TRUSS articulated desk lamp illuminated with warm LED and orange 3D-printed hardware"
+                 fetchpriority="high"
+                 width="1206" height="1400">
+          </button>
+          <figcaption class="hero-caption">
+            <span>Working MDF / PS-foam rapid build (24V IKEA LED lit)</span>
+            <span class="status-badge">First-Pass Fit Verified</span>
+          </figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- CHAPTER 01: 360° DIGITAL-VS-PHYSICAL ORBIT + FINISHED BIRCH HERO SLOTS -->
+    <section id="birch-hero" class="birch-band">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">01 · Digital-to-Physical Verification (Frozen V6.2)</p>
+            <h2>360° CAD Orbit vs. Finished Baltic Birch Walkaround</h2>
+            <p class="section-lead">
+              The design is now frozen at <code>V6.2</code> for our high-finish Baltic birch plywood workshop execution. Below, a seamless 360° Cycles turntable orbit of the exact FreeCAD V6.2 geometry sits side-by-side with the holding bay for the physical walkaround and studio hero photographs of the finished birch artifact.
+            </p>
+          </div>
+        </div>
+
+        <!-- Side-by-Side 360° Video Pair (modern-web-guidance: lazy-load-video-and-audio) -->
+        <div class="orbit-compare" id="orbitCompare">
+          <article class="video-card">
+            <div class="video-stage">
+              <video
+                controls
+                loading="lazy"
+                autoplay
+                loop
+                muted
+                playsinline
+                preload="metadata"
+                width="1280"
+                height="720"
+                poster="/media/research/ai_to_physical/v6p2_orbit_poster.jpg?v=2"
+                aria-label="360-degree Blender Cycles turntable orbit of the final KUMIKO-TRUSS V6.2 Baltic birch and orange PETG CAD design">
+                <source src="/media/research/ai_to_physical/v6p2_blender_orbit.mp4?v=2" type="video/mp4">
+              </video>
+            </div>
+            <div class="video-meta">
+              <div>
+                <h3>Digital Twin — 360° Blender Cycles Orbit (V6.2)</h3>
+                <p>Rendered directly from the exact FreeCAD B-Rep solids: oiled Baltic birch ply, workshop-orange <code>FDM_01C</code> drop-down holder, 1-piece <code>FDM_08</code> pivot, scalloped knobs, and 2700K LED beam.</p>
+              </div>
+              <span class="slot-code">CAD TWIN</span>
+            </div>
+          </article>
+
+          <article class="video-card holding-wrap" id="physicalWalkaroundCard">
+            <!-- Swapped to live <video> automatically when PHYSICAL_WALKAROUND.ready = true -->
+            <div class="video-holding">
+              <span class="slot-status" style="margin-bottom:0.75rem;">HOLDING SLOT · SIDE-BY-SIDE COMPARISON</span>
+              <h3 style="margin:0 0 0.4rem;">Physical Artifact — 360° Finished Birch Walkaround</h3>
+              <p style="margin:0; max-width:44ch; font-size:0.86rem; color:var(--ink-soft);">
+                Reserved for the turntable walkaround film of the completed oiled Baltic birch plywood lamp, matching camera height and cadence for direct digital-twin vs. physical-craft comparison at the April 2027 Expo.
+              </p>
+              <p style="margin:0.8rem 0 0; font-family:var(--font-mono); font-size:0.72rem; color:var(--ink-muted);">
+                Target file: assets/birch_walkaround_360.mp4
+              </p>
+            </div>
+            <div class="video-meta">
+              <div>
+                <h3>Built Artifact — High-Finish Baltic Birch (V6.2)</h3>
+                <p>Frozen production build using exact <code>V6.2</code> CNC, A2 laser, and Bambu X1C outputs.</p>
+              </div>
+              <span class="slot-code" style="background:var(--accent);">PENDING</span>
+            </div>
+          </article>
+        </div>
+
+        <!-- 3 Hero Still Photography Holding Frames -->
+        <div class="birch-grid" id="birchHeroGrid"></div>
+
+        <div class="drop-note">
+          <strong>1-Step Birch Artifact Drop-In:</strong> Save the finished studio shots &amp; turntable clip into <code>00_v6_birch_reference/photos_birch_hero/</code> and web copies into <code>01_standalone_showcase/assets/</code> (<code>birch_hero_01..03.jpg</code> &amp; <code>birch_walkaround_360.mp4</code>), then flip <code>ready: true</code> in the manifest at the bottom of this file.
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 02: PROJECT LINEAGE — FROM CLASSIC ANGLEPOISE CAD -->
+    <section id="lineage">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">02 · Project Lineage &amp; Technical Progression</p>
+            <h2>From Classic Anglepoise CAD to Workshop-Fabricable Product</h2>
+            <p class="section-lead">
+              KUMIKO-TRUSS did not emerge in isolation. It grew directly out of an earlier CAD engineering study reconstructing a classic spring-counterbalanced Anglepoise desk lamp in FreeCAD &amp; Fusion — proving agents could model complex mechanical linkages digitally before pushing all the way into studio timber fabrication.
+            </p>
+          </div>
+        </div>
+
+        <div class="lineage-grid">
+          <article class="lineage-card">
+            <div class="lineage-media-pair three-up">
+              <button type="button" class="light-bg" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867841/casey-site/casey-site/research/ai_to_physical/16b_lineage_original_sketch.jpg" data-lb-title="Origin — Original Hand-Drawn Marker Sketch" data-lb-cap="The very first pen-and-marker industrial design sketch that initiated the Anglepoise CAD experiment — translating freehand studio intent into parametric CAD.">
+                <span class="card-tag">HAND SKETCH</span>
+                <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867841/casey-site/casey-site/research/ai_to_physical/16b_lineage_original_sketch.jpg" alt="Original hand-drawn pen and blue-green marker industrial design sketch of the classic Anglepoise desk lamp" loading="lazy" width="1282" height="1400" style="object-fit:contain; padding:4px; background:#FFFFFF;">
+              </button>
+              <button type="button" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867842/casey-site/casey-site/research/ai_to_physical/17_lineage_anglepoise_hero.jpg" data-lb-title="Precedent Study — Classic Anglepoise Desk Lamp (Noir V3 Render)" data-lb-cap="Studio benchmark testing whether AI agents could engineer a classic spring-balanced metal linkage, internal cast-iron counterweight, and full electrical routing from the hand sketch.">
+                <span class="card-tag">NOIR RENDER</span>
+                <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867842/casey-site/casey-site/research/ai_to_physical/17_lineage_anglepoise_hero.jpg" alt="Classic Anglepoise Noir V3 desk lamp render from earlier CAD study" loading="lazy" width="1400" height="1400">
+              </button>
+              <button type="button" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867843/casey-site/casey-site/research/ai_to_physical/18_lineage_anglepoise_cad.jpg" data-lb-title="Precedent Study — Anglepoise Parametric CAD Export (FreeCAD → Fusion 360)" data-lb-cap="57 parametric B-Rep solids, 20 VarSet parameters, 11/11 automated clearance checks passing, and 5.26 kg stability analysis.">
+                <span class="card-tag">57-PART CAD</span>
+                <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867843/casey-site/casey-site/research/ai_to_physical/18_lineage_anglepoise_cad.jpg" alt="Classic Anglepoise parametric CAD assembly rendered in Fusion 360" loading="lazy" width="1400" height="618">
+              </button>
+            </div>
+            <div class="lineage-body">
+              <p class="eyebrow" style="margin:0; color:var(--steel);">Precedent · Hand Sketch → Classic Anglepoise in CAD</p>
+              <h3>Phase A: From Studio Sketch to Parametric Mechanical CAD</h3>
+              <p>Starting from a single hand-drawn marker sketch, agents constructed a complete <code>57</code>-part parametric FreeCAD B-Rep assembly (<code>20</code> VarSet parameters, <code>11/11</code> automated clearance passes, <code>5.26 kg</code> cast-iron base, spring-parallelogram kinematics, exported cleanly to <code>.STEP</code> and Fusion 360).</p>
+              <p><strong>Key takeaway:</strong> Agents could already translate a studio sketch into valid, articulated metal CAD — raising the bigger question: <em>what happens when we ask them to design for real machines we can actually run in our own workshop?</em></p>
+            </div>
+          </article>
+
+          <article class="lineage-card">
+            <div class="lineage-media-pair">
+              <button type="button" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867844/casey-site/casey-site/research/ai_to_physical/19_freecad_gui_assembly.jpg" data-lb-title="Evolution — KUMIKO-TRUSS Live 79-Part Parametric Assembly in FreeCAD 1.1.3" data-lb-cap="Direct FreeCAD GUI screenshot showing all 79 timber, steel, hardware, and 3D-printed parts organized into 6 clean parametric groups.">
+                <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867844/casey-site/casey-site/research/ai_to_physical/19_freecad_gui_assembly.jpg" alt="FreeCAD 1.1.3 GUI screenshot showing the 79-part KUMIKO-TRUSS parametric assembly and Model Tree" loading="lazy" width="1600" height="952">
+              </button>
+              <button type="button" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867845/casey-site/casey-site/research/ai_to_physical/14_proto_mdf_threequarter.jpg" data-lb-title="Physical Execution — KUMIKO-TRUSS Standing Workshop Prototype" data-lb-cap="Translating parametric CAD directly into laser-cut sheet stock, CNC pocketed base tiers, and multi-plate Bambu X1C 3D-printed components.">
+                <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867845/casey-site/casey-site/research/ai_to_physical/14_proto_mdf_threequarter.jpg" alt="Physical MDF and 3D-printed workshop prototype of KUMIKO-TRUSS" loading="lazy" width="935" height="1400">
+              </button>
+            </div>
+            <div class="lineage-body">
+              <p class="eyebrow" style="margin:0;">Evolution · KUMIKO-TRUSS (V6.2)</p>
+              <h3>Phase B: Closing the Loop into Physical Fabrication</h3>
+              <p>Shifted from spun metal &amp; cast iron to accessible workshop processes — <code>6 mm</code> laser-cut Baltic birch, <code>12 mm</code> 1-sided CNC milling, and desktop Bambu X1C 3D printing — expanding to <code>79</code> parametric B-Rep parts with automated A2 nesting and headless multi-plate slicing.</p>
+              <p><strong>Result:</strong> Moved from virtual CAD validation into a standing, articulated, illuminated physical artifact ready for high-finish timber production.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 03: HANDS-OFF AUTONOMOUS PRODUCTION (FREECAD GUI + BAMBU MULTI-PLATE + CAM) -->
+    <section id="pipeline">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">03 · Hands-Off Autonomous Software Execution</p>
+            <h2>Live FreeCAD Geometry, Multi-Plate Bambu Slicing &amp; Machine-Ready CAM</h2>
+            <p class="section-lead">
+              Every single component exists as a verified solid inside FreeCAD and passed straight into production software with minimal manual intervention — including autonomous multi-plate Bambu Studio slicing arranged across build plates for optimal X1 Carbon print time.
+            </p>
+          </div>
+          <div class="filter-bar" role="group" aria-label="Filter pipeline stages">
+            <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">All Outputs (15)</button>
+            <button type="button" class="filter-btn" data-filter="proof" aria-pressed="false">FreeCAD &amp; Bambu Proof</button>
+            <button type="button" class="filter-btn" data-filter="concept" aria-pressed="false">V1–V5 Design</button>
+            <button type="button" class="filter-btn" data-filter="cad" aria-pressed="false">ISO Drawings</button>
+            <button type="button" class="filter-btn" data-filter="cam" aria-pressed="false">Laser &amp; FDM Kits</button>
+          </div>
+        </div>
+
+        <!-- Highlighted Trio: Real FreeCAD GUI + Exploded CAD + Real Bambu Studio Multi-Plate Screenshot -->
+        <div class="gallery-grid" id="pipelineGrid">
+          <article class="card featured-proof" data-cat="proof">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867844/casey-site/casey-site/research/ai_to_physical/19_freecad_gui_assembly.jpg" data-lb-title="FreeCAD 1.1.3 — Live 79-Part Parametric B-Rep Model & Tree" data-lb-cap="Actual screenshot of plywood_lamp_v6_parametric.FCStd open in FreeCAD showing the hierarchical Model Tree (_01_Base_CNC_12mm through _06_Electrics_FDM_3DPrint) and shaded 3D B-Rep solids.">
+              <span class="card-tag accent-tag">FREECAD 1.1.3 · LIVE CAD</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867844/casey-site/casey-site/research/ai_to_physical/19_freecad_gui_assembly.jpg" alt="Screenshot of FreeCAD 1.1.3 displaying the 79-part parametric KUMIKO-TRUSS model and Model Tree" loading="lazy" width="1600" height="952">
+            </button>
+            <div class="card-body">
+              <h3>Live 79-Part Assembly in FreeCAD</h3>
+              <p>Every birch tier, half-lap rib, fastener, and printed mount exists as an editable parametric B-Rep solid — generated hands-off via Python.</p>
+            </div>
+          </article>
+
+          <article class="card featured-proof" data-cat="proof">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867847/casey-site/casey-site/research/ai_to_physical/20_freecad_gui_exploded.jpg" data-lb-title="FreeCAD 1.1.3 — Exploded Parametric CAD Assembly" data-lb-cap="Direct FreeCAD GUI capture of plywood_lamp_v6_exploded_assembly.FCStd confirming complete part separation, mortise-and-tenon mating, and zero hidden geometry tricks.">
+              <span class="card-tag accent-tag">FREECAD · EXPLODED</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867847/casey-site/casey-site/research/ai_to_physical/20_freecad_gui_exploded.jpg" alt="Screenshot of FreeCAD 1.1.3 showing the exploded 3D parametric assembly of the lamp" loading="lazy" width="1600" height="952">
+            </button>
+            <div class="card-body">
+              <h3>Exploded Parametric Verification</h3>
+              <p>Full exploded 3D state inside FreeCAD verifying every clevis tenon, half-lap slot, ballast bar, and hardware stack prior to export.</p>
+            </div>
+          </article>
+
+          <article class="card featured-proof" data-cat="proof">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867848/casey-site/casey-site/research/ai_to_physical/16_bambu_multiplate_slicer.jpg" data-lb-title="Bambu Studio — Autonomous Multi-Plate X1 Carbon Layout" data-lb-cap="Real Bambu Studio screenshot showing how the agent drove Bambu Studio directly, grouping and laying out models cleanly across Textured PEI build plates (0.20mm Standard @BBL X1C) for efficient print times.">
+              <span class="card-tag accent-tag">BAMBU STUDIO · MULTI-PLATE</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867848/casey-site/casey-site/research/ai_to_physical/16_bambu_multiplate_slicer.jpg" alt="Screenshot of Bambu Studio showing multi-plate arrangement of turret pivot, bulb carriers, scalloped knobs, spacers, and crossbars on Bambu Lab X1 Carbon Textured PEI plates" loading="lazy" width="1600" height="790">
+            </button>
+            <div class="card-body">
+              <h3>Autonomous Multi-Plate Bambu Slicing</h3>
+              <p>Agents operated Bambu Studio CLI directly — orienting, grouping, and laying out sliced models across plates for optimal X1C build time.</p>
+            </div>
+          </article>
+
+          <!-- Remaining 12 Stage Cards -->
+          <article class="card" data-cat="concept">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867849/casey-site/casey-site/research/ai_to_physical/01_concepts_8var.jpg" data-lb-title="Stage 1 — 8 Structural Concept Variations" data-lb-cap="Rapid typological breadth spanning Kigumi Lantern, Kumiko Dome, scissor trusses, and weighted ply bases.">
+              <span class="card-tag">V1–V4 · CONCEPT</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867849/casey-site/casey-site/research/ai_to_physical/01_concepts_8var.jpg" alt="Eight early plywood desk lamp concept variations" loading="lazy" width="1500" height="837">
+            </button>
+            <div class="card-body">
+              <h3>8-Variation Form Exploration</h3>
+              <p>Broad typological study evaluating half-lap timber cages, cantilevered arms, and joinery honesty.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="concept">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867850/casey-site/casey-site/research/ai_to_physical/02_blender_4var_overview.jpg" data-lb-title="Stage 2 — 4 Parametric Blender 3D Concepts" data-lb-cap="Procedural Blender 5.2 builds comparing upper shade silhouettes and base architectures before converging on V1 Upper + V4 Stepped Base.">
+              <span class="card-tag">V1–V4 · BLENDER</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867850/casey-site/casey-site/research/ai_to_physical/02_blender_4var_overview.jpg" alt="Four 3D Blender variations of the plywood desk lamp" loading="lazy" width="1500" height="703">
+            </button>
+            <div class="card-body">
+              <h3>4 Procedural Blender Concepts</h3>
+              <p>Designer direction selected V1's natural birch Kumiko bell paired with V4's stepped 3-tier base.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="concept">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867851/casey-site/casey-site/research/ai_to_physical/03_blender_v1_flush_ribs.jpg" data-lb-title="V1 Flush 50/50 Half-Lap Rib Detail" data-lb-cap="Close-up verifying flush outer rib continuity where 16 curved 6 mm ribs lock cleanly into unbroken Crown and Rim rings.">
+              <span class="card-tag">V1 · JOINERY</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867851/casey-site/casey-site/research/ai_to_physical/03_blender_v1_flush_ribs.jpg" alt="Close-up render of flush 50/50 half-lap Kumiko shade ribs" loading="lazy" width="1400" height="875">
+            </button>
+            <div class="card-body">
+              <h3>Flush 50/50 Half-Lap Shade</h3>
+              <p>16 curved ribs notched flush with unbroken Crown (<code>Ø72 mm</code>) and Rim (<code>Ø132 mm</code>) rings.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="concept">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867852/casey-site/casey-site/research/ai_to_physical/04_v5_hero_render.jpg" data-lb-title="V5 Engineered Concept Hero" data-lb-cap="Unified V1 upper + V4 stepped base prepared for formal multi-agent mechanical engineering audit.">
+              <span class="card-tag">V5 · HERO</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867852/casey-site/casey-site/research/ai_to_physical/04_v5_hero_render.jpg" alt="V5 engineered concept hero render" loading="lazy" width="1500" height="1125">
+            </button>
+            <div class="card-body">
+              <h3>V5 Integrated Architecture</h3>
+              <p>Combined twin-pill lower truss (<code>L1=215 mm</code>), stadium upper arm (<code>L2=225 mm</code>), and 3-tier base.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="concept">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867853/casey-site/casey-site/research/ai_to_physical/05_v5_section_cutaway.jpg" data-lb-title="V5 Base Section Cutaway" data-lb-cap="Internal section proving single-sided CNC pocketing, 3.0 mm dimmer potentiometer mounting web, hollow turret cord path, and 60° yaw-stop lug.">
+              <span class="card-tag">V5 · SECTION</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867853/casey-site/casey-site/research/ai_to_physical/05_v5_section_cutaway.jpg" alt="Section cutaway of the 3-tier CNC plywood base showing internal cavities" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body">
+              <h3>Internal Base Section Audit</h3>
+              <p>Engineered single-sided <code>12 mm</code> pocketing, <code>3.0 mm</code> dimmer web, and <code>±110°</code> yaw stop.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="concept">
+            <button type="button" class="card-media" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867853/casey-site/casey-site/research/ai_to_physical/06_v5_underside_open.jpg" data-lb-title="V5 Open Underside Ballast & Switchgear Bay" data-lb-cap="Underside service cavity exposing twin 10 mm steel ballast bars, trapped rear DC jack bezel, PWM dimmer bay, and TPU feet outside the removable steel lid.">
+              <span class="card-tag">V5 · UNDERSIDE</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867853/casey-site/casey-site/research/ai_to_physical/06_v5_underside_open.jpg" alt="Open underside view of lamp base showing ballast bars and wiring channels" loading="lazy" width="1400" height="1050">
+            </button>
+            <div class="card-body">
+              <h3>Ballast &amp; Serviceability Layout</h3>
+              <p><code>1.06 kg</code> steel ballast (<code>FoS 4.09 / 2.05</code>) with TPU feet cleanly outside the removable cover.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="cad">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867855/casey-site/casey-site/research/ai_to_physical/07_iso_sheet1_ga.jpg" data-lb-title="ISO A3 Sheet 1 — General Assembly (PL-GA-001)" data-lb-cap="Generated automatically via FreeCAD TechDraw OpenCASCADE HLR projection from the 79-part parametric B-Rep model.">
+              <span class="card-tag">ISO SHEET 1</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867855/casey-site/casey-site/research/ai_to_physical/07_iso_sheet1_ga.jpg" alt="ISO A3 General Assembly engineering drawing Sheet 1" loading="lazy" width="1600" height="1131">
+            </button>
+            <div class="card-body">
+              <h3>ISO Sheet 1: General Assembly</h3>
+              <p>Orthographic elevations, reach envelope, and stability audit projected straight from FreeCAD.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="cad">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867856/casey-site/casey-site/research/ai_to_physical/08_iso_sheet2_exploded.jpg" data-lb-title="ISO A3 Sheet 2 — Exploded Isometric & BOM (PL-EX-002)" data-lb-cap="Full exploded hardware stack-up and 28-line Bill of Materials covering CNC, laser, steel, hardware, and FDM subassemblies.">
+              <span class="card-tag">ISO SHEET 2</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867856/casey-site/casey-site/research/ai_to_physical/08_iso_sheet2_exploded.jpg" alt="ISO A3 Exploded Isometric and BOM drawing Sheet 2" loading="lazy" width="1600" height="1131">
+            </button>
+            <div class="card-body">
+              <h3>ISO Sheet 2: Exploded BOM</h3>
+              <p>Complete exploded assembly &amp; 28-item Bill of Materials exported directly from CAD.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="cad">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867857/casey-site/casey-site/research/ai_to_physical/09_iso_sheet3_cnc_depths.jpg" data-lb-title="ISO A3 Sheet 3 — Marked-Up 12 mm CNC Base Milling Depth Guide" data-lb-cap="Color-coded pocket depth map specifying exact 4.0, 5.5, 6.0, 7.0, 8.0, 9.0, and 12.0 mm thru cuts for 1-sided CNC milling of Tiers 1–3.">
+              <span class="card-tag">CNC DEPTH MAP</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867857/casey-site/casey-site/research/ai_to_physical/09_iso_sheet3_cnc_depths.jpg" alt="Color-coded CNC milling depth map for the 12 mm Baltic birch base plates" loading="lazy" width="1600" height="1131">
+            </button>
+            <div class="card-body">
+              <h3>Sheet 3: CNC Pocket Depth Map</h3>
+              <p>Marked-up workshop milling guide detailing exact depths across Tiers 1–3 and Turret Flange.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="cam">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867858/casey-site/casey-site/research/ai_to_physical/10_laser_a2_single.jpg" data-lb-title="A2 Laser Cut Plan — Single Lamp (29 Parts, 0 Overlaps)" data-lb-cap="Illustrator-ready 594 × 420 mm SVG with 0.025 pt pure black cut paths, #FF0000 red fill etch, R0.7 mm micro-dogbones, and 6 mm arm compression spacers.">
+              <span class="card-tag">LASER A2 · 1× KIT</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867858/casey-site/casey-site/research/ai_to_physical/10_laser_a2_single.jpg" alt="A2 laser cutting nest for 29 six-millimeter Baltic birch parts" loading="lazy" width="1600" height="1131">
+            </button>
+            <div class="card-body">
+              <h3>A2 Laser Nest (29 Parts)</h3>
+              <p>Machine-ready Illustrator SVG (<code>0.025 pt</code> cut / <code>#FF0000</code> etch, <code>0</code> OOB, <code>0</code> overlaps).</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="cam">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867858/casey-site/casey-site/research/ai_to_physical/11_laser_a2_maxyield.jpg" data-lb-title="A2 Max-Yield Laser Nest — 2 Complete Lamp Kits (58 Parts)" data-lb-cap="High-density 58-part nest algorithmically packing two complete lamp kits onto a single A2 (594 × 420 mm) sheet of 6 mm Baltic birch.">
+              <span class="card-tag">LASER A2 · 2× YIELD</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867858/casey-site/casey-site/research/ai_to_physical/11_laser_a2_maxyield.jpg" alt="High-yield A2 laser nest packing 58 parts for two complete lamps" loading="lazy" width="1600" height="1131">
+            </button>
+            <div class="card-body">
+              <h3>A2 Max-Yield Nest (58 Parts)</h3>
+              <p>Two complete lamp kits algorithmically packed onto one A2 sheet with automated clearance proof.</p>
+            </div>
+          </article>
+
+          <article class="card" data-cat="cam">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867860/casey-site/casey-site/research/ai_to_physical/12_fdm_v6p1_kit.jpg" data-lb-title="V6.2 3D-Printed Hardware Upgrade Kit (6 STLs)" data-lb-cap="Includes the +24 mm drop-down IKEA GUZ5.3 compliant holder, fixed E27 carrier, 6 mm compression spacers, 12-flute scalloped nut knobs, unified 1-piece hollow turret pivot, and horizontal stepped crossbars.">
+              <span class="card-tag">FDM KIT · V6.2</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867860/casey-site/casey-site/research/ai_to_physical/12_fdm_v6p1_kit.jpg" alt="Isometric preview of all six 3D-printed hardware upgrade STLs" loading="lazy" width="1600" height="1066">
+            </button>
+            <div class="card-body">
+              <h3>V6.2 3D-Printed Hardware Kit</h3>
+              <p>Bambu X1C PETG/PLA hardware kit including <code>FDM_01C</code> drop-down holder &amp; 1-piece unified pivot.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 04: STANDOUT AI-ENGINEERED PHYSICAL MECHANISMS -->
+    <section id="innovations">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">04 · AI Designing for the Physical World</p>
+            <h2>Standout Mechanical Solutions Authored Entirely by AI</h2>
+            <p class="section-lead">
+              Beyond drafting and nesting, the agents independently engineered clever, manufacturing-aware physical mechanisms — demonstrating genuine mechanical reasoning about polymer compliance, print layer orientation, joinery topology, and thermal clearance.
+            </p>
+          </div>
+        </div>
+
+        <div class="innov-grid">
+          <article class="innov-card hero-innov">
+            <div class="innov-top">
+              <span class="eyebrow" style="margin:0;">AI Mechanism 01 · Highlight</span>
+              <span class="pill accent">100% Support-Free Print</span>
+            </div>
+            <h3>4-Finger Compliant PETG Bulb Retention System (<code>FDM_01C</code>)</h3>
+            <p>
+              Conceived directly from a single photo of the user's IKEA <code>LED1938R3</code> (<code>GUZ5.3</code>, <code>24V DC</code>) puck. Four axially slotted compliant spring fingers feature inward double-cone retention beads that flex and snap cleanly into the bulb's circumferential mid-body groove — paired with a <code>45°</code> self-supporting internal stop ledge, four pointed-arch convection/wire windows, and a <code>+24 mm</code> drop-down neck that cleared the rear socket without recutting a single piece of wood.
+            </p>
+            <div class="innov-specs">
+              <span class="pill"><code>Ø45.6 mm</code> slip-fit in <code>Ø46.0 mm</code> ring</span>
+              <span class="pill"><code>40 mm</code> socket headroom</span>
+              <span class="pill">3 underside snap-lock bumps</span>
+            </div>
+          </article>
+
+          <article class="innov-card">
+            <div class="innov-top">
+              <span class="eyebrow" style="margin:0; color:var(--steel);">AI Mechanism 02</span>
+              <span class="pill steel">Laser Topology</span>
+            </div>
+            <h3>Split Assemblable 50/50 Flush Half-Lap Kumiko Shade</h3>
+            <p>
+              Solved a subtle assembly deadlock automatically: an unbroken wrist arch prevents solid Crown and Rim rings from threading onto the shade. The agent split the structural spine into an interlocking <code>SPINE_FRONT_WRIST</code> and <code>SPINE_BACK</code> pinned with a <code>Ø4 × 8 mm</code> dowel, and added <code>R0.7 mm</code> micro-dogbones to every radial notch so all 16 ribs seat 100% flush.
+            </p>
+            <div class="innov-specs">
+              <span class="pill">16 flush curved ribs</span>
+              <span class="pill"><code>R0.7 mm</code> laser micro-dogbones</span>
+              <span class="pill">Unbroken structural rings</span>
+            </div>
+          </article>
+
+          <article class="innov-card">
+            <div class="innov-top">
+              <span class="eyebrow" style="margin:0; color:var(--steel);">AI Mechanism 03</span>
+              <span class="pill">DFM &amp; Ergonomics</span>
+            </div>
+            <h3>Captive-Shoulder Scalloped Nut Knobs &amp; Horizontal Crossbars</h3>
+            <p>
+              <code>FDM_07</code> 12-flute thumbwheels place a solid <code>4 mm</code> plastic shoulder on the washer side so tightening standard <code>M8</code>/<code>M6</code>/<code>M5</code> hex nuts pulls them <em>deeper</em> into the knob rather than popping them out. <code>FDM_09</code> stepped crossbars include a subtle <code>0.55 mm</code> bottom flat chord so they print horizontally with lengthwise layer lines for maximum shear strength.
+            </p>
+            <div class="innov-specs">
+              <span class="pill">Pull-in captive hex pocket</span>
+              <span class="pill">Lengthwise FDM grain</span>
+              <span class="pill">Auto-parallel <code>6 mm</code> / <code>21 mm</code> shoulders</span>
+            </div>
+          </article>
+
+          <article class="innov-card">
+            <div class="innov-top">
+              <span class="eyebrow" style="margin:0; color:var(--steel);">AI Mechanism 04</span>
+              <span class="pill">1-Sided CNC Base</span>
+            </div>
+            <h3>Single-Sided CNC Base with Integral 60° Yaw-Stop Lug</h3>
+            <p>
+              Engineered all three <code>12 mm</code> base tiers to mill from one side only: leaving an uncut <code>60°</code> birch lug inside Tier 2's turret counterbore for a crisp <code>±110°</code> mechanical hard stop, locally counterboring a <code>3.0 mm</code> web so the M7 dimmer nut gets full thread bite, trapping the rear DC bezel in a stepped T-slot, and keeping all 4 TPU feet outside the removable steel lid.
+            </p>
+            <div class="innov-specs">
+              <span class="pill"><code>1.06 kg</code> mild steel ballast</span>
+              <span class="pill"><code>±110°</code> wire-safe yaw stop</span>
+              <span class="pill">Serviceable without peeling feet</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 05: RAPID PHYSICAL-DIGITAL ITERATION -->
+    <section id="prototype">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">05 · Rapid Physical-Digital Iteration Loop</p>
+            <h2>First-Pass MDF Trial Fit &amp; High-Velocity Design Adaptation</h2>
+            <p class="section-lead">
+              Built quickly in low-cost <code>6 mm</code> MDF, extruded PS foam (as a fast proxy for Tier 1 while evaluating CNC cycle time), and orange Bambu X1C parts, the test build went together remarkably smoothly on the first try — letting us skip geometry debugging and resolve late-stage real-world changes (like a specific on-hand IKEA bulb) far faster than traditional workshop prototyping.
+            </p>
+          </div>
+        </div>
+
+        <div class="gallery-grid">
+          <article class="card">
+            <button type="button" class="card-media portrait" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867840/casey-site/casey-site/research/ai_to_physical/13_proto_mdf_profile.jpg" data-lb-title="Rapid Trial Build — Side Elevation (Lit)" data-lb-cap="First-pass MDF & PS-foam assembly standing cleanly, articulating smoothly with 6 mm compression spacers, orange scalloped nut covers, and glowing +24 mm drop-down bulb holder.">
+              <span class="card-tag">TRIAL BUILD · 01</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867840/casey-site/casey-site/research/ai_to_physical/13_proto_mdf_profile.jpg" alt="Side profile of illuminated MDF and PS foam prototype lamp" loading="lazy" width="1206" height="1400">
+            </button>
+            <div class="card-body">
+              <h3>Smooth First-Pass Assembly</h3>
+              <p>All laser-cut ribs, arms, and printed hardware slotted together straight off the machines with minimal fettling.</p>
+            </div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media portrait" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867845/casey-site/casey-site/research/ai_to_physical/14_proto_mdf_threequarter.jpg" data-lb-title="Rapid Trial Build — Three-Quarter Shade & Optics" data-lb-cap="Demonstrates the rapidly iterated +24 mm drop-down FDM_01C holder positioning the IKEA LED1938R3 cleanly inside the Kumiko cage with 40 mm rear socket clearance.">
+              <span class="card-tag">TRIAL BUILD · 02</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867845/casey-site/casey-site/research/ai_to_physical/14_proto_mdf_threequarter.jpg" alt="Three-quarter view of MDF prototype showing drop-down orange bulb holder inside shade" loading="lazy" width="935" height="1400">
+            </button>
+            <div class="card-body">
+              <h3>Late-Stage Bulb Adaptation</h3>
+              <p>Resolved a late switch to an on-hand <code>24V</code> IKEA bulb via a single drop-down print — zero timber recutting.</p>
+            </div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media portrait" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867860/casey-site/casey-site/research/ai_to_physical/15_proto_ikea_bulb.jpg" data-lb-title="Late-Stage Input — IKEA LED1938R3 (GUZ5.3, DC24V 2.2W)" data-lb-cap="Single smartphone photo supplied mid-build that enabled the agent to design, export, and Bambu-slice the bespoke 4-finger compliant snap holder within minutes.">
+              <span class="card-tag">BENCH INPUT</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867860/casey-site/casey-site/research/ai_to_physical/15_proto_ikea_bulb.jpg" alt="Close-up photo of IKEA LED1938R3 GUZ5.3 24V DC LED puck light and socket" loading="lazy" width="951" height="1100">
+            </button>
+            <div class="card-body">
+              <h3>Photo-to-Print-Ready in Minutes</h3>
+              <p>From a single workshop photo of the IKEA puck directly to a compliant, sliced Bambu X1C fixture.</p>
+            </div>
+          </article>
+        </div>
+
+        <!-- Responsive Rapid Iteration Table (modern-web-guidance: responsive-table) -->
+        <div tabindex="0" role="region" aria-labelledby="audit-caption" class="table-wrapper">
+          <table class="audit-table">
+            <caption id="audit-caption">Rapid Physical-Digital Iteration Log — Turning Trial-Build Observations into Production Files in Minutes</caption>
+            <thead>
+              <tr>
+                <th scope="col">Iteration Trigger</th>
+                <th scope="col">Workshop Observation</th>
+                <th scope="col">Hands-Off Agentic Turnaround</th>
+                <th scope="col">Outcome (V6.1 → V6.2)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row"><span class="audit-num">#01</span><br>Late-stage specific bulb change (IKEA <code>LED1938R3</code>)</th>
+                <td>Switched from generic E27 to an on-hand <code>24V</code> IKEA <code>GUZ5.3</code> puck whose tall rear socket met <code>SPINE_FRONT_WRIST</code>.</td>
+                <td>Engineered <code>FDM_01C</code> (<code>+24 mm</code> drop-down compliant 4-finger snap holder) &amp; sliced via Bambu CLI in minutes.</td>
+                <td><code>40 mm</code> socket clearance verified on the lit build with zero wood recutting.</td>
+              </tr>
+              <tr>
+                <th scope="row"><span class="audit-num">#02</span><br>Crown ring carrier slip-fit tuning</th>
+                <td>Laser-cut Crown Ring (<code>Ø46.0 mm</code>) fit ribs perfectly; early thermal carrier barrel needed slip-fit clearance &amp; old draft STL cleanup.</td>
+                <td>Adjusted barrel OD to <code>Ø45.6 mm</code> with unbroken vent rings and archived legacy draft STL.</td>
+                <td>Clean snap-in seating on both <code>FDM_01</code> and <code>FDM_01C</code> holders.</td>
+              </tr>
+              <tr>
+                <th scope="row"><span class="audit-num">#03</span><br>Adding <code>6 mm</code> anti-deflection arm spacers</th>
+                <td>Trial tightening showed subtle inward bow across the unsupported <code>6.0 mm</code> inner cheek gap at <code>P0</code> &amp; <code>E0</code>.</td>
+                <td>Inserted <code>SPACER_P0/E0_6MM</code> (<code>Ø24 × Ø8.4 × 6 mm</code>) into both A2 Illustrator laser nests (<code>0</code> overlaps) &amp; <code>FDM_06</code> STL.</td>
+                <td>Dead-parallel arms under full friction clamp — cuttable or printable.</td>
+              </tr>
+              <tr>
+                <th scope="row"><span class="audit-num">#04</span><br>Upgrading off-the-shelf hardware to unified 3D prints</th>
+                <td>In-house 3D printing proved effortless — designer opted to replace wing nuts &amp; wood dowels with matching scalloped knobs and crossbars.</td>
+                <td>Authored <code>FDM_07</code> (12-flute nut knobs), <code>FDM_08</code> (hollow turret pivot), and <code>FDM_09</code> (horizontal stepped crossbars) + multi-plate Bambu slices.</td>
+                <td>Signature cohesive orange hardware language &amp; faster bench assembly.</td>
+              </tr>
+              <tr>
+                <th scope="row"><span class="audit-num">#05</span><br>Consolidating <code>FDM_08</code> into 1 solid part</th>
+                <td>Inspecting the test print spotted that gluing a separate spigot ring onto the hollow pivot was an unnecessary carryover.</td>
+                <td>Fused spigot, thrust collar, and barrel into a single stronger solid + re-sliced (<code>30.5 min</code> X1C, 1 tiny hidden support ring) &amp; synced manual.</td>
+                <td>Eliminated glue seam at peak cantilever bending stress; bearing face prints smooth face-up.</td>
+              </tr>
+              <tr>
+                <th scope="row"><span class="audit-num">#06</span><br>Base CNC cycle time insight</th>
+                <td>Using PS foam as a rapid Tier 1 proxy validated assembly fast while highlighting CNC milling time on thick pockets.</td>
+                <td>Froze <code>V6.2</code> CNC base for the Birch Hero while spawning Stream 3 (<code>V7</code> KUMIKO-OPEN, 100% laser + 3D print).</td>
+                <td>Direct evidence feeding the next-generation zero-CNC open-source fork.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 06: 9-PLATE ILLUSTRATED ASSEMBLY MANUAL -->
+    <section id="manual">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">06 · Automated Technical Documentation</p>
+            <h2>9-Plate CAD-Exact Illustrated Assembly Manual</h2>
+            <p class="section-lead">
+              Generated directly from the FreeCAD B-Rep solids via OpenCASCADE HLR linework and color-coded by material (Birch · 3D Print · Hardware · 24V Electrics), automatically updated whenever a part evolves (such as Step 2's 1-piece unified pivot).
+            </p>
+          </div>
+          <a class="filter-btn" href="../00_v6_birch_reference/assembly_guide/KUMIKO_TRUSS_V6p1_Illustrated_Assembly_Manual.pdf" target="_blank" rel="noopener">Open Printable 9-Page PDF ↗</a>
+        </div>
+
+        <div class="gallery-grid">
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867862/casey-site/casey-site/research/ai_to_physical/step_00.jpg" data-lb-title="Plate 0 — Complete V6.2 Build Map & Kit Overview" data-lb-cap="Full assembled V6.2 lamp with all 8 stage zones tagged across birch, 3D-printed hardware, steel ballast, and 24V electrics.">
+              <span class="card-tag">PLATE 00</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867862/casey-site/casey-site/research/ai_to_physical/step_00.jpg" alt="Illustrated assembly plate 0 showing complete V6.2 build map" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>Build Map &amp; Kit Overview</h3><p>System-wide color key and tools checklist.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867862/casey-site/casey-site/research/ai_to_physical/step_01.jpg" data-lb-title="Step 01 — Laminated 3 × 12 mm CNC Base Glue-Up" data-lb-cap="Shows M3 brass inserts, 6 alignment dowels, and using the FDM_08 barrel dry as a concentric bore mandrel while clamping.">
+              <span class="card-tag">STEP 01</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867862/casey-site/casey-site/research/ai_to_physical/step_01.jpg" alt="Illustrated assembly Step 1: CNC base glue-up" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>CNC Base Glue-Up</h3><p>Concentric bore alignment trick with dry pivot mandrel.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867863/casey-site/casey-site/research/ai_to_physical/step_02.jpg" data-lb-title="Step 02 — 1-Piece Unified Turret Pivot & Clevis" data-lb-cap="Updated V6.2 unified 1-piece FDM_08 hollow pivot epoxied directly into the CNC Turret Flange + twin 6 mm clevis cheeks locked by FDM_09 crossbars.">
+              <span class="card-tag">STEP 02</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867863/casey-site/casey-site/research/ai_to_physical/step_02.jpg" alt="Illustrated assembly Step 2: 1-piece unified turret pivot and clevis" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>1-Piece Turret &amp; Clevis</h3><p>Zero intermediate plastic glue seam at peak bending load.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867864/casey-site/casey-site/research/ai_to_physical/step_03.jpg" data-lb-title="Step 03 — Install Rotating Turret & ±110° Mechanical Yaw Stop" data-lb-cap="Top drop-in plus upside-down assembly showing Tier 2's 60° uncut birch lug, lower thrust washer, retaining collar, and Ø5 mm brass stop pin.">
+              <span class="card-tag">STEP 03</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867864/casey-site/casey-site/research/ai_to_physical/step_03.jpg" alt="Illustrated assembly Step 3: turret installation and yaw stop" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>Turret Retention &amp; Yaw Stop</h3><p><code>±110°</code> hard stop protecting internal cord from twist.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867865/casey-site/casey-site/research/ai_to_physical/step_04.jpg" data-lb-title="Step 04 — Scalloped Press-Fit Nut Knobs & Truss Arms" data-lb-cap="Includes cross-section proving why the solid 4 mm plastic shoulder faces the washer, plus Lower (3× 21 mm) & Upper (2× 6 mm) stepped-crossbar arms.">
+              <span class="card-tag">STEP 04</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867865/casey-site/casey-site/research/ai_to_physical/step_04.jpg" alt="Illustrated assembly Step 4: scalloped nut knobs and truss arms" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>Scalloped Knobs &amp; Truss Arms</h3><p>Captive hex-nut section proof &amp; stepped crossbars.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867866/casey-site/casey-site/research/ai_to_physical/step_05.jpg" data-lb-title="Step 05 — Articulated Frame Joint Stack-Up (With 6 mm Spacers)" data-lb-cap="Exact left-to-right hardware order for P0 & E0 showing carriage bolt square neck, Nylon 6/6 washers, 6 mm anti-deflection spacer, and scalloped M8 knob.">
+              <span class="card-tag">STEP 05</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867866/casey-site/casey-site/research/ai_to_physical/step_05.jpg" alt="Illustrated assembly Step 5: exploded joint hardware stack-up with 6 mm compression spacer" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>Joint Stack-Up &amp; 6 mm Spacers</h3><p>Eliminates inward arm bow under friction clamping.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867867/casey-site/casey-site/research/ai_to_physical/step_06.jpg" data-lb-title="Step 06 — Split Kumiko Shade & +24 mm Drop-Down IKEA Holder" data-lb-cap="Exploded build order plus side elevation proving 40 mm vertical clearance between IKEA LED1938R3 rear face and SPINE_FRONT_WRIST.">
+              <span class="card-tag">STEP 06</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867867/casey-site/casey-site/research/ai_to_physical/step_06.jpg" alt="Illustrated assembly Step 6: Kumiko shade and drop-down IKEA bulb holder" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>Kumiko Shade &amp; IKEA Holder</h3><p>Side elevation proving <code>40 mm</code> socket headroom.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867868/casey-site/casey-site/research/ai_to_physical/step_07.jpg" data-lb-title="Step 07 — 24V DC Wiring, PWM Dimmer & Birch Dial" data-lb-cap="Underside wiring bay plus full 24V DC schematic from barrel jack through 5–35V PWM dimmer to the IKEA LED1938R3 GUZ5.3 luminaire.">
+              <span class="card-tag">STEP 07</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867868/casey-site/casey-site/research/ai_to_physical/step_07.jpg" alt="Illustrated assembly Step 7: 24V DC wiring bay and schematic" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>24V DC Wiring &amp; Dimmer</h3><p>Trapped DC bezel, hollow-pivot cord slack &amp; schematic.</p></div>
+          </article>
+
+          <article class="card">
+            <button type="button" class="card-media contain" data-lb-src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867869/casey-site/casey-site/research/ai_to_physical/step_08.jpg" data-lb-title="Step 08 — Steel Ballast, Insulator, Bottom Plate & Commissioning" data-lb-cap="Twin 10 mm ballast bars, FDM_03 PCB insulator, flush 6 mm steel lid, 4× TPU feet outside cover, and 4-point final commissioning sign-off.">
+              <span class="card-tag">STEP 08</span>
+              <img src="https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867869/casey-site/casey-site/research/ai_to_physical/step_08.jpg" alt="Illustrated assembly Step 8: steel ballast, cover plate, and final commissioning" loading="lazy" width="1500" height="937">
+            </button>
+            <div class="card-body"><h3>Ballast, Cover &amp; Sign-Off</h3><p><code>1.06 kg</code> steel ballast with serviceable outer TPU feet.</p></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHAPTER 07: PEDAGOGY & NEXT FORKS -->
+    <section id="pedagogy">
+      <div class="wrap">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">07 · Design Education Provocation &amp; Program Forks</p>
+            <h2>Pedagogical Implications &amp; Next Directions</h2>
+            <p class="section-lead">
+              Preliminary framing for the <strong>DEC 26 5-minute lightning talk</strong> and <strong>April 2027 End-of-Year Expo</strong>, alongside the two decoupled R&amp;D forks launching from this frozen V6.2 baseline.
+            </p>
+          </div>
+        </div>
+
+        <div class="tri-grid">
+          <div class="panel-card">
+            <p class="eyebrow">Pedagogy · Theme 01</p>
+            <h3>Compressing Friction, Multiplying Iteration</h3>
+            <p>Offloading parametric CAD scripting, A2 laser nesting, ISO drafting, and multi-plate Bambu slicing collapses prototype turnaround from days to minutes — unlocking far more real physical test-build cycles inside a studio semester.</p>
+          </div>
+          <div class="panel-card">
+            <p class="eyebrow">Pedagogy · Theme 02</p>
+            <h3>Technical Skill vs. Taste &amp; Discernment</h3>
+            <p>When AI can invent working physical mechanisms (like the 4-finger compliant bulb holder) and operate fabrication software hands-off, how should educators cultivate the material intuition and taste needed to direct and critique those outputs?</p>
+          </div>
+          <div class="panel-card">
+            <p class="eyebrow">Pedagogy · Theme 03</p>
+            <h3>The Shifting Role of the Graduate Designer</h3>
+            <p>Graduate value moves rapidly from rote CAD-syntax operator toward <strong>Design Director, Rapid Prototype Auditor, and Physical-Digital Mediator</strong> — shifting curricula toward materiality, system architecture, and critical judgement.</p>
+          </div>
+        </div>
+
+        <div class="duo-grid" style="margin-top: 1.5rem;">
+          <div class="panel-card" style="border-top: 3px solid var(--steel);">
+            <p class="eyebrow" style="color: var(--steel);">Fork 03 · KUMIKO-OPEN (V7)</p>
+            <h3>Fastener-Free Open-Source Build Kit</h3>
+            <p>100% laser cutting + 3D printing — zero CNC milling and zero purchased nuts, bolts, screws, or washers.</p>
+            <ul>
+              <li>Stacked <code>6 mm</code> laser-cut base with sealed local-ballast chamber (sand/pebbles/coins)</li>
+              <li>Printed coarse-thread thumbbolts &amp; compliant PETG friction clutches</li>
+              <li>Standardized twist-lock bayonet wrist for modular community shades</li>
+            </ul>
+          </div>
+          <div class="panel-card" style="border-top: 3px solid var(--accent);">
+            <p class="eyebrow">Fork 04 · KUMIKO-KINETIC (V8)</p>
+            <h3>Twisting-Louver Shade &amp; Local WiFi ESP32 Control</h3>
+            <p>Two-stage kinetic &amp; mechatronic exploration building on the modular arm architecture.</p>
+            <ul>
+              <li><strong>Stage 4A:</strong> Twisting crown lays all 16 slats flat/shingled to cut back &amp; side glare</li>
+              <li><strong>Stage 4B:</strong> ESP32 local-network web app driving motorized articulation + tunable color/dimming</li>
+              <li>Mechanical crown-twist rig validated manually on the bench before motorizing</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <span><strong>KUMIKO-TRUSS</strong> · Frozen Reference Baseline V6.2 · Standalone Monograph (<code>01_standalone_showcase</code>)</span>
+      <span>DEC 26 Lightning Talk · April 2027 End-of-Year Expo</span>
+    </div>
+  </footer>
+
+  <!-- Native Modal Lightbox (modern-web-guidance: light-dismiss-a-dialog) -->
+  <dialog id="lightbox" closedby="any" aria-labelledby="lbTitle">
+    <div class="lb-shell">
+      <div class="lb-bar">
+        <h3 id="lbTitle">Image Preview</h3>
+        <div class="lb-actions">
+          <button type="button" class="lb-btn" id="lbPrev" aria-label="Previous image">← Prev</button>
+          <button type="button" class="lb-btn" id="lbNext" aria-label="Next image">Next →</button>
+          <button type="button" class="lb-btn" id="lbClose" aria-label="Close preview">Close ✕</button>
+        </div>
+      </div>
+      <div class="lb-stage">
+        <img id="lbImg" src="" alt="">
+      </div>
+      <div class="lb-caption" id="lbCap"></div>
+    </div>
+  </dialog>
+
+  <script>
+    // =========================================================================
+    // 1. DROP-IN MANIFEST FOR FINISHED BALTIC BIRCH HERO PHOTOS & WALKAROUND
+    // =========================================================================
+    const PHYSICAL_WALKAROUND = {
+      ready: false,
+      src: "assets/birch_walkaround_360.mp4",
+      poster: "assets/birch_hero_01.jpg",
+      title: "Built Artifact — 360° Finished Baltic Birch Walkaround (V6.2)",
+      desc: "Real studio turntable walkaround of the finished oiled Baltic birch plywood artifact paired side-by-side with the Blender CAD twin."
+    };
+
+    const BIRCH_HERO_SLOTS = [
+      {
+        code: "HERO 01",
+        title: "Full Architectural Three-Quarter (Lit)",
+        desc: "Finished oiled Baltic birch build with 1-piece orange FDM_08 turret, scalloped knobs, and warm 2700K IKEA LED1938R3 glow.",
+        file: "assets/birch_hero_01.jpg",
+        ratio: "3:4 Studio Frame",
+        ready: false
+      },
+      {
+        code: "HERO 02",
+        title: "Kumiko Shade & Compliant Holder Macro",
+        desc: "Close-up of flush 50/50 half-lap Baltic birch ribs, clean edge grain, and glowing orange +24 mm FDM_01C drop-down holder.",
+        file: "assets/birch_hero_02.jpg",
+        ratio: "4:5 Detail Frame",
+        ready: false
+      },
+      {
+        code: "HERO 03",
+        title: "3-Tier CNC Base, Turret & Dimmer Deck",
+        desc: "High-finish Baltic birch base showing laminated grain steps, flush steel cover stability, unified turret collar, and rotary dimmer.",
+        file: "assets/birch_hero_03.jpg",
+        ratio: "4:5 Detail Frame",
+        ready: false
+      }
+    ];
+
+    if (PHYSICAL_WALKAROUND.ready) {
+      const card = document.getElementById("physicalWalkaroundCard");
+      card.classList.remove("holding-wrap");
+      card.innerHTML = `
+        <div class="video-stage">
+          <video controls loading="lazy" autoplay loop muted playsinline preload="metadata" width="1280" height="720" poster="${PHYSICAL_WALKAROUND.poster}">
+            <source src="${PHYSICAL_WALKAROUND.src}" type="video/mp4">
+          </video>
+        </div>
+        <div class="video-meta">
+          <div><h3>${PHYSICAL_WALKAROUND.title}</h3><p>${PHYSICAL_WALKAROUND.desc}</p></div>
+          <span class="slot-code" style="background:var(--green);">BUILT V6.2</span>
+        </div>`;
+    }
+
+    const heroGrid = document.getElementById("birchHeroGrid");
+    BIRCH_HERO_SLOTS.forEach((slot) => {
+      const el = document.createElement("article");
+      if (slot.ready) {
+        el.className = "holding-card loaded";
+        el.innerHTML = `
+          <button type="button" class="card-media portrait" data-lb-src="${slot.file}" data-lb-title="${slot.code} — ${slot.title}" data-lb-cap="${slot.desc}">
+            <span class="card-tag">${slot.code} · BIRCH V6.2</span>
+            <img src="${slot.file}" alt="${slot.title}" loading="lazy">
+          </button>
+          <div class="card-body"><h3>${slot.title}</h3><p>${slot.desc}</p></div>`;
+      } else {
+        el.className = "holding-card";
+        el.innerHTML = `
+          <div class="holding-top">
+            <span class="slot-code">${slot.code}</span>
+            <span class="slot-status">HOLDING SLOT · V6.2</span>
+          </div>
+          <div class="holding-center">
+            <div class="holding-icon">+</div>
+            <h3>${slot.title}</h3>
+            <p>${slot.desc}</p>
+          </div>
+          <div class="holding-foot">
+            <span>Target: ${slot.file}</span>
+            <span>${slot.ratio}</span>
+          </div>`;
+      }
+      heroGrid.appendChild(el);
+    });
+
+    // =========================================================================
+    // 2. STAGE FILTER TABS
+    // =========================================================================
+    const filterBtns = document.querySelectorAll(".filter-btn[data-filter]");
+    const pipeCards = document.querySelectorAll("#pipelineGrid .card");
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const target = btn.dataset.filter;
+        filterBtns.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        pipeCards.forEach((c) => {
+          c.classList.toggle("hidden", target !== "all" && c.dataset.cat !== target);
+        });
+      });
+    });
+
+    // =========================================================================
+    // 3. NATIVE LIGHT-DISMISS MODAL LIGHTBOX + MANDATORY SAFARI FALLBACK
+    // =========================================================================
+    const dialog = document.getElementById("lightbox");
+    const lbImg = document.getElementById("lbImg");
+    const lbTitle = document.getElementById("lbTitle");
+    const lbCap = document.getElementById("lbCap");
+    const lbPrev = document.getElementById("lbPrev");
+    const lbNext = document.getElementById("lbNext");
+    const lbClose = document.getElementById("lbClose");
+
+    let triggers = [];
+    let currentIndex = 0;
+
+    function refreshTriggers() {
+      triggers = Array.from(document.querySelectorAll("[data-lb-src]"));
+    }
+    refreshTriggers();
+
+    function openAt(idx) {
+      if (!triggers.length) return;
+      currentIndex = (idx + triggers.length) % triggers.length;
+      const t = triggers[currentIndex];
+      lbImg.src = t.dataset.lbSrc;
+      lbImg.alt = t.dataset.lbTitle || "";
+      lbTitle.textContent = t.dataset.lbTitle || "Preview";
+      lbCap.textContent = t.dataset.lbCap || "";
+      if (!dialog.open) dialog.showModal();
+    }
+
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest("[data-lb-src]");
+      if (!btn) return;
+      refreshTriggers();
+      const idx = triggers.indexOf(btn);
+      if (idx >= 0) openAt(idx);
+    });
+
+    lbPrev.addEventListener("click", () => openAt(currentIndex - 1));
+    lbNext.addEventListener("click", () => openAt(currentIndex + 1));
+    lbClose.addEventListener("click", () => dialog.close());
+
+    dialog.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") openAt(currentIndex - 1);
+      if (e.key === "ArrowRight") openAt(currentIndex + 1);
+    });
+
+    if (!("closedBy" in HTMLDialogElement.prototype)) {
+      dialog.addEventListener("click", (event) => {
+        if (event.target !== dialog) return;
+        const rect = dialog.getBoundingClientRect();
+        const isDialogContent = (
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width
+        );
+        if (isDialogContent) return;
+        dialog.close();
+      });
+    }
+
+    // =========================================================================
+    // 4. REDUCED-MOTION VIDEO SAFETY + LAZY-MEDIA FALLBACK (modern-web-guidance)
+    // =========================================================================
+    const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    function syncReducedMotion(prefersReduced) {
+      for (const video of document.querySelectorAll("video[autoplay]")) {
+        if (prefersReduced) {
+          video.removeAttribute("autoplay");
+          video.pause();
+        }
+      }
+    }
+    syncReducedMotion(reducedMotionQuery.matches);
+    reducedMotionQuery.addEventListener("change", (e) => syncReducedMotion(e.matches));
+
+    const supportsLazyMedia = Object.hasOwn(HTMLMediaElement.prototype, "loading");
+    if (!supportsLazyMedia && "IntersectionObserver" in window) {
+      const lazyVideos = document.querySelectorAll('video[loading="lazy"]');
+      const mediaObserver = new IntersectionObserver((entries, observer) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const media = entry.target;
+          if (media.dataset.poster) { media.poster = media.dataset.poster; delete media.dataset.poster; }
+          if (media.dataset.preload) { media.preload = media.dataset.preload; delete media.dataset.preload; }
+          media.load();
+          if (media.hasAttribute("autoplay") && !reducedMotionQuery.matches) {
+            media.play().catch(() => {});
+          }
+          observer.unobserve(media);
+        }
+      }, { rootMargin: "200px 0px" });
+      for (const media of lazyVideos) {
+        if (media.hasAttribute("poster")) { media.dataset.poster = media.getAttribute("poster"); media.removeAttribute("poster"); }
+        if (media.hasAttribute("preload") && media.getAttribute("preload") !== "none") { media.dataset.preload = media.getAttribute("preload"); }
+        media.preload = "none";
+        mediaObserver.observe(media);
+      }
+    }
+
+    // =========================================================================
+    // 5. SCROLL PROGRESS FALLBACK (ONLY WHEN NATIVE CSS SCROLL-TIMELINE ABSENT)
+    // =========================================================================
+    if (!CSS.supports("animation-timeline", "scroll()")) {
+      const progress = document.getElementById("scroll-progress");
+      const updateBar = () => {
+        const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = scrollable > 0 ? Math.min(1, Math.max(0, window.scrollY / scrollable)) : 0;
+        progress.style.transform = `scaleX(${ratio})`;
+      };
+      window.addEventListener("scroll", updateBar, { passive: true });
+      updateBar();
+    }
+  </script>
+</body>
+</html>

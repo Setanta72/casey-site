@@ -342,5 +342,215 @@
     "public_id": "casey-site/making/desk-lamp/38_ply_GA_Sheet2_Exploded_BOM.pdf",
     "resource_type": "raw",
     "uploaded_at": "2026-11-23T16:38:52.667Z"
+  },
+  "research/ai_to_physical/13_proto_mdf_profile.jpg": {
+    "hash": "3ee825cea67e2c2a0ee0cece0bea97d1",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867840/casey-site/casey-site/research/ai_to_physical/13_proto_mdf_profile.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/13_proto_mdf_profile",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:41.698Z"
+  },
+  "research/ai_to_physical/16b_lineage_original_sketch.jpg": {
+    "hash": "803dee8e4b7437d8329e9a8d4b649045",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867841/casey-site/casey-site/research/ai_to_physical/16b_lineage_original_sketch.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/16b_lineage_original_sketch",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:42.674Z"
+  },
+  "research/ai_to_physical/17_lineage_anglepoise_hero.jpg": {
+    "hash": "7a5ea7ef707fe368279ae8e017273cec",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867842/casey-site/casey-site/research/ai_to_physical/17_lineage_anglepoise_hero.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/17_lineage_anglepoise_hero",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:43.641Z"
+  },
+  "research/ai_to_physical/18_lineage_anglepoise_cad.jpg": {
+    "hash": "4db1149cd40527d87687ab284221694d",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867843/casey-site/casey-site/research/ai_to_physical/18_lineage_anglepoise_cad.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/18_lineage_anglepoise_cad",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:44.455Z"
+  },
+  "research/ai_to_physical/19_freecad_gui_assembly.jpg": {
+    "hash": "74a70bfd35f3e1cedfccc0f3c4acdea8",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867844/casey-site/casey-site/research/ai_to_physical/19_freecad_gui_assembly.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/19_freecad_gui_assembly",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:45.387Z"
+  },
+  "research/ai_to_physical/14_proto_mdf_threequarter.jpg": {
+    "hash": "1a4a20010e1b238c91476dfae2dfc0a4",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867845/casey-site/casey-site/research/ai_to_physical/14_proto_mdf_threequarter.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/14_proto_mdf_threequarter",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:46.607Z"
+  },
+  "research/ai_to_physical/20_freecad_gui_exploded.jpg": {
+    "hash": "d80cc91d839010b22f501737dd130636",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867847/casey-site/casey-site/research/ai_to_physical/20_freecad_gui_exploded.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/20_freecad_gui_exploded",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:48.247Z"
+  },
+  "research/ai_to_physical/16_bambu_multiplate_slicer.jpg": {
+    "hash": "64986f833bad8ef3492824a9aa4c28a5",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867848/casey-site/casey-site/research/ai_to_physical/16_bambu_multiplate_slicer.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/16_bambu_multiplate_slicer",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:49.229Z"
+  },
+  "research/ai_to_physical/01_concepts_8var.jpg": {
+    "hash": "5f274c3c4b3ec4958174e8ca0080c977",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867849/casey-site/casey-site/research/ai_to_physical/01_concepts_8var.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/01_concepts_8var",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:50.296Z"
+  },
+  "research/ai_to_physical/02_blender_4var_overview.jpg": {
+    "hash": "3afddc02ff510807739d40ed0813ffda",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867850/casey-site/casey-site/research/ai_to_physical/02_blender_4var_overview.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/02_blender_4var_overview",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:51.218Z"
+  },
+  "research/ai_to_physical/03_blender_v1_flush_ribs.jpg": {
+    "hash": "fd1981173746b991b658691abdbaeb51",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867851/casey-site/casey-site/research/ai_to_physical/03_blender_v1_flush_ribs.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/03_blender_v1_flush_ribs",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:52.139Z"
+  },
+  "research/ai_to_physical/04_v5_hero_render.jpg": {
+    "hash": "beb6bad9d010cece1f94f850db6b1ad5",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867852/casey-site/casey-site/research/ai_to_physical/04_v5_hero_render.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/04_v5_hero_render",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:53.025Z"
+  },
+  "research/ai_to_physical/05_v5_section_cutaway.jpg": {
+    "hash": "7fe77e6a78c5faa550db38a503ba3021",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867853/casey-site/casey-site/research/ai_to_physical/05_v5_section_cutaway.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/05_v5_section_cutaway",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:53.773Z"
+  },
+  "research/ai_to_physical/06_v5_underside_open.jpg": {
+    "hash": "4c8fcd4e71c34725d989619cce2360f1",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867853/casey-site/casey-site/research/ai_to_physical/06_v5_underside_open.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/06_v5_underside_open",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:54.756Z"
+  },
+  "research/ai_to_physical/07_iso_sheet1_ga.jpg": {
+    "hash": "734d9918de9dee930735ad8e8f73c707",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867855/casey-site/casey-site/research/ai_to_physical/07_iso_sheet1_ga.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/07_iso_sheet1_ga",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:55.826Z"
+  },
+  "research/ai_to_physical/08_iso_sheet2_exploded.jpg": {
+    "hash": "61abfb7632d69b2fec0e90e24e659068",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867856/casey-site/casey-site/research/ai_to_physical/08_iso_sheet2_exploded.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/08_iso_sheet2_exploded",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:56.784Z"
+  },
+  "research/ai_to_physical/09_iso_sheet3_cnc_depths.jpg": {
+    "hash": "464d698912f128130801ea6e2e0f0e67",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867857/casey-site/casey-site/research/ai_to_physical/09_iso_sheet3_cnc_depths.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/09_iso_sheet3_cnc_depths",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:57.854Z"
+  },
+  "research/ai_to_physical/10_laser_a2_single.jpg": {
+    "hash": "d61b571997160540028169ef1e26cb83",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867858/casey-site/casey-site/research/ai_to_physical/10_laser_a2_single.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/10_laser_a2_single",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:58.790Z"
+  },
+  "research/ai_to_physical/11_laser_a2_maxyield.jpg": {
+    "hash": "bdb152c0a8ca2fa0448c668f600349c1",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867858/casey-site/casey-site/research/ai_to_physical/11_laser_a2_maxyield.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/11_laser_a2_maxyield",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:10:59.821Z"
+  },
+  "research/ai_to_physical/12_fdm_v6p1_kit.jpg": {
+    "hash": "2280ebefd5bc9a78a21ab385138bb500",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867860/casey-site/casey-site/research/ai_to_physical/12_fdm_v6p1_kit.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/12_fdm_v6p1_kit",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:00.649Z"
+  },
+  "research/ai_to_physical/15_proto_ikea_bulb.jpg": {
+    "hash": "01a2c45b2cb17e9ccea054e1c2d4d610",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867860/casey-site/casey-site/research/ai_to_physical/15_proto_ikea_bulb.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/15_proto_ikea_bulb",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:01.867Z"
+  },
+  "research/ai_to_physical/step_00.jpg": {
+    "hash": "112c3acb16307dd76273b06d05dd6474",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867862/casey-site/casey-site/research/ai_to_physical/step_00.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_00",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:02.801Z"
+  },
+  "research/ai_to_physical/step_01.jpg": {
+    "hash": "f769288921dc8637218d84100fe7761b",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867862/casey-site/casey-site/research/ai_to_physical/step_01.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_01",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:03.712Z"
+  },
+  "research/ai_to_physical/step_02.jpg": {
+    "hash": "ca81c230bdd0846b27cb2ab0a6057cdd",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867863/casey-site/casey-site/research/ai_to_physical/step_02.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_02",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:04.591Z"
+  },
+  "research/ai_to_physical/step_03.jpg": {
+    "hash": "91a48124867c1762fa7cb5067557ac2a",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867864/casey-site/casey-site/research/ai_to_physical/step_03.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_03",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:05.646Z"
+  },
+  "research/ai_to_physical/step_04.jpg": {
+    "hash": "51eadfd21afda51a645a8c3371132036",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867865/casey-site/casey-site/research/ai_to_physical/step_04.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_04",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:06.579Z"
+  },
+  "research/ai_to_physical/step_05.jpg": {
+    "hash": "28a1e615a8100bb92476fa5fd257dc3a",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867866/casey-site/casey-site/research/ai_to_physical/step_05.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_05",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:07.499Z"
+  },
+  "research/ai_to_physical/step_06.jpg": {
+    "hash": "4d138fc3c0a99e8757e2f4b66b8885ab",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867867/casey-site/casey-site/research/ai_to_physical/step_06.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_06",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:08.587Z"
+  },
+  "research/ai_to_physical/step_07.jpg": {
+    "hash": "03093e0d283bc680db30ca571eb444fd",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867868/casey-site/casey-site/research/ai_to_physical/step_07.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_07",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:09.441Z"
+  },
+  "research/ai_to_physical/step_08.jpg": {
+    "hash": "dd92c5a21675eb38236d19186b6eb5a7",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795867869/casey-site/casey-site/research/ai_to_physical/step_08.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/step_08",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T12:11:10.667Z"
   }
 }
