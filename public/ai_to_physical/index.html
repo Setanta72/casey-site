@@ -922,9 +922,10 @@
                 preload="metadata"
                 width="1280"
                 height="720"
-                poster="/media/research/ai_to_physical/v6p2_orbit_poster.jpg?v=2"
+                poster="/media/research/ai_to_physical/v6p2_orbit_poster.jpg?v=3"
                 aria-label="360-degree Blender Cycles turntable orbit of the final KUMIKO-TRUSS V6.2 Baltic birch and orange PETG CAD design">
-                <source src="/media/research/ai_to_physical/v6p2_blender_orbit.mp4?v=2" type="video/mp4">
+                <source src="/media/research/ai_to_physical/v6p2_blender_orbit.webm?v=3" type="video/webm">
+                <source src="/media/research/ai_to_physical/v6p2_blender_orbit.mp4?v=3" type="video/mp4">
               </video>
             </div>
             <div class="video-meta">
@@ -1759,6 +1760,7 @@
           if (media.dataset.preload) { media.preload = media.dataset.preload; delete media.dataset.preload; }
           media.load();
           if (media.hasAttribute("autoplay") && !reducedMotionQuery.matches) {
+            media.addEventListener("canplay", () => { media.play().catch(() => {}); }, { once: true });
             media.play().catch(() => {});
           }
           observer.unobserve(media);
