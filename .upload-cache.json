@@ -552,5 +552,26 @@
     "public_id": "casey-site/casey-site/research/ai_to_physical/step_08",
     "resource_type": "image",
     "uploaded_at": "2026-11-28T12:11:10.667Z"
+  },
+  "research/ai_to_physical/v6p2_orbit_poster.jpg": {
+    "hash": "6ee3d1ef06ef069dcde8568d51c2c0f4",
+    "url": "https://res.cloudinary.com/do7oi2ioy/image/upload/v1795872558/casey-site/casey-site/research/ai_to_physical/v6p2_orbit_poster.jpg",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/v6p2_orbit_poster",
+    "resource_type": "image",
+    "uploaded_at": "2026-11-28T13:29:19.297Z"
+  },
+  "research/ai_to_physical/v6p2_blender_orbit.webm": {
+    "hash": "375659247c9380e16425902a898e7a78",
+    "url": "https://res.cloudinary.com/do7oi2ioy/video/upload/v1795872559/casey-site/casey-site/research/ai_to_physical/v6p2_blender_orbit.webm",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/v6p2_blender_orbit",
+    "resource_type": "video",
+    "uploaded_at": "2026-11-28T13:29:20.416Z"
+  },
+  "research/ai_to_physical/v6p2_blender_orbit.mp4": {
+    "hash": "40d794f7df575e53b5600aa0b050d607",
+    "url": "https://res.cloudinary.com/do7oi2ioy/video/upload/v1795872560/casey-site/casey-site/research/ai_to_physical/v6p2_blender_orbit.mp4",
+    "public_id": "casey-site/casey-site/research/ai_to_physical/v6p2_blender_orbit",
+    "resource_type": "video",
+    "uploaded_at": "2026-11-28T13:29:21.803Z"
   }
 }
